@@ -3,8 +3,11 @@ package com.itwill.rest.domain;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.hibernate.annotations.Fetch;
+
 import jakarta.persistence.Basic;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -39,5 +42,11 @@ public class Album {
 
 	@OneToMany(mappedBy = "album")
 	private List<Song> songs;
+	
+	@ToString.Exclude
+	@OneToMany(mappedBy = "album", fetch = FetchType.LAZY)
+	private List<TitleSong> titleSongs;
+	
+	
 
 }

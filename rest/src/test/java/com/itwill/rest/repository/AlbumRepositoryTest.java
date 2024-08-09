@@ -26,18 +26,18 @@ public class AlbumRepositoryTest {
 		assertThat(albumRepo).isNotNull();
 	}
 
-	// @Test
+	 @Test
 	@Transactional
 	public void findAllTest() {
 		log.info("findAllTest()");
 
 		List<Album> albums = albumRepo.findAll();
 
-		albums.forEach((a) -> {System.out.println(a);});
-		albums.forEach((a) -> {System.out.println(a.getSongs());});
+//		albums.forEach((a) -> {System.out.println(a);});
+		albums.forEach((a) -> {System.out.println(a.getTitleSongs());});
 	}
 
-	@Test
+//	@Test
 	@Transactional
 	public void findByIdTest() {
 		log.info("findByIdTest()");
@@ -45,7 +45,7 @@ public class AlbumRepositoryTest {
 		Album album = albumRepo.findById(3).get(); // 천천히 가 앨범		
 		
 		System.out.println(album);
-		System.out.println(album.getSongs());
+		System.out.println(album.getTitleSongs());
 	}
 	
 }
