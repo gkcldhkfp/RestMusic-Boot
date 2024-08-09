@@ -1,0 +1,80 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.3.2'
+	id 'io.spring.dependency-management' version '1.1.6'
+}
+
+group = 'com.itwill'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	runtimeOnly 'com.oracle.database.jdbc:ojdbc11'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	// lombok --------------
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	testCompileOnly 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok'
+	// --------------------
+
+	// Querydsl -------------
+	// dependency-management가 관리해주지 못하는 의존성: 버전번호를 직접 써주어야함.
+	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+	annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'
+	annotationProcessor 'jakarta.annotation:jakarta.annotation-api' // 얘는 의존성관리자가 관리해줌. 버전번호 안써도 됨
+	annotationProcessor 'jakarta.persistence:jakarta.persistence-api' // 얘도 의존성 관리자가 관리해줌.
+	// ----------------------
+
+	// Spring Security ----------
+	// implementation 'org.springframework.boot:spring-boot-starter-security'
+	// testImplementation 'org.springframework.security:spring-security-test'
+	// implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+	// ---------------------------
+}
+
+
+
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+// Querydsl 관련 빌드 옵션: java-build path에 추가하는 과정을 자동으로 해줌. -----
+def querydslDir = "$buildDir/generated/querydsl"
+
+sourceSets {
+    main.java.srcDirs += [ querydslDir ]
+}
+
+// annotationProcessor를 할 때 사용할 폴더를 지정해주는 설정.
+tasks.withType(JavaCompile) {
+    options.annotationProcessorGeneratedSourcesDirectory = file(querydslDir)
+}
+
+// clean할 때 아래 설정한 폴더를 지우도록 하는 설정
+clean.doLast {
+    file(querydslDir).deleteDir()
+}
+// -----------------------------
