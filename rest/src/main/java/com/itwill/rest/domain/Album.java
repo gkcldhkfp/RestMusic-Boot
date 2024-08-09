@@ -3,8 +3,6 @@ package com.itwill.rest.domain;
 import java.time.LocalDate;
 import java.util.List;
 
-import org.hibernate.annotations.Fetch;
-
 import jakarta.persistence.Basic;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
