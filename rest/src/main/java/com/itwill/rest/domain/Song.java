@@ -49,5 +49,9 @@ public class Song {
 	@ToString.Exclude
 	@OneToMany(mappedBy = "song", fetch = FetchType.LAZY)
 	private List<SongGenre> genres;
+
+	@ToString.Exclude
+	@OneToMany(mappedBy = "song", fetch = FetchType.LAZY)
+	private List<ArtistRole> roles;
 	
 }
