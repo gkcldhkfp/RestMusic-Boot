@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,10 +34,12 @@ public class AlbumRepositoryTest {
 		List<Album> albums = albumRepo.findAll();
 
 //		albums.forEach((a) -> {System.out.println(a);});
-		albums.forEach((a) -> {System.out.println(a.getTitleSongs());});
+		albums.forEach((a) -> {
+			System.out.println(a.getTitleSongs());
+		});
 	}
 
-//	@Test
+	@Test
 	@Transactional
 	public void findByIdTest() {
 		log.info("findByIdTest()");
@@ -45,6 +48,11 @@ public class AlbumRepositoryTest {
 		
 		System.out.println(album);
 		System.out.println(album.getTitleSongs());
+		album.getSongs().forEach((s) -> {
+			s.getGenres().forEach((g) -> {
+				System.out.println(g.getGenre().getGenreName());
+			});
+		});
 	}
 	
 }
