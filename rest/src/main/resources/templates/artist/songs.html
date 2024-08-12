@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+	</head>
+	<body>
+		
+        <main>
+            <div class="container" style="padding: 30px;">
+                <div class="m-3 ">
+                    <div class="p-3">
+                        <!-- 아티스트 이미지 주소 지정 -->
+                        <c:url var="artistCover"
+                            value="/artist/image/${artist.artistImage}" />
+                        <!-- 기본값 이미지 주소 지정 -->
+                        <c:url var="defaultCover"
+                            value="/images/profileimage/profile.jpg" />
+                        <!-- 아티스트의 앨범 페이지 이동 주소 지정 -->
+                        <c:url var="artistAlbumPage"
+                            value="/artist/albums?artistId=${artist.artistId}" />
+                        <img alt="artistCover" src="${artist.artistImage == null ? defaultCover : artistCover}"
+                            class="rounded-circle"
+                            style="display: inline-block; vertical-align: middle; left: 400px; width: 240px; height: 240px; object-fit: cover;">
+                        <div class="ms-3"
+                            style="display: inline-block; vertical-align: middle;">
+                            <h2 class="mt-2" style="font-weight: bold;">${artist.artistName}</h2>
+                            <div class="mt-3">
+                                <button data-id="${data.songId}" id="songButton"
+                                    class="btn ms-1"
+                                    style="border-radius: 5px; background-color: #007bff; color: white;">곡</button>
+                                <button id="albumButton" class="btn ms-1"
+                                    onclick="window.location.href = '${artistAlbumPage}';"
+                                    onmouseover="this.style.color='#0056b3'"
+                                    onmouseout="this.style.color='black'">앨범</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <h4 style="font-weight: bold;">상세 정보</h4>
+                    </div>
+        
+                    <div class="mt-3 p-2">
+                        <p id="artistDescription">아티스트 설명</p>
+                    </div>
+                    <!-- Artist가 참여한 곡 출력 -->
+                    <div class="card-body">
+                        <table class="table table-striped"
+                            style="border: 1px solid #ddd;">
+                            <thead>
+                                <tr>
+                                    <!-- 전체 선택 체크박스 추가 -->
+                                    <!--    <th style="text-align: center; vertical-align: middle;">
+                                        <input type="checkbox" id="selectAllCheckbox">
+                                    </th>  -->
+                                    <th style="text-align: left; vertical-align: middle;">커버</th>
+                                    <th style="text-align: left; vertical-align: middle; width: 55%">노래 제목</th>
+                                    <th style="text-align: left; vertical-align: middle;">아티스트</th>
+                                    <th style="text-align: center; vertical-align: middle; white-space: nowrap;">듣기</th>
+                                    <th style="text-align: center; vertical-align: middle; white-space: nowrap;">재생목록</th>
+                                    <th style="text-align: center; vertical-align: middle; white-space: nowrap;">내 리스트</th>
+                                </tr>
+                            </thead>
+                            <tbody id="resultTable">
+                                <c:forEach items="${ songs }" var="s">
+                                    <c:url var="albumImage"
+                                        value="/images/albumcover/${s.albumImage}" />
+                                    <c:url var="playImage"
+                                        value="/images/icon/play.png" />
+                                    <c:url var="myPlayListImage"
+                                        value="/images/icon/myPlayList.png" />
+                                    <c:url var="songPage"
+                                        value="/song/detail?songId=${s.songId}" />
+                                    <c:url var="artistPage"
+                                        value="/artist/songs?artistId=${s.artistId}" />
+                                    <tr>
+                                        <!--    <td style="text-align: center; vertical-align: middle;">
+                                            <input type="checkbox" class="songCheckbox" data-songId="${s.songId}">
+                                        </td>   -->
+                                        <td style="text-align: left; vertical-align: middle; font-size: 14px;">
+                                            <c:url var="albumPage" value="/album/detail?albumId=${s.albumId}" />
+                                            <a href="${albumPage}">
+                                            <img src="${albumImage}" width="80px" height="80px">
+                                            </a>
+                                        </td>
+                                        <td style="text-align: left; vertical-align: middle; font-size: 14px;" class="fs-6">
+                                            <a href="${songPage}"
+                                            style="color: black; text-decoration: none;"
+                                            onmouseover="this.style.color='blue';"
+                                            onmouseout="this.style.color='black';">${s.title}</a><br>
+                                            <span style="display: inline-block; margin-top: 5px;"> <!-- 여기서 margin-top 값을 조정하여 간격을 조절 -->
+                                            <a href="${albumPage}"
+                                            style="color: gray; text-decoration: none;"
+                                            onmouseover="this.style.color='blue';"
+                                            onmouseout="this.style.color='gray';">${s.albumName}</a>
+                                            </span>
+                                        </td>
+                                        <td style="text-align:left; vertical-align: middle; font-size: 14px;" class="fs-6">
+                                            <c:forEach items="${fn:split(s.artistName, ',')}" var="artistName" varStatus="statusName">
+                                                <c:set var="artistId" value="${fn:split(s.artistIds, ',')[statusName.index]}" />
+                                                <c:url var="artistPage" value="/artist/songs">
+                                                    <c:param name="artistId" value="${artistId.trim()}" />
+                                                </c:url>
+                                                <a href="${artistPage}"
+                                                   style="color: black; text-decoration: none;"
+                                                   onmouseover="this.style.color='blue';"
+                                                   onmouseout="this.style.color='black';">
+                                                    ${artistName.trim()}
+                                                </a>
+                                                <c:if test="${!statusName.last}">, </c:if>
+                                            </c:forEach>
+                                        </td>
+                                        <td style="text-align: center; vertical-align: middle;">
+                                            <button
+                                                style="background-image: url('${playImage}'); 
+                                                width: 40px; height: 40px; background-size: cover; background-repeat: no-repeat;"
+                                                data-songId="${s.songId}"
+                                                data-id="${s.songId}"
+                                                class="playButton btn"
+                                                id="listenBtn"></button>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <c:url var="playlistImage" value="/images/icon/playList.png" />
+                                            <button
+                                                data-id="${s.songId}"
+                                                id="addCPList" title="재생목록에 추가"
+                                                class="btn mt-3"
+                                                style="background-image: url('${playlistImage}'); 
+                                width: 40px; height: 40px; background-size: cover; background-repeat: no-repeat;"></button>
+                                        </td>
+                                        <td
+                                            style="text-align: center; vertical-align: middle;">
+                                            <button
+                                                style="background-image: url('${myPlayListImage}'); 
+                                                width: 40px; height: 40px; background-size: cover; background-repeat: no-repeat;"
+                                                data-songId="${s.songId}"
+                                                class="addPlayList btn"></button>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </tbody>
+                        </table>
+                        <h5 id="defaultList" class="mt-4"
+                            style="text-align: center; color: gray;"></h5>
+                    </div>
+                </div>
+        
+                <div class="modal fade" id="staticBackdrop3"
+                    data-bs-backdrop="static" data-bs-keyboard="false"
+                    tabindex="-1" aria-labelledby="staticBackdropLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">추가할 플레이리스트</h5>
+                                <button type="button" class="btn-close"
+                                    data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div id="playLists" class="modal-body"
+                                style="height: 393px;">
+                                <!--  플리가 추가 될 부분 -->
+                            </div>
+                            <nav aria-label="Playlist navigation">
+                                <ul id="pagination"
+                                    class="pagination pagination-sm justify-content-center">
+                                    <!-- 페이징이 추가될 부분 -->
+                                </ul>
+                            </nav>
+                            <div class="modal-footer">
+                                <button type="button"
+                                    class="btn btn-outline-secondary"
+                                    data-bs-dismiss="modal">취소</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        
+        <th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
+	</body>
+</html>
