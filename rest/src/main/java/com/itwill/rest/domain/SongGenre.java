@@ -36,6 +36,6 @@ public class SongGenre {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "GENRE_ID")
 	@ToString.Exclude
-	private GenreCode genre;
+	private GenreCode genreCode;
 	
 }

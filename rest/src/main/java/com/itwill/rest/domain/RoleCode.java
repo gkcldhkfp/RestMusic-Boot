@@ -21,7 +21,8 @@ public class RoleCode {
 	@Id
 	private Integer roleId;
 
-	private Integer codeId;
+	@Builder.Default
+	private Integer codeId = 1;
 
 	private String roleName;
 	

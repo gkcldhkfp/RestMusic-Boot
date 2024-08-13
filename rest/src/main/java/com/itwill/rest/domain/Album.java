@@ -1,7 +1,8 @@
 package com.itwill.rest.domain;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import jakarta.persistence.Basic;
 import jakarta.persistence.Entity;
@@ -39,12 +40,38 @@ public class Album {
 	private LocalDate albumReleaseDate;
 
 	@OneToMany(mappedBy = "album")
-	private List<Song> songs;
+	@Builder.Default
+	@ToString.Exclude
+	private Set<Song> songs = new HashSet<>();
 	
 	@ToString.Exclude
 	@OneToMany(mappedBy = "album", fetch = FetchType.LAZY)
-	private List<TitleSong> titleSongs;
+	@Builder.Default
+	private Set<TitleSong> titleSongs = new HashSet<>();
 	
-	
+	/* //편의 메서드
+	// 앨범의 수록곡을 등록하는 메서드
+	public Album setSongs (Set<Song> songs){
+		this.songs = songs;
+		return this;
+	}
+
+	// 앨범의 수록곡을 추가하는 메서드
+	public Album addSong (Song song) {
+		songs.add(song);
+		return this;
+	}
+
+	// 앨범의 특정 곡을 삭제하는 메서드
+	public Album removeSong(Song song) {
+		songs.remove(song);
+		return this;
+	}
+
+	// 앨범의 수록곡을 모두 삭제하는 메서드
+	public Album clearSong() {
+		songs.clear();
+		return this;
+	} */
 
 }

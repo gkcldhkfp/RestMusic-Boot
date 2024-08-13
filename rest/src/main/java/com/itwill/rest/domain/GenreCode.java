@@ -2,7 +2,6 @@ package com.itwill.rest.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -19,11 +18,11 @@ import lombok.ToString;
 @Builder @ToString
 @EqualsAndHashCode
 public class GenreCode {
-	private Integer codeId;
+	@Builder.Default
+	private Integer codeId = 2;
 	
 	@Id
-	@JoinColumn(name = "GENRE_ID")
-	private Integer genreId;
+	private int genreId;
 
 	private String genreName;
 }

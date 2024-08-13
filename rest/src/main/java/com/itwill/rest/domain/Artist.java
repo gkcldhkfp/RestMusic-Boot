@@ -1,12 +1,10 @@
 package com.itwill.rest.domain;
 
-import java.util.List;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -25,6 +23,7 @@ import lombok.ToString;
 public class Artist {
 	@Id
 	@Column(name = "ARTIST_ID")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
 	private String artistName;
@@ -33,7 +32,7 @@ public class Artist {
 	
 	private String artistDescription;
 
-	@OneToMany(mappedBy = "artist", fetch = FetchType.LAZY)
-	@ToString.Exclude
-	private List<ArtistRole> roles;
+	// @OneToMany(mappedBy = "artist", fetch = FetchType.LAZY)
+	// @ToString.Exclude
+	// private List<ArtistRole> roles;
 }

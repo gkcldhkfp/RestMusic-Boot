@@ -16,41 +16,51 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
-@Table(name = "ARTIST_ROLES")
+@Table(name = "GROUP_MEMBERS")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode
 @ToString
 @Builder
-public class ArtistRole {
+public class GroupMember {
 	@EmbeddedId
-	private ArtistRoleId id;
-
-	@MapsId("artistId")
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ARTIST_ID")
-	@ToString.Exclude
-	private Artist artist;
+	private GroupMemberId id;
 
 	@MapsId("groupId")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "GROUP_ID")
 	@ToString.Exclude
 	private Group group;
-
-	@MapsId("songId")
+	
+	@MapsId("artistId")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "SONG_ID")
+	@JoinColumn(name = "ARTIST_ID")
 	@ToString.Exclude
-	private Song song;
+	private Artist artist;
 
-	@MapsId("roleId")
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ROLE_ID")
-	@ToString.Exclude
-	private RoleCode roleCode;
+	/* // 편의 메서드
+	// 그룹의 멤버를 등록하는 메서드
+	public GroupMember setArtists(Set<Artist> artists) {
+		this.artists = artists;
+		return this;
+	}
 
+	// 그룹의 멤버를 추가하는 메서드
+	public GroupMember addArtist(Artist artist) {
+		artists.add(artist);
+		return this;
+	}
 
+	// 그룹의 특정 멤버를 삭제하는 메서드
+	public GroupMember removeArtist(Artist artist) {
+		artists.remove(artist);
+		return this;
+	}
 
+	// 그룹의 멤버를 모두 삭제하는 메서드
+	public GroupMember clearArtist() {
+		artists.clear();
+		return this;
+	} */
 }
