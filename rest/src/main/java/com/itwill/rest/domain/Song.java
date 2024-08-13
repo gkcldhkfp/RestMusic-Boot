@@ -1,7 +1,5 @@
 package com.itwill.rest.domain;
 
-import java.util.List;
-
 import jakarta.persistence.Basic;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -10,7 +8,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -46,8 +43,63 @@ public class Song {
 
 	private String videoLink;
 
+/* 	@ToString.Exclude
+	@OneToMany(mappedBy = "song", fetch = FetchType.LAZY)
+	@Builder.Default
+	private Set<SongGenre> genres = new HashSet<>();
+	
 	@ToString.Exclude
 	@OneToMany(mappedBy = "song", fetch = FetchType.LAZY)
-	private List<SongGenre> genres;
+	@Builder.Default
+	private Set<ArtistRole> roles = new HashSet<>();
+
+	//편의 메서드
+	// 음원의 장르를 등록하는 메서드
+	public Song setGenres (Set<SongGenre> genres){
+		this.genres = genres;
+		return this;
+	}
+
+	// 음원의 장르를 추가하는 메서드
+	public Song addGenre (SongGenre genre) {
+		genres.add(genre);
+		return this;
+	}
+
+	// 음원의 특정 장르를 삭제하는 메서드
+	public Song removeGenre(SongGenre genre) {
+		genres.remove(genre);
+		return this;
+	}
+
+	// 음원의 장르를 모두 삭제하는 메서드
+	public Song clearGenre() {
+		genres.clear();
+		return this;
+	}
+
+	// 음원의 역할을 등록하는 메서드
+	public Song setRoles (Set<ArtistRole> roles){
+		this.roles = roles;
+		return this;
+	}
+
+	// 음원의 역할을 추가하는 메서드
+	public Song addRole (ArtistRole role) {
+		roles.add(role);
+		return this;
+	}
+
+	// 음원의 특정 역할을 삭제하는 메서드
+	public Song removeRole(ArtistRole role) {
+		roles.remove(role);
+		return this;
+	}
+
+	// 음원의 역할을 모두 삭제하는 메서드
+	public Song clearRoles() {
+		roles.clear();
+		return this;
+	} */
 	
 }

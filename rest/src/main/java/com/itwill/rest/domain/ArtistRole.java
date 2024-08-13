@@ -16,15 +16,28 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
-@Table(name = "SONG_GENRE")
+@Table(name = "ARTIST_ROLES")
 @Getter
-@NoArgsConstructor @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder @ToString
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode
-public class SongGenre {
-
+@ToString
+@Builder
+public class ArtistRole {
 	@EmbeddedId
-	private SongGenreId id;
+	private ArtistRoleId id;
+
+	@MapsId("artistId")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ARTIST_ID")
+	@ToString.Exclude
+	private Artist artist;
+
+	@MapsId("groupId")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "GROUP_ID")
+	@ToString.Exclude
+	private Group group;
 
 	@MapsId("songId")
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -32,10 +45,12 @@ public class SongGenre {
 	@ToString.Exclude
 	private Song song;
 
-	@MapsId("genreId")
+	@MapsId("roleId")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "GENRE_ID")
+	@JoinColumn(name = "ROLE_ID")
 	@ToString.Exclude
-	private GenreCode genreCode;
-	
+	private RoleCode roleCode;
+
+
+
 }

@@ -11,18 +11,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@Entity
-@Table(name="GENRE_CODE")
-@Getter
-@NoArgsConstructor @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder @ToString
-@EqualsAndHashCode
-public class GenreCode {
-	@Builder.Default
-	private Integer codeId = 2;
-	
-	@Id
-	private int genreId;
+@Entity @Table(name = "ROLE_CODE")
+@Getter @NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@EqualsAndHashCode @ToString
+@Builder
+public class RoleCode {
 
-	private String genreName;
+	@Id
+	private Integer roleId;
+
+	@Builder.Default
+	private Integer codeId = 1;
+
+	private String roleName;
+	
 }

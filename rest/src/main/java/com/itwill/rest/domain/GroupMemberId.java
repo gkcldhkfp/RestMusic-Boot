@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
-public class SongGenreId {
-	private int songId;
+public class GroupMemberId {
+	private Integer groupId;
 
-	private int genreId;
+	private Integer artistId;
 }
