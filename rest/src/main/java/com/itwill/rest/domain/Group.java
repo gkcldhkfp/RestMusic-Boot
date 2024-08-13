@@ -15,24 +15,23 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
-@Table(name="ARTISTS")
+@Table(name="GROUPS")
 @Getter @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode @ToString
 @Builder
-public class Artist {
-	@Id
-	@Column(name = "ARTIST_ID")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
-	
-	private String artistName;
-	
-	private String artistImage;
-	
-	private String artistDescription;
+public class Group {
 
-	// @OneToMany(mappedBy = "artist", fetch = FetchType.LAZY)
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "GROUP_ID")
+	private Integer id;
+
+	private String groupName;
+
+	private String groupDescription;
+
+	// @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
 	// @ToString.Exclude
 	// private List<ArtistRole> roles;
 }
