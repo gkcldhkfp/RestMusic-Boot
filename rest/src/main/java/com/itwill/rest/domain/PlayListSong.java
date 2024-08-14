@@ -17,7 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@Entity @Table(name = "PLAYLISTSONGS")
+@Entity @Table(name = "PLAYLIST_SONGS")
 @Getter @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder @ToString @EqualsAndHashCode

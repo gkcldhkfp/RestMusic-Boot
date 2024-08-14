@@ -1,5 +1,5 @@
 /**
- * /user/mypage.jsp 에 포함
+ * /user/mypage.html 에 포함
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -66,12 +66,10 @@ document.addEventListener('DOMContentLoaded', () => {
             .then((response) => {
                 // console.log(response);
                 console.log(response.data); // RestController에서 보낸 응답 데이터
-                if (response.data === 1) {
-                    alert('플레이리스트를 등록하였습니다!');
-                    document.querySelector('input#playlistName').value = '';
-                    getPlayLists();
-                    bootstrapModal.hide();
-                }
+                alert('플레이리스트를 등록하였습니다!');
+                document.querySelector('input#playlistName').value = '';
+                getPlayLists();
+                bootstrapModal.hide();
             })
             .catch((error) => {
                 console.log(error);
