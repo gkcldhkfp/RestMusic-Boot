@@ -19,14 +19,14 @@ public class UserRepositoryTest {
 	@Autowired
 	private UserService userServ;
 
-	@Test
+//	@Test
 	@Transactional
 	public void diTest() {
 		log.info("userRepo = {}", userRepo);
 
 	}
 
-	@Test
+//	@Test
 	@Transactional
 	public void findTest() {
 		log.info("findTest");

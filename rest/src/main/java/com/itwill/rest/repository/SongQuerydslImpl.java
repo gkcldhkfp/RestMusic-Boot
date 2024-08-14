@@ -42,32 +42,31 @@ public class SongQuerydslImpl extends QuerydslRepositorySupport implements SongQ
 
 	    // 모든 정보를 한 번의 쿼리로 가져옵니다
 	    List<Tuple> tuples = queryFactory
-	    	    .select(
-	    	        song.songId,
-	    	        song.title,
-	    	        song.lyrics,
-	    	        album.albumId,
-	    	        album.albumName,
-	    	        album.albumImage,
-	    	        artistRole.roleCode.roleId,
-	    	        artist.artistName,
-	    	        artist.id.stringValue(),
-	    	        genreCode.genreName
-	    	    )
-	    	    .from(song)
-	    	    .join(album).on(song.album.albumId.eq(album.albumId))
-	    	    .leftJoin(songGenre).on(song.songId.eq(songGenre.song.songId))
-	    	    .leftJoin(genreCode).on(songGenre.genreCode.genreId.eq(genreCode.genreId))
-	    	    .leftJoin(artistRole).on(song.songId.eq(artistRole.song.songId))
-	    	    .leftJoin(artist).on(artistRole.artist.id.eq(artist.id))
-	    	    .where(song.songId.eq(id))
-	    	    .fetch();
+	            .select(
+	                song.songId,
+	                song.title,
+	                song.lyrics,
+	                album.albumId,
+	                album.albumName,
+	                album.albumImage,
+	                artistRole.roleCode.roleId,
+	                artist.artistName,
+	                artist.id.stringValue(),
+	                genreCode.genreName
+	            )
+	            .from(song)
+	            .join(album).on(song.album.albumId.eq(album.albumId))
+	            .leftJoin(songGenre).on(song.songId.eq(songGenre.song.songId))
+	            .leftJoin(genreCode).on(songGenre.genreCode.genreId.eq(genreCode.genreId))
+	            .leftJoin(artistRole).on(song.songId.eq(artistRole.song.songId))
+	            .leftJoin(artist).on(artistRole.artist.id.eq(artist.id))
+	            .where(song.songId.eq(id))
+	            .fetch();
 
-	    // 중복 제거 및 집계
 	    if (!tuples.isEmpty()) {
-	        // 역할별 아티스트와 ID 집계
-	        Map<Integer, List<String>> roleToNamesMap = new HashMap<>();
-	        Map<Integer, List<String>> roleToIdsMap = new HashMap<>();
+	        // 중복 제거 및 집계
+	        Map<Integer, Set<String>> roleToNamesMap = new HashMap<>();
+	        Map<Integer, Set<String>> roleToIdsMap = new HashMap<>();
 	        Set<String> genres = new HashSet<>();
 
 	        for (Tuple tuple : tuples) {
@@ -76,9 +75,9 @@ public class SongQuerydslImpl extends QuerydslRepositorySupport implements SongQ
 	            String artistId = tuple.get(artist.id.stringValue());
 	            String genreName = tuple.get(genreCode.genreName);
 
-	            // 역할별 아티스트 이름 및 ID 집계
-	            roleToNamesMap.computeIfAbsent(roleId, k -> new ArrayList<>()).add(artistName);
-	            roleToIdsMap.computeIfAbsent(roleId, k -> new ArrayList<>()).add(artistId);
+	            // 역할별 아티스트 이름 및 ID 집계 (중복 제거)
+	            roleToNamesMap.computeIfAbsent(roleId, k -> new HashSet<>()).add(artistName);
+	            roleToIdsMap.computeIfAbsent(roleId, k -> new HashSet<>()).add(artistId);
 
 	            // 장르 집계
 	            if (genreName != null) {
@@ -87,14 +86,14 @@ public class SongQuerydslImpl extends QuerydslRepositorySupport implements SongQ
 	        }
 
 	        // 역할별 아티스트 이름 및 ID 집계
-	        String singers = String.join(", ", roleToNamesMap.getOrDefault(10, Collections.emptyList()));
-	        String singerIds = String.join(", ", roleToIdsMap.getOrDefault(10, Collections.emptyList()));
-	        String writers = String.join(", ", roleToNamesMap.getOrDefault(30, Collections.emptyList()));
-	        String writerIds = String.join(", ", roleToIdsMap.getOrDefault(30, Collections.emptyList()));
-	        String composers = String.join(", ", roleToNamesMap.getOrDefault(20, Collections.emptyList()));
-	        String composerIds = String.join(", ", roleToIdsMap.getOrDefault(20, Collections.emptyList()));
-	        String arrangers = String.join(", ", roleToNamesMap.getOrDefault(40, Collections.emptyList()));
-	        String arrangerIds = String.join(", ", roleToIdsMap.getOrDefault(40, Collections.emptyList()));
+	        String singers = String.join(", ", roleToNamesMap.getOrDefault(10, Collections.emptySet()));
+	        String singerIds = String.join(", ", roleToIdsMap.getOrDefault(10, Collections.emptySet()));
+	        String writers = String.join(", ", roleToNamesMap.getOrDefault(30, Collections.emptySet()));
+	        String writerIds = String.join(", ", roleToIdsMap.getOrDefault(30, Collections.emptySet()));
+	        String composers = String.join(", ", roleToNamesMap.getOrDefault(20, Collections.emptySet()));
+	        String composerIds = String.join(", ", roleToIdsMap.getOrDefault(20, Collections.emptySet()));
+	        String arrangers = String.join(", ", roleToNamesMap.getOrDefault(40, Collections.emptySet()));
+	        String arrangerIds = String.join(", ", roleToIdsMap.getOrDefault(40, Collections.emptySet()));
 	        String genreList = String.join(", ", genres);
 
 	        // DTO 생성
@@ -121,6 +120,7 @@ public class SongQuerydslImpl extends QuerydslRepositorySupport implements SongQ
 
 	    return null;
 	}
+
 
 	
 	

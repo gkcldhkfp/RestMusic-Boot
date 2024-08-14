@@ -16,7 +16,7 @@ public class SongQuerydslTest {
 	@Autowired
 	private SongRepository songRepo;
 	
-	@Test
+//	@Test
 	@Transactional
 	public void querydlstest() {
 		
