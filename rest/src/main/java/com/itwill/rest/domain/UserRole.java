@@ -2,8 +2,7 @@ package com.itwill.rest.domain;
 
 public enum UserRole {
 	USER("ROLE_USER"), // => public static final MemberRole User = new MemberRole("");
-	ADMIN("ROLE_ADMIN"),
-	GUEST("ROLE_GUEST");
+	ADMIN("ROLE_ADMIN");
 
 	private String authority;
 
