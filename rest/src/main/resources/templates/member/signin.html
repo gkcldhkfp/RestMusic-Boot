@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+    <link th:href="@{/css/common.css}" rel="stylesheet">
+    <style>
+        .login-container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .btn-primary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+
+        .btn-primary:hover,
+        .btn-primary:focus,
+        .btn-primary:active {
+            background-color: #5a6268;
+            border-color: #5a6268;
+        }
+
+        .btn-outline-primary {
+            color: #6c757d;
+            border-color: #6c757d;
+        }
+
+        .btn-outline-primary:hover {
+            background-color: #6c757d;
+            color: #fff;
+        }
+
+        .form-text {
+            color: #6c757d;
+            font-size: 0.8em;
+        }
+
+        .form-check-label {
+            font-size: 0.9em;
+            color: #6c757d;
+            margin-left: 5px;
+        }
+
+        .form-check {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <th:block th:replace="~{/layout/fragments :: pageHeader('로그인')}"></th:block>
+    
+    <div class="container">
+        <div class="login-container">
+            <div class="login-header">
+                <img th:src="@{/data/logo.png}" alt="Rest Logo" style="height: 40px;">
+                <h3 style="margin-top: 20px;">로그인</h3>
+            </div>
+            <form method="post" th:action="@{/member/signin}" id="loginForm">
+                <div th:if="${param.result}" class="text-danger text-center">
+                    <div th:if="${param.result == 'f'}">아이디와 비밀번호를 확인하세요.</div>
+                    <div th:if="${param.result == 'inactive'}">해당 계정은 탈퇴된 상태입니다.</div>
+                    <div th:if="${param.result == 'deactivated'}">해당 계정으로 30일 동안 재가입할 수 없습니다.</div>
+                    <div th:unless="${param.result == 'f' || param.result == 'inactive' || param.result == 'deactivated'}">알 수 없는 오류가 발생했습니다.</div>
+                </div>
+                <div class="mb-3">
+                    <input class="form-control" type="text" name="userId" id="userId" placeholder="아이디를 입력해주세요" required />
+                </div>
+                <div class="mb-3">
+                    <input class="form-control" type="password" name="password" placeholder="비밀번호를 입력해주세요" required />
+                </div>
+                <div class="form-check mb-1">
+                    <input class="form-check-input" type="checkbox" id="saveIdYn">
+                    <label class="form-check-label" for="saveIdYn">아이디 저장</label>
+                </div>
+                <div class="mb-3 text-end">
+                    <a th:href="@{/Rest/user/findUserId}" class="form-text">아이디 찾기</a> | 
+                    <a th:href="@{/Rest/user/findpassword}" class="form-text">비밀번호 찾기</a>
+                </div>
+                <div class="d-grid mb-3">
+                    <button class="btn btn-primary" type="submit">로그인</button>
+                </div>
+                <div class="d-grid mb-3">
+                    <button class="btn btn-outline-primary" type="button" th:onclick="|location.href='@{/Rest/user/signup}'|">회원가입</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script th:src="@{/js/signin.js}"></script>
+<script th:inline="javascript">
+    const refresh = /*[[${refresh}]]*/ '';  // 기본값을 빈 문자열로 설정
+    const id = /*[[${loginUserId}]]*/ '';   // 기본값을 빈 문자열로 설정
+</script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script src="/Rest/js/addCurrentPlayList.js"></script>
+</body>
+
+</html>
