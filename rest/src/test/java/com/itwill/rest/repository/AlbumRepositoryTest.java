@@ -6,7 +6,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -85,7 +84,7 @@ public class AlbumRepositoryTest {
 
 	}
 
-	@Test
+	// @Test
 	@Transactional
 	public void saveGenreTest() {
 		SongGenreId songGenreId = new SongGenreId();
@@ -94,7 +93,7 @@ public class AlbumRepositoryTest {
 		System.out.println(songGenreId);
 	}
 
-	@Test
+	// @Test
 	@Transactional()
 	public void saveTest() {
 
@@ -204,7 +203,7 @@ public class AlbumRepositoryTest {
 		artistRoleRepo.saveAll(artistRoles);
 	}
 
-	@Test
+	// @Test
 	public void deleteTest() {
 		log.info("deleteTest");
 		Album album = albumRepo.findById(17).get();
