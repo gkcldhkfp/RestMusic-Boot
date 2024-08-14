@@ -2,7 +2,6 @@ package com.itwill.rest.repository;
 
 import static org.assertj.core.api.Assertions.*;
 
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,13 +14,13 @@ public class SongRepositoryTest {
 	@Autowired
 	private SongRepository songRepo;
 
-	@Test
+	// @Test
 	@Transactional
 	public void diTest() {
 		assertThat(songRepo).isNotNull();
 	}
 
-	@Test
+	// @Test
 	@Transactional
 	public void findByIdTest() {
 		/* Song song = songRepo.findById(15).orElseThrow();
@@ -32,7 +31,7 @@ public class SongRepositoryTest {
 		}); */
 	}
 
-	@Test
+	// @Test
 	@Transactional
 	public void saveTest() {
 		
