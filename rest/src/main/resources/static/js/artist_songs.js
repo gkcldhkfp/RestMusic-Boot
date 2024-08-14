@@ -1,5 +1,5 @@
 /**
- * artist 폴더의 songs.jsp에 포함
+ * artist 폴더의 songs.html에 포함
  */
 document.addEventListener('DOMContentLoaded', () => {
     const btnAddPlayLists = document.querySelectorAll('button.addPlayList');
@@ -166,32 +166,23 @@ document.addEventListener('DOMContentLoaded', () => {
         setupPagination(); // 이 부분에서 이벤트 리스너를 다시 등록하지 않아도 됨
     }
     
-    // HTML 요소에서 artistDescription 데이터 속성을 가져옵니다.
-    const artistInfoElement = document.getElementById('artist-info');
-    const artistDescriptionFileName = artistInfoElement ? artistInfoElement.getAttribute('data-artist-description') : '';
+    // artist 상세정보가 포함된 txt 파일 불러오기.
+    // artistDescription 값을 가져옵니다.
+    var descriptionFile = document.getElementById('artist-info').getAttribute('data-artist-description');
 
-    if (artistDescriptionFileName) {
-        // 파일 경로를 설정합니다. .txt 확장자가 이미 포함되어 있을 경우
-        const filePath = `/artist/description/${encodeURIComponent(artistDescriptionFileName)}`;
-        console.log('파일 경로:', filePath);
+    // 파일 경로를 생성합니다.
+    var filePath = '/artist/description/' + encodeURIComponent(descriptionFile);
+    console.log(filePath);
 
-        // Fetch API를 사용하여 파일을 읽습니다.
-        fetch(filePath)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`파일을 읽을 수 없습니다. 상태 코드: ${response.status}`);
-                }
-                return response.text();
-            })
-            .then(data => {
-                document.getElementById('artistDescription').innerHTML = data;
-            })
-            .catch(error => {
-                document.getElementById('artistDescription').innerHTML = '파일을 읽는 도중 오류가 발생했습니다.';
-                console.error('파일 읽기 오류:', error);
-            });
-    } else {
-        console.error('artistDescription 데이터 속성이 없습니다.');
-    }
+    // axios를 사용하여 파일 내용을 가져옵니다.
+    axios.get(filePath)
+        .then(function(response) {
+            // 파일 내용이 성공적으로 로드되었으면 <p> 요소에 내용을 삽입합니다.
+            document.getElementById('artistDescription').innerText = response.data;
+        })
+        .catch(function(error) {
+            // 오류가 발생하면 오류 메시지를 출력합니다.
+            console.error('파일을 읽는 중 오류 발생:', error);
+        });
     
 });
