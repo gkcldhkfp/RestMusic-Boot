@@ -181,7 +181,7 @@ create table
 		id number (4) generated as identity, -- 회원 번호 (4자리, 자동 생성)
 		user_name varchar2 (20 char) not null, --  회원 이름 (20글자, 낫 널)
 		user_id varchar2 (20) not null, -- 회원 아이디 (20바이트, 낫 널)
-		password varchar2 (30) not null, -- 비밀번호 (30바이트, 낫 널)
+		password varchar2 (200) not null, -- 비밀번호 (200 바이트, 낫 널)
 		email varchar2 (30) not null, -- 이메일 (30바이트, 낫 널)
 		nickname varchar2 (20 char) not null, -- 닉네임 (20글자, 낫 널)
 		user_profile varchar2 (100), -- 회원_프로필 (100바이트)
@@ -200,6 +200,18 @@ alter table users add deactivated_until date;
 
 -- 비활성 만료일 (날짜)
 ---------------------------------------- 탈퇴 회원 테이블 ----------------------------------------
+create table
+	user_roles (
+		id number (4),
+		roles varchar2 (20 char),
+		constraint roles_id_fk foreign key (id) references users (id)
+	);
+
+alter table user_roles
+drop constraint roles_id_fk;
+
+alter table user_roles add constraint roles_id_fk foreign key (id) references users (id) on delete cascade;
+
 create table
 	del_users ( -- 탈퇴 회원 (4자리)
 		id number (4), -- 회원 번호 (4자리)
