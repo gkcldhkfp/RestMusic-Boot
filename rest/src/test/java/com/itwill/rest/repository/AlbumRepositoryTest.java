@@ -5,7 +5,9 @@ import static org.assertj.core.api.Assertions.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -208,6 +210,17 @@ public class AlbumRepositoryTest {
 		log.info("deleteTest");
 		Album album = albumRepo.findById(17).get();
 		albumRepo.delete(album);
+	}
+	
+//	@Test
+	@Transactional
+	public void albumSongsTest() {
+		Set<Song> songs = albumRepo.findById(1).get().getSongs();
+		 if (songs != null && !songs.isEmpty()) {
+		        
+			 // log.info("{}",songs.size());
+			 songs.forEach((s) -> System.out.println(s));
+		    }
 	}
 
 }
