@@ -206,15 +206,15 @@ alter table users add deactivated_until date;
 ---------------------------------------- 탈퇴 회원 테이블 ----------------------------------------
 create table
 	user_roles (
-		id number (4),
+		user_id number (4),
 		roles varchar2 (20 char),
-		constraint roles_id_fk foreign key (id) references users (id)
+		constraint roles_user_id_fk foreign key (user_id) references users (id)
 	);
 
 alter table user_roles
-drop constraint roles_id_fk;
+drop constraint roles_user_id_fk;
 
-alter table user_roles add constraint roles_id_fk foreign key (id) references users (id) on delete cascade;
+alter table user_roles add constraint roles_id_fk foreign key (user_id) references users (id) on delete cascade;
 
 create table
 	del_users ( -- 탈퇴 회원 (4자리)

@@ -1,11 +1,22 @@
 package com.itwill.rest.domain;
 
 import java.time.LocalDate;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.hibernate.annotations.NaturalId;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.Basic;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -25,14 +36,15 @@ import lombok.ToString;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 @ToString
-@EqualsAndHashCode
-public class User {
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+public class User implements UserDetails {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
 	@Basic(optional = false)
+	@EqualsAndHashCode.Include // username field equals()와 hashCode()를 재정의할 때 사용.
 	@NaturalId
 	private String userName;
 	
@@ -64,7 +76,7 @@ public class User {
 
 	// 권한 설정 하는 부분
 	// 스프링 시큐리티 적용 후 사용할 오버라이드 메서드
-	/* 
+	
 	@Builder.Default // Builder 패턴에서도 null이 아닌 HashSet<> 객체로 초기화 될 수 있도록 하는 설정.
 	@ToString.Exclude // ToString 메서드에서 제외
 	@ElementCollection(fetch = FetchType.LAZY) // 연관 테이블(member_roles) 사용.
@@ -107,5 +119,10 @@ public class User {
 				.toList();
 
 		return authorities;
-	} */
+	}
+
+	@Override
+	public String getUsername() {
+		return this.userName;
+	}
 }
