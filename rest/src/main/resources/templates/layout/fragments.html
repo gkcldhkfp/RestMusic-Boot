@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <th:block th:fragment="documentHeader">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Rest</title>
+        <!-- 부트스트랩 css 파일 불러오기 -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    </th:block>
+</head>
+
+<body>
+    <th:block th:fragment="header">
+        <nav class="navbar navbar-expand-xl header-container">
+            <div class="container-fluid">
+                <a class="navbar-brand mx-2" th:href="@{/home}">
+
+                    <img th:src="@{/data/logo.png}" alt="Rest Logo" style="height: 70px;">
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item dropdown mx-2">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">REST 차트</a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" th:href="@{/song/popularChart}">TOP 30</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" th:href="@{/song/genreChart}">장르별 차트</a>
+                                </li>
+                                <!-- 
+                                <li>
+                                    <c:url var="chartByVideo" value="/song/videoChart" />
+                                    <a class="dropdown-item" href="${chartByVideo}">뮤직비디오 차트</a>
+                                </li>
+                                -->
+                            </ul>
+                        </li>
+
+
+                        <li class="nav-item mx-2">
+                            <a class="nav-link" aria-current="page" th:href="@{/song/newest}">최신 음악</a>
+                        </li>
+
+
+                        <!-- 
+                        <li class="nav-item dropdown  mx-2"><a
+                            class="nav-link dropdown-toggle" href="/song/genre" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">장르별 음악</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">장르 1</a></li>
+                                <li><a class="dropdown-item" href="#">장르 2</a></li>
+                                <li><a class="dropdown-item" href="#">장르 3</a></li>
+                                <li><a class="dropdown-item" href="#">장르 4</a></li>
+                                <li><a class="dropdown-item" href="#">장르 5</a></li>
+                                <li><a class="dropdown-item" href="#">장르 6</a></li>
+                                <li><a class="dropdown-item" href="#">장르 7</a></li>
+                                <li><a class="dropdown-item" href="#">장르 8</a></li>
+                            </ul>
+                        </li>
+                        -->
+
+                        <li class="nav-item dropdown mx-2"><a class="nav-link dropdown-toggle" href="#" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">REST 앨범</a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" th:href="@{/album/list/popular}">인기 앨범</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" th:href="@{/album/list/newest}">최신 앨범</a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item ms-2 me-3">
+                            <form class="d-flex" role="search" method="get" th:action="@{/song/search}">
+                                <div class="row g-1">
+                                    <div class="col-3">
+                                        <select class="form-control" name="category">
+                                            <option value="t">제목</option>
+                                            <option value="s">가수</option>
+                                            <option value="ts">제목+가수</option>
+                                            <option value="a">앨범명</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-7">
+                                        <input class="form-control" type="text" name="keyword" placeholder="검색어"
+                                            required />
+                                    </div>
+                                    <div class="col-2">
+                                        <input type="submit" class="btn btn-outline-secondary" value="검색">
+                                    </div>
+                                    <input name="sortType" class='d-none' value="accuracy" />
+                                </div>
+                            </form>
+                        </li>
+                    </ul>
+
+                    <!-- 로그인 안했을때 -->
+                    <th:block sec:authorize="isAnonymous()"><!-- 로그인 안 된 상태 -->
+                        <!-- <a style="font-size: 0.8rem " class="me-3 link-style" th:href="@{/member/signin}">로그인</a> -->
+                        <a style="font-size: 0.8rem " class="me-3 link-style" th:href="@{/member/signin}">로그인</a>
+                        <a style="font-size: 0.8rem" class="me-3 link-style" th:href="@{/member/signup}">회원가입</a>
+                    </th:block>
+
+                    <!-- 로그인 했을때 -->
+                    <th:block sec:authorize="isAuthenticated()">
+                        <div class="ms-2" style="font-size: 0.8rem">
+                            <span class="text-secondary" sec:authentication="name"></span>
+                            <span>님 <br /> 환영합니다🌼 &nbsp;</span>
+                        </div>
+                        <a style="font-size: 0.8rem" class="me-3 link-style" th:href="@{/logout}">로그아웃</a>
+                        <a style="font-size: 0.8rem" class="me-3 link-style" th:href="@{/user/mypage}">마이페이지</a>
+                    </th:block>
+                </div>
+            </div>
+        </nav>
+        <style>
+            .purchase-container {
+                margin: 0 20px;
+            }
+
+            .header-container {
+                margin: 0 180px;
+                /* 양쪽 여백 추가 */
+            }
+
+            .link-style {
+                color: black;
+                text-decoration: none;
+            }
+
+            .link-style:hover {
+                color: black;
+                /* 호버 시에도 검정색 */
+                text-decoration: none;
+                /* 호버 시에도 밑줄 없음 */
+            }
+
+            .nav-link.dropdown-toggle,
+            .nav-link {
+                color: #2F4F4F;
+                /* "REST" 텍스트 색상 */
+                font-weight: bold;
+                /* 글씨 굵게 */
+            }
+
+            .nav-link.dropdown-toggle:hover,
+            .nav-link:hover {
+                color: #1E3269;
+                /* 호버 시 색상 유지 */
+                text-decoration: none;
+                /* 호버 시에도 밑줄 없음 */
+            }
+
+            /* <link href="./css/common.css" rel="stylesheet" /> */
+        </style>
+    </th:block>
+    <th:block th:fragment="footer">
+        <!-- 음원이 재생될 수 있는 모든 페이지에 포함되어야 할 모달 태그. -->
+        <!-- 모달 창 -->
+        <div class="modal fade" id="sessionListModal" tabindex="-1" role="dialog"
+            aria-labelledby="sessionListModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="sessionListModalLabel">현재 재생 목록</h5>
+                        <button id="modalCloseBtn" type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="sessionListBody">
+                        <!-- 여기에 세션에서 가져온 리스트가 들어갈 자리 -->
+                    </div>
+                    <div class="modal-footer">
+                        <button id="listEmptyBtn" type="button" class="btn btn-success"
+                            style="display: none;">비우기</button>
+                        <button id="modalCloseBtn" type="button" class="btn btn-secondary"
+                            data-bs-dismiss="modal">닫기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+            integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+            crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+            integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+            crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+
+    </th:block>
+</body>
+
+</html>

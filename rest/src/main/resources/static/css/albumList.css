@@ -1,0 +1,90 @@
+@charset "UTF-8";
+
+
+
+
+.popup {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 14px;
+    display: none; /* 처음에는 숨겨진 상태 */
+}
+
+a {
+    text-decoration: none; /* 밑줄 제거 */
+    color: #555555; /* 링크 색상 변경 (연한 검정) */
+}
+
+a:hover {
+    color: #000000; /* 마우스를 올렸을 때 색상 변경 (진한 검정)*/
+}
+
+
+.shadow-box {
+    border-radius: 25px;
+    /* 요소의 모서리를 둥글게 만듭니다. 반경은 25픽셀입니다. */
+
+    padding: 2.5em;
+    /* 요소의 내용 주위에 2.5em(현재 요소의 글꼴 크기의 2.5배)의 내부 여백을 추가합니다. */
+
+    box-shadow: 0 20px 50px -25px rgba(0, 0, 0, 0.7);
+    /* 요소에 그림자를 추가합니다. 그림자의 위치와 크기는 다음과 같습니다:
+       - X축 오프셋: 0픽셀 (왼쪽 또는 오른쪽으로 이동 없음)
+       - Y축 오프셋: 20픽셀 (아래로 20픽셀 이동)
+       - 그림자 흐림 반경: 50픽셀 (그림자가 부드럽게 퍼짐)
+       - 그림자 확산 반경: -25픽셀 (그림자가 덜 확산됨)
+       - 그림자 색상: rgba(0, 0, 0, 0.7) (검정색, 투명도 70%) */
+
+    display: flex;
+    /* 요소를 flexbox 컨테이너로 만듭니다. */
+
+    align-items: center;
+    /* 컨테이너 내의 자식 요소들을 수직 중앙으로 정렬합니다. */
+
+    justify-content: center;
+    /* 컨테이너 내의 자식 요소들을 수평 중앙으로 정렬합니다. */
+
+    background-color: olive;
+    /* 요소의 배경색을 올리브색으로 설정합니다. */
+}
+
+container .button_rbox {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.container .btn-sort {
+    font-size: 14px;
+    color: #333;
+    border: 1px solid #d7d7d7;
+    background-color: #fff;
+    border-radius: 20px;
+    padding: 8px 16px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.container .btn-sort:hover {
+    background-color: #f0f0f0;
+}
+
+.container .btn-sort:focus {
+    outline: none;
+}
+
+.container .btn-sort.active,
+.container .btn-sort.active:hover,
+.container .btn-sort.active:focus {
+    color: #fff !important;
+    background-color: #00cd3c !important;
+    border-color: #00cd3c !important;
+}
+
+.container .btn-sort.active:hover {
+    background-color: #00b534 !important;
+}

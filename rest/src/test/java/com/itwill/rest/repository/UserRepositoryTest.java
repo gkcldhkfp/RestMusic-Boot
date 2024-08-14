@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.itwill.rest.domain.User;
+import com.itwill.rest.service.UserService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,13 +16,23 @@ public class UserRepositoryTest {
 	@Autowired
 	private UserRepository userRepo;
 
-//	@Test
-	public void saveTest() {
-		log.info("userRepo = {}", userRepo);
-		userRepo.save(User.builder().userName("name").userId("id")
-				.password("password")
-				.email("email").nickname("nick").build());
+	@Autowired
+	private UserService userServ;
 
+	@Test
+	@Transactional
+	public void diTest() {
+		log.info("userRepo = {}", userRepo);
+
+	}
+
+	@Test
+	@Transactional
+	public void findTest() {
+		log.info("findTest");
+		// boolean result = userServ.checkNickname("nick1");
+		boolean result = userServ.checkUserId("user12");
+		System.out.println(result);
 	}
 	
 }
