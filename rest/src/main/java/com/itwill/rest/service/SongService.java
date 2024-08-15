@@ -27,7 +27,7 @@ public class SongService {
 		
 		SongDetailsDto dto = songRepo.searchDetailsById(songId);
 		
-		log.info("lyrics={}",dto.getLyrics());
+		log.info("lyrics={}",dto);
 		
 		try {
             // 파일을 ClassPath에서 읽어옵니다.
@@ -35,7 +35,11 @@ public class SongService {
             // Files.readString() 메서드를 사용하여 문자열로 읽어옵니다.
             String lyrics = Files.readString(Paths.get(resource.getURI()), StandardCharsets.UTF_8);
             // 읽어온 문자열을 DTO에 설정합니다.
+            if(!lyrics.equals("")) {
             dto.setLyrics(lyrics);
+            } else {
+            	dto.setLyrics("가사를 찾을 수 없습니다");
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

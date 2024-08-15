@@ -95,8 +95,8 @@ public class AlbumRepositoryTest {
 		System.out.println(songGenreId);
 	}
 
-	// @Test
-	@Transactional()
+//	 @Test
+//	@Transactional()
 	public void saveTest() {
 
 		Album album = Album

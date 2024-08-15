@@ -21,7 +21,7 @@ public class SongController {
 	private final SongService songSvc;
 	
 	@GetMapping("/details")
-	public void details(@RequestParam int songId, Model model) {
+	public void details(@RequestParam(name = "songId") int songId, Model model) {
 		log.info("details({})", songId);
 		
 		

@@ -1,6 +1,5 @@
 package com.itwill.rest.repository;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -62,7 +61,7 @@ public class SongQuerydslImpl extends QuerydslRepositorySupport implements SongQ
 	            .leftJoin(artist).on(artistRole.artist.id.eq(artist.id))
 	            .where(song.songId.eq(id))
 	            .fetch();
-
+	    
 	    if (!tuples.isEmpty()) {
 	        // 중복 제거 및 집계
 	        Map<Integer, Set<String>> roleToNamesMap = new HashMap<>();
