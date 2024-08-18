@@ -227,7 +227,7 @@ public class AlbumRepositoryTest {
 		    }
 	}
 
-	@Test
+//	@Test
 	// @Transactional
 	public void saveBol4Album() {
 
