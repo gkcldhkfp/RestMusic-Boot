@@ -56,12 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			}).
 			catch((error) => { console.log(error); });
 	}
-	// songFrame의 버튼으로 mainFrame의 모달을 활성화 하기 위한 코드.
-	const showModalButton = document.querySelector('#showModalButton');
-	showModalButton.addEventListener('click', () => {
-		console.log('mainframe의 메서드 호출');
-		parent.frames['mainFrame'].showModal();
-	});
+
 
 
 	// ! JSON을 리스트로 만드는 코드는 playerPage.jsp의 아래부분에 선언함.
@@ -72,6 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	// 	// 세션의 cPList가 비어있으면 새로고침해서 불러옴.
 	// 	setTimeout(() => location.reload(true), 1000);
 	// }
+	let cPList = window.cPList;
 	if (cPList) {
 		console.log('index = ' + index);
 		if (cPList[index] === undefined || cPList[index] === null) {
@@ -114,6 +110,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 		//* 일반태그 로드 - (Dom이벤트리스너 실행) - img태그같은 재요청 태그 로드 - (window.onload 이벤트 리스너 실행)
 		window.onload = function () {
+			// songFrame의 버튼으로 mainFrame의 모달을 활성화 하기 위한 코드.
+			const showModalButton = document.querySelector('#showModalButton');
+			showModalButton.addEventListener('click', () => {
+				console.log('mainframe의 메서드 호출');
+				parent.frames['mainFrame'].showModal();
+			});
 			// 정보 업데이트
 			// 다른 자바스크립트 파일에서 노출한 함수 실행.
 			// 곡 변경 시 모달창의 하이라이팅도 업데이트

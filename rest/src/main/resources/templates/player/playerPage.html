@@ -166,32 +166,29 @@
 				<a id="refresh" href="${refresh}" target="songFrame" style="display: none;">새로고침</a>
 			</div> -->
 
+			<th:block th:replace="~{/layout/fragments :: footer}"></th:block>
 
 
-			<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-			<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
-				integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
-				crossorigin="anonymous"></script>
-			<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-			<script>
+			<script th:inline="javascript">
 				// 로그인한 아이디 정보 전달
-				const id = [[${session.loginUserId}]] ''; //id
+				const id = /*[[${session.loginUserId}]]*/ ''; // id
+		
 				// 모델에서 전달받은 JSON 데이터
-				var cPListJson = [[${session.cPList}]] '';
-
+				var cPListJson = /*[[${session.cPList}]]*/ '';
+		
 				// cPList를 JavaScript 객체로 파싱 (JSON 문자열을 객체로 변환)
-				// var cPList = JSON.parse(cPListJson);
-				var cPList = '';
-
-				// 예시: cPListObj를 사용한 자바스크립트 동작
+				window.cPList = JSON.parse(/*[[${session.cPList}]]*/ ''); // 전역 변수로 정의
+		
+				// 예시: cPList를 사용한 자바스크립트 동작
 				console.log(cPList); // 데이터 확인용
-
+		
 				// 여기에 추가적인 자바스크립트 코드 작성
-				// 예를 들어, cPListObj를 이용하여 원하는 동적 처리를 할 수 있음
-
-				let refresh = [[${session.refresh}]] '';
-			</script>
+				// 예를 들어, cPList를 이용하여 원하는 동적 처리를 할 수 있음
+		
+				let refresh = /*[[${session.refresh}]]*/ '';
+		</script>
 			<script th:src="@{/js/playerPage.js}"></script>
+			<script th:src="@{/js/addCurrentPlayList.js}"></script>
 
 		</body>
 
