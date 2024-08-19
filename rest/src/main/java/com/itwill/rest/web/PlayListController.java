@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.itwill.rest.domain.PlayList;
+import com.itwill.rest.domain.PlayListSongId;
 import com.itwill.rest.dto.playlist.PlayListCreateDto;
 import com.itwill.rest.dto.playlist.PlayListFirstAlbumImgDto;
 import com.itwill.rest.service.PlayListService;
@@ -31,7 +32,7 @@ public class PlayListController {
 		log.info("playlist()");
 	}
 	
-	@GetMapping("/getPlayList/{id}") // 현재 작동 x
+	@GetMapping("/getPlayList/{id}") // 현재 작동 
 	@ResponseBody
 	public ResponseEntity<List<PlayListFirstAlbumImgDto>> getPlayList(@PathVariable Integer id) {
 		log.info("getPlayList(id={})", id);
@@ -61,5 +62,27 @@ public class PlayListController {
 		
 		return ResponseEntity.ok(pListId);
 	}
+	
+	@PostMapping("/checkSongInPlayList")
+	@ResponseBody
+	public ResponseEntity<Boolean> checkSongInPlayList(@RequestBody PlayListSongId id) {
+		log.debug("checkSongInPlayList");
+		
+		Boolean result = playListSvc.checkSongInPlayList(id);
+		
+		return ResponseEntity.ok(result);
+	}
+	
+	@PostMapping("/addSongToPlayList")
+	@ResponseBody
+	public ResponseEntity<Integer> addSongToPlayList(@RequestBody PlayListSongId id) {
+		log.debug("addSongToPlayList({})",id);
+		
+		int result = playListSvc.songAddToPlayList(id);
+		
+		return ResponseEntity.ok(result);
+	}
+	
+	
 
 }

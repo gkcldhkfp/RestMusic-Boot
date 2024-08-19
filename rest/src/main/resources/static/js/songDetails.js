@@ -243,6 +243,7 @@ document.addEventListener('DOMContentLoaded', () => {
             axios
                 .post('../addSongToPlayList', data)
                 .then((response) => {
+                    log.info(response.data);
                     alert(`추가 성공`);
                     playListModal.hide();
                 })

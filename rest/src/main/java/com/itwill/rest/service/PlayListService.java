@@ -1,15 +1,19 @@
 package com.itwill.rest.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.itwill.rest.domain.PlayList;
+import com.itwill.rest.domain.PlayListSong;
+import com.itwill.rest.domain.PlayListSongId;
 import com.itwill.rest.domain.User;
 import com.itwill.rest.dto.playlist.PlayListCreateDto;
 import com.itwill.rest.dto.playlist.PlayListFirstAlbumImgDto;
 import com.itwill.rest.repository.PlayListRepository;
+import com.itwill.rest.repository.PlayListSongRepository;
 import com.itwill.rest.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -22,6 +26,7 @@ public class PlayListService {
 	
 	private final UserRepository userRepo;
 	private final PlayListRepository playListRepo;
+	private final PlayListSongRepository plsRepo;
 	
 	@Transactional(readOnly = true) // 작동 x
 	public List<PlayListFirstAlbumImgDto> getPlayListByUserId(Integer id) {
@@ -53,6 +58,22 @@ public class PlayListService {
 		log.info("deleteById(pListId={})", pListId);
 		
 		playListRepo.deleteById(pListId);
+	}
+
+	public Boolean checkSongInPlayList(PlayListSongId id) {
+		log.info("checkSongInPlayList(id={})",id);
+		
+		Optional<PlayListSong> result = plsRepo.findById(id);
+		
+		return result.isEmpty();
+	}
+
+	public int songAddToPlayList(PlayListSongId id) {
+		log.info("songAddToPlayList(id={})",id);
+		
+		plsRepo.save(PlayListSong.builder().playListSongId(id).build());
+		
+		return 1;
 	}
 
 }
