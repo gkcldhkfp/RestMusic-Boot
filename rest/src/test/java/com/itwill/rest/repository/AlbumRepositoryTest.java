@@ -109,7 +109,7 @@ public class AlbumRepositoryTest {
 	}
 
 	// @Test
-	@Transactional()
+	// @Transactional()
 	public void saveTest() {
 
 		Album album = Album
@@ -218,7 +218,9 @@ public class AlbumRepositoryTest {
 		albumRepo.delete(album);
 	}
 
-	// @Test
+
+
+	@Test
 	// @Transactional
 	public void saveBol4Album() {
 

@@ -98,15 +98,51 @@
 							<tr>
 								<td>아티스트</td>
 								<td id="singerNames" class="intro">
+
 									<!-- !아티스트의 리스트 출력 -->
-									<span th:each="artist, iterStat : ${albumArtist}">
-										<a th:text="${artist.artistName}" th:href="@{/artist/songs(id=${artist.id})}"
-											th:style="'cursor: pointer; font-weight: normal; text-decoration: none; color: black;'"
-											onmouseover="this.style.fontWeight='bold'; this.style.textDecoration='underline';"
-											onmouseout="this.style.fontWeight='normal'; this.style.textDecoration='none'; this.style.color='black';">
-										</a>
-										<span th:if="!${iterStat.last}">, </span>
-									</span>
+									<!-- group이 있을 때 (그룹으로 참여한 경우) -->
+									<th:block th:if="${albumGroup != null}">
+										<!-- albumGroup 리스트와 filteredArtists 리스트 출력하기 -->
+										<th:block th:if="${albumGroup != null or filteredArtists != null}">
+											<th:block th:if="${albumGroup != null}">
+												<th:block th:each="group, iterStat : ${albumGroup}">
+													<a th:text="${group.groupName}" th:href="@{/group/songs(id=${group.id})}"
+														th:style="'cursor: pointer; font-weight: normal; text-decoration: none; color: black;'"
+														onmouseover="this.style.fontWeight='bold'; this.style.textDecoration='underline';"
+														onmouseout="this.style.fontWeight='normal'; this.style.textDecoration='none'; this.style.color='black';"></a>
+													<!-- 마지막 항목이 아닌 경우에만 구분 기호 추가 -->
+													<span th:if="!${iterStat.last}">, </span>
+												</th:block>
+												<!-- albumGroup 리스트가 존재하고 filteredArtists가 존재하면 구분 기호 추가 -->
+												<th:block th:if="${filteredArtists != null and filteredArtists.size() > 0}">
+													,
+												</th:block>
+											</th:block>
+
+											<th:block th:if="${filteredArtists != null}">
+												<th:block th:each="artist, iterStat : ${filteredArtists}">
+													<a th:text="${artist.artistName}" th:href="@{/artist/songs(id=${artist.id})}"
+														th:style="'cursor: pointer; font-weight: normal; text-decoration: none; color: black;'"
+														onmouseover="this.style.fontWeight='bold'; this.style.textDecoration='underline';"
+														onmouseout="this.style.fontWeight='normal'; this.style.textDecoration='none'; this.style.color='black';"></a>
+													<!-- 마지막 항목이 아닌 경우에만 구분 기호 추가 -->
+													<span th:if="!${iterStat.last}">, </span>
+												</th:block>
+											</th:block>
+										</th:block>
+									</th:block>
+									<!-- group이 없을 때 -->
+									<th:block th:unless="${albumGroup != null}">
+										<span th:each="artist, iterStat : ${albumArtist}">
+											<a th:text="${artist.artistName}" th:href="@{/artist/songs(id=${artist.id})}"
+												th:style="'cursor: pointer; font-weight: normal; text-decoration: none; color: black;'"
+												onmouseover="this.style.fontWeight='bold'; this.style.textDecoration='underline';"
+												onmouseout="this.style.fontWeight='normal'; this.style.textDecoration='none'; this.style.color='black';">
+											</a>
+											<span th:if="!${iterStat.last}">, </span>
+										</span>
+									</th:block>
+
 								</td>
 							</tr>
 							<tr>
@@ -116,13 +152,28 @@
 							<tr>
 								<td>장르</td>
 								<td id="genre" class="intro">
-									<!-- !자바스크립트로 작성되는 부분 -->
+									<span th:each="genre, iterStat : ${genres}">
+										<!-- TODO: 장르 차트 페이지로 링크 변경 -->
+										<a th:href="@{/artist/songs(artistId=${genre.genreId})}" th:text="${genre.genreName}"
+											th:style="'cursor: pointer;'"
+											onmouseover="this.style.fontWeight='bold'; this.style.textDecoration='underline';"
+											onmouseout="this.style.fontWeight='normal'; this.style.textDecoration='none'; this.style.color='black';"></a>
+										<!-- 마지막 원소가 아니라면 ", " 추가 -->
+										<span th:if="${!iterStat.last}">, </span>
+									</span>
 								</td>
 							</tr>
 							<tr style="text-align: left;">
 								<td>타이틀 곡</td>
 								<td id="titleSong" class="intro">
-									<!-- !자바스크립트로 작성되는 부분 -->
+									<span th:each="titleSong, iterStat : ${titleSongs}">
+										<a th:href="@{/song/detail(songId=${titleSong.song.songId})}" th:text="${titleSong.song.title}"
+											th:style="'cursor: pointer;'"
+											onmouseover="this.style.fontWeight='bold'; this.style.textDecoration='underline';"
+											onmouseout="this.style.fontWeight='normal'; this.style.textDecoration='none'; this.style.color='black';"></a>
+										<!-- 마지막 원소가 아니라면 ", " 추가 -->
+										<span th:if="${!iterStat.last}">, </span>
+									</span>
 								</td>
 							</tr>
 						</table>
@@ -161,7 +212,6 @@
 								<!-- 비교 조건에 따라 Title 태그를 삽입 -->
 								<!-- 타이틀 곡 리스트에서 song 객체를 꺼내 그것과 출력할 음원을 비교함. -->
 								<!-- 타이틀 송인지 확인 -->
-								<!-- TODO:에러나는 부분 -->
 								<span th:each="titleSong, iterStat : ${album.titleSongs}">
 									<span th:if="${#lists.contains(titleSong.song, s.key)}" class="fw-bold">Title</span>
 								</span>
@@ -177,7 +227,7 @@
 									<span th:each="artist, iterStat : ${s.value}">
 										<a th:href="@{/artist/songs(artistId=${artist.id})}" th:text="${artist.artistName}"
 											th:style="'cursor: pointer;'"
-											onmouseover="this.style.fontWeight='bold'; this.style.textDecoration='underline'; this.style.color='blue';"
+											onmouseover="this.style.fontWeight='bold'; this.style.textDecoration='underline';"
 											onmouseout="this.style.fontWeight='normal'; this.style.textDecoration='none'; this.style.color='black';"></a>
 										<!-- 마지막 원소가 아니라면 ", " 추가 -->
 										<span th:if="${!iterStat.last}">, </span>
@@ -248,7 +298,6 @@
 		// 리다이렉트 시 재생페이지를 새로고침하기 위한 코드
 	</script>
 	<script th:src="@{/js/addCurrentPlayList.js}"></script>
-	<script th:src="@{/js/playerPage.js}"></script>
 
 
 </body>

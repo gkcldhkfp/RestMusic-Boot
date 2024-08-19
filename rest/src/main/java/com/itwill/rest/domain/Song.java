@@ -55,12 +55,12 @@ public class Song {
 	@Builder.Default
 	private List<ArtistRole> artistRole = new ArrayList<>();
 
-/* 	@ToString.Exclude
+ 	@ToString.Exclude
 	@OneToMany(mappedBy = "song", fetch = FetchType.LAZY)
 	@Builder.Default
-	private Set<SongGenre> genres = new HashSet<>();
+	private List<SongGenre> genres = new ArrayList<>();
 	
-	@ToString.Exclude
+/*	@ToString.Exclude
 	@OneToMany(mappedBy = "song", fetch = FetchType.LAZY)
 	@Builder.Default
 	private Set<ArtistRole> roles = new HashSet<>();

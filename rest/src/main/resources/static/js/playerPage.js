@@ -2,6 +2,7 @@
  * playerPage.jsp에 포함
  */
 document.addEventListener('DOMContentLoaded', () => {
+	console.log("playerPage.js");
 	// 재생목록 관리를 위한 인덱스 선언
 	if (!sessionStorage.getItem('index')) {
 		// 세션스토리지를 사용한 이유: 여기서 index=0;으로 선언하면 새로고침할 때마다 인덱스는 0이 되버림.
@@ -45,7 +46,8 @@ document.addEventListener('DOMContentLoaded', () => {
 		configurable: true
 	});
 
-	// 결제 회원인지 판별하기 위한 Ajax요청 호출
+	// TODO: 레스트컨트롤러 안만듬
+/* 	// 결제 회원인지 판별하기 위한 Ajax요청 호출
 	if (id !== '') {
 		const urlForPur = `/Rest/purchase/isPurUser?id=${id}`;
 		axios
@@ -55,20 +57,19 @@ document.addEventListener('DOMContentLoaded', () => {
 				isPurUser = response.data
 			}).
 			catch((error) => { console.log(error); });
-	}
+	} */
 
 
 
 	// ! JSON을 리스트로 만드는 코드는 playerPage.jsp의 아래부분에 선언함.
-	console.log('자바스크립트');
 	//? 자동 새로고침 없어도 되게끔 만들어야 할듯.
 	// // console.log(cPList);
 	// if (!cPList) {
 	// 	// 세션의 cPList가 비어있으면 새로고침해서 불러옴.
 	// 	setTimeout(() => location.reload(true), 1000);
 	// }
-	let cPList = window.cPList;
 	if (cPList) {
+		console.log(cPList);
 		console.log('index = ' + index);
 		if (cPList[index] === undefined || cPList[index] === null) {
 			console.log('인덱스가 배열의 크기를 넘었어요!');
@@ -136,6 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 			// 노래 제목과 가수 설정
+			// TODO: 가수가 여러명이어도 각각 링크로 작동하도록 수정
 			const musicTitle = document.querySelector('#music-title');
 			const artist = document.querySelector("#artist");
 			musicTitle.innerHTML = cPList[index].title;
