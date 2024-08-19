@@ -69,15 +69,16 @@ public class SongQuerydslImpl extends QuerydslRepositorySupport implements SongQ
 	        Set<String> genres = new HashSet<>();
 
 	        for (Tuple tuple : tuples) {
-	            int roleId = tuple.get(artistRole.roleCode.roleId);
+	            Integer roleId = tuple.get(artistRole.roleCode.roleId);
 	            String artistName = tuple.get(artist.artistName);
 	            String artistId = tuple.get(artist.id.stringValue());
 	            String genreName = tuple.get(genreCode.genreName);
 
 	            // 역할별 아티스트 이름 및 ID 집계 (중복 제거)
-	            roleToNamesMap.computeIfAbsent(roleId, k -> new HashSet<>()).add(artistName);
-	            roleToIdsMap.computeIfAbsent(roleId, k -> new HashSet<>()).add(artistId);
-
+	            if (roleId != null) {
+	                roleToNamesMap.computeIfAbsent(roleId, k -> new HashSet<>()).add(artistName != null ? artistName : "Unknown Artist");
+	                roleToIdsMap.computeIfAbsent(roleId, k -> new HashSet<>()).add(artistId != null ? artistId : "Unknown ID");
+	            }
 	            // 장르 집계
 	            if (genreName != null) {
 	                genres.add(genreName);

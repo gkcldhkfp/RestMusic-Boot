@@ -84,78 +84,34 @@
             </div>
 
             <section>
-                <div class="mt-2 card">
-                    <div class="card-header d-inline-flex gap-1">
-                        <!-- 댓글 접기/펼치기 기능 버튼 -->
-                        <button class="btn btn-secondary"
-                            id="btnToggleComment">댓글 보기</button>
+               <div class="mt-2 card">
+                    <div class="card-header">
+                        <button class="btn btn-outline-secondary" id="btnToggle"
+                            data-toggle="collapse">댓글 보기</button>
                     </div>
-
-                    <!-- 댓글 토글 버튼에 의해서 접기/펼치기를 할 영역 -->
-                    <div class="card-body collapse"
-                        id="collapseComments">
-                        <!-- 댓글 등록 -->
-                        
-                            <div class="mt-2 card card-body" id="commnetRegistForm">
-                                <div class="mt-2 row">
-                                    <div class="col-10">
-                                        <!-- 댓글 입력 -->
-                                        
-                                        <textarea class="form-control"
-                                            rows="3" id="ctext"
-                                            placeholder="댓글 내용"></textarea>
-                                        <!-- 댓글 작성자 아이디를 로그인한 사용자의 아이디로 설정 -->
-                                        <input class="d-none" id="username"
-                                            value="${signedInUser}" />
-                                    </div>
-                                    <div class="col-2">
-                                        <button
-                                            class="btn btn-outline-success"
-                                            id="btnRegisterComment">등록</button>
-                                    </div>
-                                </div>
-                            </div>  
-                      
-
-                        <!-- 포스트에 달려 있는 댓글 목록을 보여줄 영역 -->
-                        <div class="my-2" id="comments"></div>
-
-                        <!-- 페이징 버튼들이 여기에 추가될 예정 -->
-                        <ul id="pagination2"
-                            class="pagination pagination-sm justify-content-center "></ul>
-
-
-                        <!-- 댓글 업데이트 모달(다이얼로그) -->
-                        <div id="commentModal" class="modal fade"
-                            tabindex="-1">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">댓글
-                                            업데이트</h5>
-                                        <button type="button"
-                                            class="btn-close"
-                                            data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <!-- 수정할 댓글 아이디(번호) -->
-                                        <input class="d-none"
-                                            id="modalCommentId" />
-                                        <!-- 수정할 댓글 내용 -->
-                                        <textarea class="form-control"
-                                            id="modalCommentText"></textarea>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button"
-                                            class="btn btn-outline-secondary"
-                                            data-bs-dismiss="modal">취소</button>
-                                        <button type="button"
-                                            class="btn btn-outline-primary"
-                                            id="btnUpdateComment">저장</button>
-                                    </div>
-                                </div>
+                    <div class="card-body collapse" id="collapseComments">
+                        <!-- 댓글 작성 -->
+                        <div class="row">
+                            <div class="col-10">
+                                <textarea class="form-control" id="commentText" rows="3"
+                                    placeholder="댓글 내용 작성"></textarea>
+                                
+                                <!-- 댓글 작성자를 로그인 사용자 이름으로 설정 -->
+                                <input class="d-none" id="commentWriter" th:value="${#authentication.name}" readonly />
+                                <input class="d-none" id="id" th:value="${data.songId}" readonly />
                             </div>
+                            <div class="col-2">
+                                <button class="btn btn-outline-success form-control"
+                                    id="btnRegisterComment">등록</button>
+                            </div>
+                        </div>
+                        
+                        <!-- 댓글 목록 -->
+                        <div class="mt-2" id="divComments"></div>
+                        
+                        <!-- 댓글 목록 페이징 처리를 위한 버튼: [더보기] 버튼 -->
+                        <div id="divBtnMore" class="mt-2 d-flex d-none justify-content-center">
+                            <button class="btn btn-outline-secondary" id="btnMoreComments">더보기</button>
                         </div>
                     </div>
                 </div>
@@ -209,7 +165,7 @@
     <script th:inline="javascript">
         const songId = /*[[${data.songId}]]*/'';  
         
-        let loginUserId ='${loginUserId}';
+        let authUser = 1;
         
         const writers = /*[[${data.writers}]]*/ '[]';
         const writerIds = /*[[${data.writerIds}]]*/ '[]';
@@ -229,7 +185,7 @@
         // 리다이렉트 시 재생페이지를 새로고침하기 위한 코드
     </script>
 
-    <!-- <script th:src="${/js/comments.js}"></script> -->
+    <script th:src="@{/js/comment.js}"></script>
     <script th:src="@{/js/songDetails.js}"></script>
     <!-- <script th:src="@{/js/addCurrentPlayList.js}"></script> -->
 </body>

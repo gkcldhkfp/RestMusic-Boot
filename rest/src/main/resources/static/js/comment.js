@@ -2,6 +2,7 @@
  * 
  */
 document.addEventListener('DOMContentLoaded', () => {
+    
     let currentPageNo = 0; // 현재 댓글 목록의 페이지 번호
     //-> getAllComments() 함수에서 Ajax 요청을 보내고, 정상 응답이 오면 현재 페이지 번호가 바뀜.
     //-> currentPageNo의 값은 [더보기] 버튼에서 사용.
@@ -39,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
     //----- 함수 정의(선언) -----
     function registerComment() {
         // 댓글이 달린 포스트의 아이디
-        const postId = document.querySelector('input#id').value;
+        const songId = document.querySelector('input#id').value;
         // 댓글 내용
         const ctext = document.querySelector('textarea#commentText').value;
         // 댓글 작성자
@@ -51,9 +52,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         // Ajax 요청에서 보낼 데이터
-        const data = { postId, ctext, writer };
+        const data = { songId, ctext, writer:1 };
         
-        // Ajax POST 방식 요청을 보냄고, 응답/에러 처리 콜백 등록.
+        // Ajax song 방식 요청을 보냄고, 응답/에러 처리 콜백 등록.
         axios.post('/api/comment', data)
             .then((response) => {
                 console.log(response.data);
@@ -70,20 +71,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function getAllComments(pageNo) {
         // 댓글들이 달린 포스트 아이디:
-        const postId = document.querySelector('input#id').value;
+        const songId = document.querySelector('input#id').value;
         
         // Ajax 요청을 보낼 주소:
         // path variable: 댓글이 달린 포스트 아이디. request param: 페이지 번호.
-        const uri = `/api/comment/all/${postId}?p=${pageNo}`;
+        const uri = `/api/comment/all/${songId}?p=${pageNo}`;
         
         // Ajax 요청을 보내고, 성공/실패 콜백 설정:
         axios.get(uri)
             .then((response) => {
+                const divBtnMore = document.querySelector('div#divBtnMore');
                 console.log(response);
+                
+                if(response.data.empty){
+                    divBtnMore.classList.add('d-none');
+                    const divComments = document.querySelector('div#divComments');
+                    divComments.innerHTML = `<div class="card card-body mt-2 text-center fs-3">
+                    작성된 댓글이 존재하지 않습니다.
+                    </div>`;
+                    return
+                }
+                
                 currentPageNo = response.data.number;
                 
                 // 현재 페이지 번호보다 페이지 개수가 더 많으면 댓글 [더보기] 버튼을 보여줌.
-                const divBtnMore = document.querySelector('div#divBtnMore');
 //                if (currentPageNo + 1 < response.data.totalPages) {
                 if (!response.data.last) {
                     divBtnMore.classList.remove('d-none');
@@ -98,7 +109,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function makeCommentElements(data, pageNo) {
         // 로그인 사용자 정보 -> 댓글 삭제/업데이트 버튼을 만들 지 여부를 결정.
-        const authUser = document.querySelector('span#authenticatedUser').innerText;
         // console.log(`authUser = ${authUser}`);
         
         // 댓글 목록을 추가할 div 요소
@@ -110,20 +120,20 @@ document.addEventListener('DOMContentLoaded', () => {
             htmlStr += `
             <div class="card card-body mt-2">
                 <div class="mt-2">
-                    <span class="fw-bold">${comment.writer}</span>
+                    <span class="fw-bold">${comment.nickname}</span>
                     <span class="text-secondary">${comment.modifiedTime}</span>
                 </div>
                 <div class="mt-2">
                     <div class="mt-2">
-                        <textarea class="commentText form-control" data-id="${comment.id}">${comment.ctext}</textarea>
+                        <textarea class="commentText form-control" data-id="${comment.cid}">${comment.ctext}</textarea>
                     </div>
             `;
             // 로그인 사용자와 댓글 작성자가 같은 경우에만 삭제/업데이트 버튼을 만듦.
-            if (authUser === comment.writer) {
+            if (authUser === comment.id) {
                 htmlStr += `
                     <div class="mt-2">
-                            <button class="btnDelete btn btn-outline-danger btn-sm" data-id="${comment.id}">삭제</button>
-                            <button class="btnUpdate btn btn-outline-primary btn-sm" data-id="${comment.id}">수정</button>
+                            <button class="btnDelete btn btn-outline-danger btn-sm" data-id="${comment.cid}">삭제</button>
+                            <button class="btnUpdate btn btn-outline-primary btn-sm" data-id="${comment.cid}">수정</button>
                     </div>
                 </div>
             </div>

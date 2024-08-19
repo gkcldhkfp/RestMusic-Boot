@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
      const playListModal = new bootstrap.Modal(document.querySelector('div#staticBackdrop'), { backdrop: 'static' });
     btnAddPlayList.addEventListener('click', getPlayLists);
     
-    if(loginUserId == ''){
+    if(authUser == ''){
         const commnetRegistForm = document.querySelector('div#commnetRegistForm')
         commnetRegistForm.classList.add('d-none');
     }
@@ -21,18 +21,18 @@ document.addEventListener('DOMContentLoaded', () => {
     /*console.log(writerIds);
     console.log(writers);*/
     
-    /*const data = { songId, loginUserId };
+    const data = { songId, id:authUser };
     let currentPage = 1;
     const itemsPerPage = 5;
     let playlistsData = [];
-    if(loginUserId != ''){
+    if(authUser != ''){
     axios
-        .post('./like', data)
+        .post('/api/song/isLiked', data)
         .then((response) => {
             if (response.data) {
-                btnLike.textContent = '♡';
-            } else {
                 btnLike.textContent = '♥';
+            } else {
+                btnLike.textContent = '♡';
             }
         }
         )
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     } else {
         btnLike.textContent = '♡';
-    }*/
+    }
     
     // 장르 작성 & 링크
     const splitgenere = genres.split(',');
@@ -131,14 +131,14 @@ document.addEventListener('DOMContentLoaded', () => {
     
 
     btnLike.addEventListener('click', () => {
-    if(loginUserId == '') {
+    if(authUser == '') {
         if(confirm("로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?")){
             redirectToLogin();
         }
         return;
         }
         axios
-            .put('./like', data)
+            .put('/api/song/like', data)
             .then((response) => {
                 if (response.data) {
                     btnLike.textContent = '♥';
@@ -154,13 +154,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function getPlayLists() {
-        if(loginUserId == '' ) {
+        if(authUser == '' ) {
         if(confirm("로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?")){
             redirectToLogin();
         }
         return
         }
-        const uri = `../getPlayList/${loginUserId}`;
+        const uri = `../getPlayList/${authUser}`;
         axios
             .get(uri)
             .then((response) => {

@@ -4,12 +4,15 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
+import com.itwill.rest.domain.Like;
+import com.itwill.rest.domain.LikeId;
 import com.itwill.rest.dto.SongDetailsDto;
+import com.itwill.rest.repository.LikeRepository;
 import com.itwill.rest.repository.SongRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -21,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 public class SongService {
 	
 	private final SongRepository songRepo;
+	private final LikeRepository likeRepo;
 	
 	public SongDetailsDto readDetails(int songId) {
 		log.info("readDetails(id={})",songId);
@@ -43,9 +47,39 @@ public class SongService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-	    
-		
 		return dto; 
+	}
+	
+	public boolean like(LikeId likeId) {
+		
+//		Optional<Like> like = likeRepo.findById(LikeId.builder().id(dto.getUserId()).songId(dto.getSongId()).build());
+//		log.info("like={}",like);
+		
+		
+		Optional<Like> like = likeRepo.findById(likeId);
+		
+		log.info("like={}",like);
+		
+		if(like.isEmpty()) {
+			Like like1 = Like.builder().likeId(likeId).build(); 
+			likeRepo.save(like1);
+			return true;
+		} else {
+			
+			likeRepo.delete(like.get());
+			return false;
+		}
+	}
+	
+	public boolean isLiked(LikeId likeId) {
+		
+		Optional<Like> result = likeRepo.findById(likeId);
+		
+		if(result.isEmpty()) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 	
 }

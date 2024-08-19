@@ -123,8 +123,8 @@ public class SecurityConfig {
 				.hasAnyRole("USER")
 				// 위의 주소는 아이디/비밀번호 인증이 필요함
 				// .requestMatchers("").hasRole("ADMIN") 이런식으로 연결이 가능.
-				.requestMatchers("/api/comment/**")
-				.hasAnyRole("ADMIN", "USER")
+//				.requestMatchers("/api/comment/**")
+//				.hasAnyRole("ADMIN", "USER")
 				.anyRequest()
 				// 위에 설정한 URL 주소를 제외한 모든 주소는
 				.permitAll()
