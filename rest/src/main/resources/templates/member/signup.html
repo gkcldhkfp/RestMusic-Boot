@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>회원가입</title>
@@ -16,7 +15,7 @@
 </head>
 <body>
     <header>
-        <th:block th:replace="~{/layout/fragments :: pageHeader('회원가입 페이지')}"></th:block>
+        <th:block th:replace="~{/layout/fragments :: header}"></th:block>
     </header>
 
     <div class="container">
@@ -86,7 +85,9 @@
             <div class="mb-3">
                 <input type="text" id="hintAnswer" name="hintAnswer" class="form-control" 
                 placeholder="힌트 답변을 입력해주세요">
+                <div id="checkHintAnswerResult" class="text-danger"></div>
             </div>
+
 
             <div class="d-grid mb-3">
                 <button class="btn btn-primary" type="submit" id="btnSignUp" disabled>가입</button>
@@ -97,6 +98,8 @@
             </div>
         </form>
     </div>
+
+    <th:block th:replace="~{/layout/fragments :: footer}"></th:block>
 
     <script th:inline="javascript">
         const refresh = /*[[${refresh}]]*/ '';
