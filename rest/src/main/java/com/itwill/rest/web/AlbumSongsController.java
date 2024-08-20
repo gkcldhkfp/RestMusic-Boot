@@ -42,8 +42,8 @@ public class AlbumSongsController {
 		// 수록곡 개수를 뷰에 전달
 		model.addAttribute("songsCount", songs.size());
 
-		// 앨범의 수록곡과 가수를 매핑
-		Map<Song, List<Artist>> songAndArtists = albumServ.getArtistsBySongsAndRoleId(songs, 10);
+		// 앨범의 수록곡과 그룹&가수를 매핑
+		Map<Song, List<Object>> songAndArtists = albumServ.getArtistsOrGroupsBySongsAndRoleId(songs, 10);
 		log.info("albumSongs = {}", songAndArtists);
 		model.addAttribute("albumSongs", songAndArtists);
 

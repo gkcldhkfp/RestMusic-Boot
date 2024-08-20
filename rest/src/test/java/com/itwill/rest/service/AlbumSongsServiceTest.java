@@ -8,7 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.itwill.rest.domain.Album;
-import com.itwill.rest.domain.Artist;
 import com.itwill.rest.domain.Song;
 import com.itwill.rest.repository.AlbumRepository;
 import com.itwill.rest.repository.SongRepository;
@@ -32,7 +31,7 @@ public class AlbumSongsServiceTest {
 	public void readTest() {
 		Album album = albumRepo.findById(10).orElseThrow();
 		List<Song> songs = album.getSongs();
-		Map<Song, List<Artist>> artistsBySongsAndRoleId = albumServ.getArtistsBySongsAndRoleId(songs, 10);
+		Map<Song, List<Object>> artistsBySongsAndRoleId = albumServ.getArtistsOrGroupsBySongsAndRoleId(songs, 10);
 		System.out.println(artistsBySongsAndRoleId);
 
 		
