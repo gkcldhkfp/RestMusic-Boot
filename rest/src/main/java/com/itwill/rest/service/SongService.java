@@ -56,30 +56,33 @@ public class SongService {
 //		log.info("like={}",like);
 		
 		
-		Optional<Like> like = likeRepo.findById(likeId);
+		boolean exists = likeRepo.existsById(likeId);
 		
-		log.info("like={}",like);
+		log.info("like={}",exists);
 		
-		if(like.isEmpty()) {
-			Like like1 = Like.builder().likeId(likeId).build(); 
-			likeRepo.save(like1);
-			return true;
-		} else {
-			
-			likeRepo.delete(like.get());
+		if(exists) {
+			likeRepo.deleteById(likeId);
 			return false;
+		} else {
+			Like like = Like.builder().likeId(likeId).build(); 
+			likeRepo.save(like);
+			return true;
+			
 		}
 	}
 	
 	public boolean isLiked(LikeId likeId) {
 		
-		Optional<Like> result = likeRepo.findById(likeId);
+//		Optional<Like> result = likeRepo.findById(likeId);
+//		
+//		if(result.isEmpty()) {
+//			return false;
+//		} else {
+//			return true;
+//		}
 		
-		if(result.isEmpty()) {
-			return false;
-		} else {
-			return true;
-		}
+		return likeRepo.existsById(likeId);
+		
 	}
 	
 }
