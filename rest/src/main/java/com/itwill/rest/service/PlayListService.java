@@ -23,7 +23,7 @@ public class PlayListService {
 	private final UserRepository userRepo;
 	private final PlayListRepository playListRepo;
 	
-	@Transactional(readOnly = true) // 작동 x
+	@Transactional(readOnly = true)
 	public List<PlayListFirstAlbumImgDto> getPlayListByUserId(Integer id) {
 		log.info("getPlayListByUserId={}", id);
 		
@@ -53,6 +53,15 @@ public class PlayListService {
 		log.info("deleteById(pListId={})", pListId);
 		
 		playListRepo.deleteById(pListId);
+	}
+	
+	@Transactional(readOnly = true)
+	public PlayList getPlayListInfoByListId(Integer pListId) {
+		log.info("getPlayListInfoByListId={}", pListId);
+		
+		PlayList playlist = playListRepo.findById(pListId).orElseThrow();
+		
+		return playlist;
 	}
 
 }

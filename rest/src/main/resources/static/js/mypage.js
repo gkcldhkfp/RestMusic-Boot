@@ -72,7 +72,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 bootstrapModal.hide();
             })
             .catch((error) => {
-                console.log(error);
+                console.log('서버 오류:', error);
+                alert('플레이리스트 추가 중 오류가 발생했습니다.');
             });
         /*        var playlistName = document.getElementById('playlistName').value;
                 console.log('추가할 플레이 리스트 제목:', playlistName); // 플레이리스트 이름 콘솔 입력*/
