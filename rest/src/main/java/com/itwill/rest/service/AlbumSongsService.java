@@ -21,7 +21,6 @@ import com.itwill.rest.domain.Song;
 import com.itwill.rest.domain.SongGenre;
 import com.itwill.rest.repository.AlbumRepository;
 import com.itwill.rest.repository.ArtistRoleRepository;
-import com.itwill.rest.repository.SongGenreRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,8 +33,6 @@ public class AlbumSongsService {
 
 	private final ArtistRoleRepository artistRoleRepo;
 
-	private final SongGenreRepository songGenreRepo;
-
 	/**
 	 * 앨범 아이디로 앨범 객체를 리턴하는 메서드
 	 */
@@ -46,6 +43,7 @@ public class AlbumSongsService {
 		log.info("album = {}", album);
 		return album;
 	}
+
 	/**
 	 * 수록곡을 출력할 때 그룹과 가수를 처리하기 위한 서비스 메서드
 	 * 그룹의 멤버는 그룹으로 대체해서 출력. 그룹 이름은 중복처리하여 리스트에 삽입
@@ -54,7 +52,7 @@ public class AlbumSongsService {
 	@Transactional(readOnly = true)
 	public Map<Song, List<Object>> getArtistsOrGroupsBySongsAndRoleId(List<Song> songs, Integer roleId) {
 		Map<Song, List<Object>> songArtistGroupMap = new HashMap<>();
-		
+
 		for (Song song : songs) {
 			Set<String> processedGroupNames = new HashSet<>(); // 이미 처리된 그룹 이름을 추적하는 Set
 			Set<String> processedArtistNames = new HashSet<>(); // 이미 처리된 아티스트 이름을 추적하는 Set
@@ -119,7 +117,9 @@ public class AlbumSongsService {
 		}
 		for (ArtistRole artistRole : artistRoles) {
 			Group group = artistRole.getGroup();
-			groups.add(group);
+			if (group != null) {
+				groups.add(group);
+			}
 		}
 		return groups;
 	}
