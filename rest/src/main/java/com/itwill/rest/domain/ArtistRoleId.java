@@ -12,8 +12,6 @@ public class ArtistRoleId {
 
 	private Integer artistId;
 
-	private Integer groupId;
-
 	private Integer songId;
 
 	private Integer roleId;
