@@ -18,14 +18,7 @@ public class UserRepositoryTest {
 
 	@Autowired
 	private UserService userServ;
-
-//	@Test
-	@Transactional
-	public void diTest() {
-		log.info("userRepo = {}", userRepo);
-
-	}
-
+	
 //	@Test
 	@Transactional
 	public void findTest() {
