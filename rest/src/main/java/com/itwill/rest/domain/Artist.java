@@ -18,12 +18,14 @@ import lombok.ToString;
 @Table(name="ARTISTS")
 @Getter @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@EqualsAndHashCode @ToString
+@EqualsAndHashCode(onlyExplicitlyIncluded = true) 
+@ToString
 @Builder
 public class Artist {
 	@Id
 	@Column(name = "ARTIST_ID")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@EqualsAndHashCode.Include
 	private Integer id;
 	
 	private String artistName;

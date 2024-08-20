@@ -50,6 +50,7 @@ public class UserService implements UserDetailsService {
 		}
 	}
 
+	@Transactional
 	public boolean checkUserId(String userid) {
 		Optional<User> user = userRepo.findByUserId(userid);
 		if (!user.isPresent()) {
@@ -60,6 +61,7 @@ public class UserService implements UserDetailsService {
 		}
 	}
 
+	@Transactional
 	public boolean checkEmail(String email) {
 		User user = userRepo.findByEmail(email);
 		if (user == null) {
@@ -69,6 +71,7 @@ public class UserService implements UserDetailsService {
 		}
 	}
 
+	@Transactional
 	public boolean checkNickname(String nickname) {
 		User user = userRepo.findByNickname(nickname);
 		if (user == null) {

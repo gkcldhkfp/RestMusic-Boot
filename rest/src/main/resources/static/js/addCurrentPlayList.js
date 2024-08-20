@@ -3,6 +3,7 @@
  * detail.jsp에 포함
  */
 document.addEventListener('DOMContentLoaded', () => {
+	console.log("addCurrentPlayList.js");
 	if (!sessionStorage.getItem('isAdded')) {
         sessionStorage.setItem('isAdded', 'N');
     }
@@ -10,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if(refresh ==='Y') {
         console.log(refresh);
 		/*refresh = "N";*/
-		const uri21 =`${window.location.origin}/Rest/user/removeRefresh`
+		const uri21 =`${window.location.origin}/user/removeRefresh`
 		axios.get(uri21).
 		then((response) => {
             console.log(response)
@@ -167,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		function listenAlbum(event) {
 			const albumId = event.target.getAttribute('data-id');
 			// console.log(id); // 정상작동: 1
-			const url1 = `/Rest/api/album?albumId=${albumId}`;
+			const url1 = `/api/album?albumId=${albumId}`;
 			axios.
 				get(url1).
 				then((response) => {
@@ -176,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
 					let listSong = response.data;
 					console.log(listSong);
 					let songId2 = listSong[0].songId;
-					let url2 = `/Rest/song/listen?songId=${songId2}`
+					let url2 = `/song/listen?songId=${songId2}`
 					console.log(url2);
 					// 첫 곡은 바로듣기 메서드를 호출, 그 이후는 재생목록에 추가 메서드를 호출
 					// 바로듣기 레스트컨트롤러 호출 일단 바로듣기 버튼 복붙해서 씀.s
@@ -190,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
 							// 두번째 곡 이후부터는 재생목록에 추가.
 							for (let i = 1; i < listSong.length; i++) {
 								let id3 = listSong[i].songId;
-								let url3 = `/Rest/song/addCurrentPlayList?songId=${id3}`
+								let url3 = `/song/addCurrentPlayList?songId=${id3}`
 								console.log(url3);
 								axios.
 									get(url3).
@@ -224,7 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		function addCPListAlbum(event) {
 			const albumId = event.target.getAttribute('data-id');
 			// console.log(id); // 정상작동: 1
-			let url = `/Rest/api/album?albumId=${albumId}`;
+			let url = `/api/album?albumId=${albumId}`;
 			axios.
 				get(url).
 				then((response) => {
@@ -236,7 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
 					// 앨범의 모든 곡을 다음 재생 목록에 추가.
 					for (let i = 0; i < listSong.length; i++) {
 						let id = listSong[i].songId;
-						url = `/Rest/song/addCurrentPlayList?songId=${id}`
+						url = `/song/addCurrentPlayList?songId=${id}`
 						console.log(url);
 						axios.
 							get(url).
@@ -289,7 +290,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		listEmptyBtn.addEventListener('click', listEmpty);
 		function listEmpty() {
 
-			const url = `${window.location.origin}/Rest/song/empty`;
+			const url = `${window.location.origin}/song/empty`;
 			axios.
 				get(url).
 				then((response) => {
@@ -321,7 +322,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	});
 
 	function getCPList() {
-		const url = "/Rest/api/playList/cPList";
+		const url = "/api/playList/cPList";
 		// Ajax 요청을 보냄.
 		axios
 			.get(url)
@@ -360,7 +361,12 @@ document.addEventListener('DOMContentLoaded', () => {
 			for (let i = 0; i < data.length; i++) {
 				let li = document.createElement('li');
 				li.className = 'list-group-item';
-				li.textContent = data[i].title;
+				// 음원 아티스트와 음원 제목을 삽입.
+				if(data[i].groupName !== null) {
+					li.textContent = data[i].groupName + '-' + data[i].title;
+				} else {
+					li.textContent = data[i].artistName + '-' + data[i].title;
+				}
 				if (i == index) { // 현재 재생중인 곡인 지 검사
 					// 볼드체로 변경
 					li.classList.add('text-primary');
@@ -432,7 +438,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	}
 	function redirectToLogin() {
 		const currentUrl = window.location.href;
-		window.location.href = `/Rest/user/signin?target=${encodeURIComponent(currentUrl)}`;
+		window.location.href = `/user/signin?target=${encodeURIComponent(currentUrl)}`;
 	}
 	// 앨범을 플리에 추가 기능
 	const btnAddUPListAlbum = document.querySelector('#btnAddUPListAlbum');
