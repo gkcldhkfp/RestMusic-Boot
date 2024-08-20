@@ -83,11 +83,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const splitArrangerIds = arrangerIds.split(',');
     artistPageLinked(arrangersSpace, splitArrangers, splitArrangerIds);
     
-    const singerNameSpace = document.querySelector('p#singerNames');
+  /*  const singerNameSpace = document.querySelector('p#singerNames');
     const splitsingerName = singers.split(',');
     const splitsingerIds = singerIds.split(',');
     artistPageLinked(singerNameSpace, splitsingerName, splitsingerIds);
-    
+    */
     
     
     function artistPageLinked (writersSpace, artists, artistIds) {

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.itwill.rest.domain.Like;
 import com.itwill.rest.domain.LikeId;
+import com.itwill.rest.domain.Song;
 import com.itwill.rest.dto.SongDetailsDto;
 import com.itwill.rest.repository.LikeRepository;
 import com.itwill.rest.repository.SongRepository;
@@ -83,6 +84,12 @@ public class SongService {
 		
 		return likeRepo.existsById(likeId);
 		
+	}
+
+	public Song selectBySongId(Integer songId) {
+		log.info("songId = {}", songId);
+		Song song = songRepo.findById(songId).get();
+		return song;
 	}
 	
 }
