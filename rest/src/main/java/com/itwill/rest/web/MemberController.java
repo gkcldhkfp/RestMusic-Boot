@@ -3,8 +3,11 @@ package com.itwill.rest.web;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import com.itwill.rest.service.EmailService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/member")
 public class MemberController {
     
-    
+    private final EmailService emailService;
+
     @GetMapping("/signin")
     public void signIn() {
         log.info("GET signIn()");
@@ -45,10 +49,15 @@ public class MemberController {
         log.info("GET findUserPassword()");
     }
 
-
     // 비밀번호 변경 페이지
     @GetMapping("/setuserpassword")
     public void setUserPassword() {
         log.info("GET setUserPassword()");
+    }
+    
+    @PostMapping("/emailConfirm")
+    public String emailConfirm(@RequestParam String email) throws Exception {
+        String confirm = emailService.sendSimpleMessage(email);
+        return confirm;
     }
 }
