@@ -1,5 +1,7 @@
 package com.itwill.rest.web;
 
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -7,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.itwill.rest.domain.Artist;
+import com.itwill.rest.dto.ArtistAlbumDto;
 import com.itwill.rest.service.ArtistService;
 
 import lombok.RequiredArgsConstructor;
@@ -35,7 +38,10 @@ public class ArtistController {
 		
 		Artist artist = artistSvc.findById(artistId);
 		
+		List<ArtistAlbumDto> list = artistSvc.readAlbums(artistId);
+		
 		model.addAttribute("artist", artist);
+		model.addAttribute("albums", list);
 	}
 
 }

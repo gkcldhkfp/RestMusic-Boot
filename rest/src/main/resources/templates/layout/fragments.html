@@ -119,7 +119,7 @@
                             <span>님 <br /> 환영합니다🌼 &nbsp;</span>
                         </div>
                         <a style="font-size: 0.8rem" class="me-3 link-style" th:href="@{/logout}">로그아웃</a>
-                        <a style="font-size: 0.8rem" class="me-3 link-style" th:href="@{/user/mypage}">마이페이지</a>
+                        <a style="font-size: 0.8rem" class="me-3 link-style" th:href="@{/user/mypage(id=${#authentication.principal.id})}">마이페이지</a>
                     </th:block>
                 </div>
             </div>

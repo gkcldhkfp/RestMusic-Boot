@@ -228,8 +228,8 @@ document.addEventListener('DOMContentLoaded', () => {
             /*const deleteImage = '../images/delete.png';*/
 
             // albumPage, songPage, artistPage로 이동할 주소 지정
-            const albumPage = `/Rest/album/detail?albumId=${like.albumId}`;
-            const songPage = `/Rest/song/detail?songId=${like.songId}`;
+            const albumPage = `/album/detail?albumId=${like.albumId}`;
+            const songPage = `/song/detail?songId=${like.songId}`;
             /* const artistPage = `/Rest/artist/songs?artistId=${like.artistId}`;*/
             // ${like.albumImage}가 null이면 기본 이미지 사용
             const albumImageSrc = like.albumImage ? `../images/albumcover/${like.albumImage}` : defaultImage;

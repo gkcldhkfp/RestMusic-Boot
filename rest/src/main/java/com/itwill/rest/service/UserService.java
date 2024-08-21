@@ -1,5 +1,6 @@
 package com.itwill.rest.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.itwill.rest.domain.User;
 import com.itwill.rest.domain.UserRole;
+import com.itwill.rest.dto.UserLikeDto;
 import com.itwill.rest.dto.UserSignUpDto;
 import com.itwill.rest.repository.UserRepository;
 
@@ -89,6 +91,14 @@ public class UserService implements UserDetailsService {
 		User user = userRepo.findById(id).orElseThrow();
 		
 		return user;
+	}
+	
+	@Transactional(readOnly = true)
+	public List<UserLikeDto> selectLikesByUserid(Integer id) {
+		
+		List<UserLikeDto> list = userRepo.selectLikesByUserid(id);
+		
+		return list;
 	}
 	
 }
