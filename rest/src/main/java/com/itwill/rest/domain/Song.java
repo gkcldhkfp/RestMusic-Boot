@@ -1,8 +1,5 @@
 package com.itwill.rest.domain;
 
-import java.util.List;
-import java.util.ArrayList;
-
 import jakarta.persistence.Basic;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -11,7 +8,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -46,16 +42,6 @@ public class Song {
 	private String lyrics;
 
 	private String videoLink;
-	
-	@ToString.Exclude
-	@OneToMany(mappedBy = "song", fetch = FetchType.LAZY)
-	@Builder.Default
-	private List<SongGenre> genres = new ArrayList<>();
-	
-	@ToString.Exclude
-	@OneToMany(mappedBy = "song", fetch = FetchType.LAZY)
-	@Builder.Default
-	private List<ArtistRole> roles = new ArrayList<>();
 
 /* 	@ToString.Exclude
 	@OneToMany(mappedBy = "song", fetch = FetchType.LAZY)
