@@ -77,8 +77,8 @@ public class UserQuerydslImpl extends QuerydslRepositorySupport implements UserQ
                     dto.setAlbumId(albumId);
                     dto.setAlbumName(albumName);
                     dto.setAlbumImage(albumImage);
-                    dto.setArtistId("");  // 초기값
-                    dto.setArtistName(""); // 초기값
+//                    dto.setArtistId("");  // 초기값
+//                    dto.setArtistName(""); // 초기값
                     dtoMap.put(songId, dto);
                 }
 
@@ -94,8 +94,8 @@ public class UserQuerydslImpl extends QuerydslRepositorySupport implements UserQ
                 }
 
                 // 현재 DTO의 아티스트 정보 업데이트
-                dto.setArtistId(String.join(", ", artistIds.stream().map(String::valueOf).collect(Collectors.toSet())));
-                dto.setArtistName(String.join(", ", artistNames));
+//                dto.setArtistId(String.join(", ", artistIds.stream().map(String::valueOf).collect(Collectors.toSet())));
+//                dto.setArtistName(String.join(", ", artistNames));
             }
 
             // 모든 DTO 반환

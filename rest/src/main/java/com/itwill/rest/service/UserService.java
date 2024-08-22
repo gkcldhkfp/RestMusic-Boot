@@ -2,6 +2,7 @@ package com.itwill.rest.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -10,10 +11,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.itwill.rest.domain.Like;
+import com.itwill.rest.domain.Song;
 import com.itwill.rest.domain.User;
 import com.itwill.rest.domain.UserRole;
 import com.itwill.rest.dto.UserLikeDto;
 import com.itwill.rest.dto.UserSignUpDto;
+import com.itwill.rest.repository.LikeRepository;
 import com.itwill.rest.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -26,6 +30,7 @@ public class UserService implements UserDetailsService {
 
 	private final UserRepository userRepo;
 	private final PasswordEncoder passwordEncoder;
+	private final LikeRepository likeRepo;
 
 	@Transactional
 	public User create(UserSignUpDto dto) {
@@ -99,6 +104,15 @@ public class UserService implements UserDetailsService {
 		List<UserLikeDto> list = userRepo.selectLikesByUserid(id);
 		
 		return list;
+	}
+	
+	@Transactional(readOnly = true)
+	public List<Song> getLikeSongByUserId(Integer id) {
+		// 아이디로 음원 찾기
+		List<Like> likes =likeRepo.findByLikeId_id(id);
+		List<Song> songs = likes.stream().map(l -> l.getSong()).collect(Collectors.toList());
+
+		return songs;
 	}
 	
 }

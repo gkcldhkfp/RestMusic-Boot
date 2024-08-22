@@ -1,5 +1,6 @@
 package com.itwill.rest.web;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.itwill.rest.domain.PlayList;
 import com.itwill.rest.dto.playlist.PlayListCreateDto;
 import com.itwill.rest.dto.playlist.PlayListFirstAlbumImgDto;
+import com.itwill.rest.dto.playlist.PlayListSongInfoDto;
 import com.itwill.rest.service.PlayListService;
 
 import lombok.RequiredArgsConstructor;
@@ -45,6 +47,16 @@ public class PlayListController {
 		List<PlayListFirstAlbumImgDto> result = playListSvc.getPlayListByUserId(id);
 		
 		return ResponseEntity.ok(result);
+	}
+	
+	@GetMapping("/getPlayListSong/{id}")
+	@ResponseBody
+	public ResponseEntity<List<PlayListSongInfoDto>> getPlayListSong(@PathVariable Integer id) {
+		log.info("getPlayListSong(id={})", id);
+		
+		List<PlayListSongInfoDto> list = new ArrayList<>();
+		
+		return ResponseEntity.ok(list);
 	}
 	
 	@PostMapping("/addPlayList")
