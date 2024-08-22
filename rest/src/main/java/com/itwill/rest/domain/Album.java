@@ -1,8 +1,10 @@
 package com.itwill.rest.domain;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Basic;
 import jakarta.persistence.Entity;
@@ -42,12 +44,13 @@ public class Album {
 	@OneToMany(mappedBy = "album")
 	@Builder.Default
 	@ToString.Exclude
-	private Set<Song> songs = new HashSet<>();
+	@JsonManagedReference // 순환참조 문제를 해결하기 위한 애너테이션
+	private List<Song> songs = new ArrayList<>();
 	
 	@ToString.Exclude
 	@OneToMany(mappedBy = "album", fetch = FetchType.LAZY)
 	@Builder.Default
-	private Set<TitleSong> titleSongs = new HashSet<>();
+	private List<TitleSong> titleSongs = new ArrayList<>();
 	
 	/* //편의 메서드
 	// 앨범의 수록곡을 등록하는 메서드

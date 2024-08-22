@@ -24,6 +24,15 @@ public class SongService {
 	private final SongRepository songRepo;
 	private final SongLikeRepository songLikeRepo;
 	
+	@Transactional(readOnly = true)
+	public Song selectBySongId(Integer songId) {
+		log.info("songId = {}", songId);
+		Song song = songRepo.findById(songId).orElseThrow();
+		log.info("song = {}", song);
+		return song;
+	}
+	
+	
 	// top30
 	@Transactional(readOnly = true)
     public List<SongChartDto> readTopSongs() {

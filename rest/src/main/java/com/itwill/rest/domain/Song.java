@@ -1,7 +1,9 @@
 package com.itwill.rest.domain;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Basic;
 import jakarta.persistence.Entity;
@@ -34,6 +36,7 @@ public class Song {
 	@ToString.Exclude // ToString에서 제외. 안하면 무한루프에 빠질 수 있음.
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ALBUM_ID")
+	@JsonBackReference // 순환참조를 해결하기 위한 애너테이션
 	private Album album;
 
 	@Basic(optional = false) // not null
@@ -46,23 +49,18 @@ public class Song {
 	private String lyrics;
 
 	private String videoLink;
-	
+
 	@ToString.Exclude
+	@OneToMany(mappedBy = "song", fetch = FetchType.LAZY)
+	@Builder.Default
+	private List<ArtistRole> artistRole = new ArrayList<>();
+
+ 	@ToString.Exclude
 	@OneToMany(mappedBy = "song", fetch = FetchType.LAZY)
 	@Builder.Default
 	private List<SongGenre> genres = new ArrayList<>();
 	
-	@ToString.Exclude
-	@OneToMany(mappedBy = "song", fetch = FetchType.LAZY)
-	@Builder.Default
-	private List<ArtistRole> roles = new ArrayList<>();
-
-/* 	@ToString.Exclude
-	@OneToMany(mappedBy = "song", fetch = FetchType.LAZY)
-	@Builder.Default
-	private Set<SongGenre> genres = new HashSet<>();
-	
-	@ToString.Exclude
+/*	@ToString.Exclude
 	@OneToMany(mappedBy = "song", fetch = FetchType.LAZY)
 	@Builder.Default
 	private Set<ArtistRole> roles = new HashSet<>();

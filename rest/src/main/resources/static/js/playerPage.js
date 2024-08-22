@@ -2,6 +2,7 @@
  * playerPage.jsp에 포함
  */
 document.addEventListener('DOMContentLoaded', () => {
+	console.log("playerPage.js");
 	// 재생목록 관리를 위한 인덱스 선언
 	if (!sessionStorage.getItem('index')) {
 		// 세션스토리지를 사용한 이유: 여기서 index=0;으로 선언하면 새로고침할 때마다 인덱스는 0이 되버림.
@@ -45,27 +46,22 @@ document.addEventListener('DOMContentLoaded', () => {
 		configurable: true
 	});
 
-	// 결제 회원인지 판별하기 위한 Ajax요청 호출
-	if (id !== '') {
-		const urlForPur = `/Rest/purchase/isPurUser?id=${id}`;
-		axios
-			.get(urlForPur)
-			.then((response) => {
-				console.log(response.data);
-				isPurUser = response.data
-			}).
-			catch((error) => { console.log(error); });
-	}
-	// songFrame의 버튼으로 mainFrame의 모달을 활성화 하기 위한 코드.
-	const showModalButton = document.querySelector('#showModalButton');
-	showModalButton.addEventListener('click', () => {
-		console.log('mainframe의 메서드 호출');
-		parent.frames['mainFrame'].showModal();
-	});
+	// TODO: 레스트컨트롤러 안만듬
+	/* 	// 결제 회원인지 판별하기 위한 Ajax요청 호출
+		if (id !== '') {
+			const urlForPur = `/Rest/purchase/isPurUser?id=${id}`;
+			axios
+				.get(urlForPur)
+				.then((response) => {
+					console.log(response.data);
+					isPurUser = response.data
+				}).
+				catch((error) => { console.log(error); });
+		} */
+
 
 
 	// ! JSON을 리스트로 만드는 코드는 playerPage.jsp의 아래부분에 선언함.
-	console.log('자바스크립트');
 	//? 자동 새로고침 없어도 되게끔 만들어야 할듯.
 	// // console.log(cPList);
 	// if (!cPList) {
@@ -73,6 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	// 	setTimeout(() => location.reload(true), 1000);
 	// }
 	if (cPList) {
+		console.log(cPList);
 		console.log('index = ' + index);
 		if (cPList[index] === undefined || cPList[index] === null) {
 			console.log('인덱스가 배열의 크기를 넘었어요!');
@@ -114,6 +111,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 		//* 일반태그 로드 - (Dom이벤트리스너 실행) - img태그같은 재요청 태그 로드 - (window.onload 이벤트 리스너 실행)
 		window.onload = function () {
+			// songFrame의 버튼으로 mainFrame의 모달을 활성화 하기 위한 코드.
+			const showModalButton = document.querySelector('#showModalButton');
+			showModalButton.addEventListener('click', () => {
+				console.log('mainframe의 메서드 호출');
+				parent.frames['mainFrame'].showModal();
+			});
 			// 정보 업데이트
 			// 다른 자바스크립트 파일에서 노출한 함수 실행.
 			// 곡 변경 시 모달창의 하이라이팅도 업데이트
@@ -133,18 +136,64 @@ document.addEventListener('DOMContentLoaded', () => {
 			albumImage.src = "../images/albumcover/" + cPList[index].albumImage;
 
 
-			// 노래 제목과 가수 설정
+			// 노래 제목 설정
 			const musicTitle = document.querySelector('#music-title');
-			const artist = document.querySelector("#artist");
 			musicTitle.innerHTML = cPList[index].title;
-			artist.innerHTML = cPList[index].artistName;
 			// 노래 제목에 음원 상세페이지 연결
-			musicTitle.href = '/Rest/song/detail?songId=' + cPList[index].songId;
+			musicTitle.href = '/song/detail?songId=' + cPList[index].songId;
 
-			// 가수에 아티스트 상세 페이지 연결
-			artist.href = '/Rest/artist/songs?artistId=' + cPList[index].artistId;
+			// 삽입할 요소 가져오기
+			const artistElement = document.querySelector("#artist");
+
+			// TODO: 가수가 여러명이어도 각각 링크로 작동하도록 수정
+			// 그룹 및 아티스트 설정
+			// 그룹의 아이디와 이름을 저장하는 배열 생성
+			const albumGroup = [];
+			cPList.forEach((item, index) => {
+				albumGroup.push({
+					groupName: item.groupName,
+					id: item.groupId
+				});
+			});
+			console.log(albumGroup);
+			// 아티스트의 아이디와 이름을 저장하는 배열 생성
+			const filteredArtists = []
+			cPList.forEach((item, index) => {
+				filteredArtists.push({
+					artistName: item.artistName,
+					id: item.artistId
+				});
+			});
+			console.log(filteredArtists);
+			// 그룹과 아티스트 텍스트를 추가할 배열
+
+			// 그룹과 아티스트 텍스트를 추가할 배열
+			let elements = [];
+
+			// albumGroup이 있을 때 처리
+			if (albumGroup && albumGroup.length > 0) {
+				albumGroup.forEach((group, index) => {
+					const groupLink = `<a href="/group/songs?id=${group.id}" style="cursor: pointer; font-weight: normal; text-decoration: none; color: black;" onmouseover="this.style.fontWeight='bold'; this.style.textDecoration='underline';" onmouseout="this.style.fontWeight='normal'; this.style.textDecoration='none'; this.style.color='black';">${group.groupName}</a>`;
+					elements.push(groupLink);
+				});
+
+				// albumGroup이 있고, filteredArtists도 있으면 구분 기호 추가
+				if (filteredArtists.some(artist => artist.artistName && artist.artistName.length > 0)) {
+					elements.push(", ");
+				}
+			}
+
+			// filteredArtists가 있을 때 처리
+			if (filteredArtists && filteredArtists.length > 0) {
+				filteredArtists.forEach((artist, index) => {
+					const artistLink = `<a href="/artist/songs?id=${artist.id}" style="cursor: pointer; font-weight: normal; text-decoration: none; color: black;" onmouseover="this.style.fontWeight='bold'; this.style.textDecoration='underline';" onmouseout="this.style.fontWeight='normal'; this.style.textDecoration='none'; this.style.color='black';">${artist.artistName}</a>`;
+					elements.push(artistLink);
+				});
+			}
 
 
+			// elements 배열의 내용을 ', '로 연결하여 artistElement에 삽입
+			artistElement.innerHTML = elements.join("");
 
 
 
