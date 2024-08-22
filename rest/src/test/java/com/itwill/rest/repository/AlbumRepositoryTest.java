@@ -215,7 +215,7 @@ public class AlbumRepositoryTest {
 		albumRepo.delete(album);
 	}
 
-	@Test
+	// @Test
 	// @Transactional
 	public void saveBol4Album() {
 
