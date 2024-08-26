@@ -1,6 +1,12 @@
 package com.itwill.rest.service;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -8,12 +14,15 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.itwill.rest.domain.User;
 import com.itwill.rest.domain.UserRole;
 import com.itwill.rest.dto.UserSignUpDto;
+import com.itwill.rest.dto.UserUpdateDto;
 import com.itwill.rest.repository.UserRepository;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -77,5 +86,131 @@ public class UserService implements UserDetailsService {
 			return false;
 		}
 	}
+	
+	@Transactional(readOnly = true)
+    public User readInfo(String userId) {
+        return userRepo.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("User with ID " + userId + " not found"));
+    }
+	
+	@Transactional
+	public boolean updateProfileImage(String userId, MultipartFile profileImage, HttpServletRequest request) {
+	    try {
+	        User user = userRepo.findByUserId(userId).orElseThrow(() -> new RuntimeException("User with ID " + userId + " not found"));
+
+	        // 이미지 파일인지 확인
+	        if (!profileImage.getContentType().startsWith("image/")) {
+	            throw new RuntimeException("Uploaded file is not an image");
+	        }
+
+	        // 파일 크기 제한
+	        final long MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+	        if (profileImage.getSize() > MAX_FILE_SIZE) {
+	            throw new RuntimeException("Uploaded file is too large");
+	        }
+
+	        // 원본 파일명 사용
+	        String originalFilename = profileImage.getOriginalFilename();
+	        if (originalFilename == null || originalFilename.isEmpty()) {
+	            throw new RuntimeException("Uploaded file has no name");
+	        }
+
+	        // 업로드 디렉토리 설정
+	        String uploadDir = request.getServletContext().getRealPath("/images/profileimage");
+	        System.out.println("Upload directory: " + uploadDir);
+	        File uploadDirFile = new File(uploadDir);
+	        if (!uploadDirFile.exists()) {
+	            uploadDirFile.mkdirs();
+	        }
+
+	        // 파일 경로 설정
+	        String filePath = uploadDir + File.separator + originalFilename;
+	        File file = new File(filePath);
+	        
+	        // 파일명 중복 처리
+	        int count = 1;
+	        while (file.exists()) {
+	            String nameWithoutExtension = originalFilename.substring(0, originalFilename.lastIndexOf('.'));
+	            String extension = originalFilename.substring(originalFilename.lastIndexOf('.'));
+	            originalFilename = nameWithoutExtension + "(" + count + ")" + extension;
+	            filePath = uploadDir + File.separator + originalFilename;
+	            file = new File(filePath);
+	            count++;
+	        }
+	        
+	        if (profileImage.isEmpty()) {
+	            throw new RuntimeException("Uploaded file is empty");
+	        }
+
+	        // 파일 저장
+	        profileImage.transferTo(file);
+
+	        // 파일명 데이터베이스에 저장
+	        String webPath = originalFilename;
+	        user.updateProfile(webPath);
+	        userRepo.save(user);
+
+	        return true;
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	        return false;
+	    }
+	}
+
+    @Transactional
+    public boolean deleteUserProfile(String userId) {
+        User user = userRepo.findByUserId(userId).orElse(null);
+        if (user == null) {
+            return false;
+        }
+        user.updateProfile(""); // Clear profile
+        userRepo.save(user);
+        return true;
+    }
+
+    @Transactional
+    public boolean update(UserUpdateDto dto) {
+        log.debug("update(dto = {})", dto);
+
+        if (dto.getUserProfile() == null) {
+            dto.setUserProfile("");
+        }
+        if (dto.getHintQuestion() == null) {
+            dto.setHintQuestion("");
+        }
+        if (dto.getHintAnswer() == null) {
+            dto.setHintAnswer("");
+        }
+
+        User user = userRepo.findByUserId(dto.getUserId()).orElseThrow(() -> new RuntimeException("User not found"));
+        user.updateUser(dto.getPassword(), dto.getEmail(), dto.getNickname(), dto.getUserProfile(),
+                        dto.getHintQuestion(), dto.getHintAnswer());
+        userRepo.save(user);
+        return true;
+    }
+
+    @Transactional
+    public boolean deactivateAccount(Integer id, String password) {
+        User user = userRepo.findById(id).orElse(null);
+        if (user == null || !userRepo.checkPassword(id, password)) {
+            return false;
+        }
+
+        user.deactivateUser(LocalDate.now().plusDays(30)); // Example deactivation period
+        userRepo.save(user);
+        return true;
+    }
+
+    public boolean checkUserIsActive(String userId) {
+        return userRepo.checkUserIsActive(userId);
+    }
+
+    public boolean checkDeactivationPeriod(String userId) {
+        return userRepo.checkDeactivationPeriod(userId);
+    }
+
+    public User getUserById(Integer id) {
+        return userRepo.findById(id).orElse(null);
+    }
 	
 }

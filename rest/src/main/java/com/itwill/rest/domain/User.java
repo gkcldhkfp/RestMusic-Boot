@@ -125,4 +125,30 @@ public class User implements UserDetails {
 	public String getUsername() {
 		return this.userName;
 	}
+	
+	// 사용자 프로필 업데이트 메서드
+    public User updateProfile(String userProfile) {
+        this.userProfile = userProfile;
+        return this;
+    }
+	
+	// 사용자 정보 수정 메서드
+    public User updateUser(String password, String email, String nickname, String userProfile,
+                                  String hintQuestion, String hintAnswer) {
+        this.password = password;
+        this.email = email;
+        this.nickname = nickname;
+        this.userProfile = userProfile;
+        this.hintQuestion = hintQuestion;
+        this.hintAnswer = hintAnswer;
+        return this;
+    }
+    
+    // 사용자 계정 비활성화 메서드
+    public User deactivateUser(LocalDate deactivatedUntil) {
+        this.isActive = 0;
+        this.deactivatedUntil = deactivatedUntil;
+        return this;
+    }
+    
 }
