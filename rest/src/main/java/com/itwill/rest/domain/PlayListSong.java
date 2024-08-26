@@ -39,6 +39,6 @@ public class PlayListSong {
 
 	private LocalDateTime createdTime;
 
-	private LocalDateTime modifiedTime;
+//	private LocalDateTime modifiedTime;
 	
 }

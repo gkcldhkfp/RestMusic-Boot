@@ -109,7 +109,7 @@ public class UserService implements UserDetailsService {
 	@Transactional(readOnly = true)
 	public List<Song> getLikeSongByUserId(Integer id) {
 		// 아이디로 음원 찾기
-		List<Like> likes =likeRepo.findByLikeId_id(id);
+		List<Like> likes = likeRepo.findByLikeId_id(id);
 		List<Song> songs = likes.stream().map(l -> l.getSong()).collect(Collectors.toList());
 
 		return songs;

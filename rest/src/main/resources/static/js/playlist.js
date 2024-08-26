@@ -49,9 +49,8 @@ document.addEventListener('DOMContentLoaded', () => {
 		for (let playlistSong of data) {
 
 			// albumPage, songPage, artistPage로 이동할 주소 지정
-			const albumPage = `/Rest/album/detail?albumId=${playlistSong.albumId}`;
-			const songPage = `/Rest/song/detail?songId=${playlistSong.songId}`;
-			const artistPage = `/Rest/artist/songs?artistId=${playlistSong.artistId}`;
+			const albumPage = `/album/detail?albumId=${playlistSong.albumId}`;
+			const songPage = `/song/detail?songId=${playlistSong.songId}`;
 
 			// ${playlist.albumImage}가 null이면 기본 이미지 사용
 			const albumImageSrc = playlistSong.albumImage ? `../images/albumcover/${playlistSong.albumImage}` : defaultImage;
@@ -61,29 +60,31 @@ document.addEventListener('DOMContentLoaded', () => {
 				recentSong = playlistSong;
 			}
 			
-			const splitsingerName = playlistSong.artistName.split(',');
-            const splitsingerIds = playlistSong.artistId.split(',');
-            const length = Math.min(splitsingerName.length, splitsingerIds.length);
+            // 그룹 네임과 아티스트 네임을 클릭 가능한 링크로 처리
+            const groupNames = playlistSong.groupName || [];
+            const artistNames = playlistSong.artistName || [];
 
-            let singerLinksHtml = ''; // 가수들의 링크를 담을 변수
+            // 그룹 네임을 문자열로 결합
+            const groupNamesString = groupNames.map((name, index) => {
+                return `<a href="../group/songs?groupId=${playlistSong.groupId[index]}" style="color: black; text-decoration: none;"
+                        onmouseover="this.style.color='blue';" onmouseout="this.style.color='black';">${name}</a>`;
+            }).join(', ');
 
-            for (let i = 0; i < length; i++) {
-                const trimmedName = splitsingerName[i].trim();
-                const trimmedId = splitsingerIds[i].trim();
-                const artistPage = `../artist/songs?artistId=${trimmedId}`;
+            // 아티스트 네임을 문자열로 결합
+            const artistNamesString = artistNames.map((name, index) => {
+                return `<a href="../artist/songs?artistId=${playlistSong.artistId[index]}" style="color: black; text-decoration: none;"
+                        onmouseover="this.style.color='blue';" onmouseout="this.style.color='black';">${name}</a>`;
+            }).join(', ');
 
-                // 첫 번째 아티스트는 반점을 붙이지 않고, 그 이후 아티스트부터는 반점과 함께 출력
-                if (i === 0) {
-                    singerLinksHtml += `<a href='${artistPage}' style="color: black; text-decoration: none;"
-                                        onmouseover="this.style.color='blue';" onmouseout="this.style.color='black';">
-                                        ${trimmedName}
-                                    </a>`;
-                } else {
-                    singerLinksHtml += `, <a href='${artistPage}' style="color: black; text-decoration: none;"
-                                        onmouseover="this.style.color='blue';" onmouseout="this.style.color='black';">
-                                        ${trimmedName}
-                                    </a>`;
+            // 그룹과 아티스트 네임을 결합
+            let singerLinksHtml = '';
+            if (groupNames.length > 0) {
+                singerLinksHtml = groupNamesString;
+                if (artistNames.length > 0) {
+                    singerLinksHtml += ', ' + artistNamesString;
                 }
+            } else {
+                singerLinksHtml = artistNamesString;
             }
 
 			console.log(playlistSong);

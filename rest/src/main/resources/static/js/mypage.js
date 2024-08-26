@@ -251,14 +251,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }).join(', ');
 
             // 그룹과 아티스트 네임을 결합
-            let output = '';
+            let singerLinksHtml = '';
             if (groupNames.length > 0) {
-                output = groupNamesString;
+                singerLinksHtml = groupNamesString;
                 if (artistNames.length > 0) {
-                    output += ', ' + artistNamesString;
+                    singerLinksHtml += ', ' + artistNamesString;
                 }
             } else {
-                output = artistNamesString;
+                singerLinksHtml = artistNamesString;
             }
 
             htmlStr += `
@@ -277,7 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 </span>                    
                             </td>
                             <td style="text-align: left; vertical-align: middle; font-size: 14px;" class="fs-6">
-                                ${output}
+                                ${singerLinksHtml}
                             </td>
                             <td style="text-align: center;">
                                 <button style="background-image: url('${playImage}'); width: 40px; height: 40px; background-size: cover; background-repeat: no-repeat;"
