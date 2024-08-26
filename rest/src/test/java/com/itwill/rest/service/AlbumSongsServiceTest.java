@@ -31,7 +31,7 @@ public class AlbumSongsServiceTest {
 	public void readTest() {
 		Album album = albumRepo.findById(10).orElseThrow();
 		List<Song> songs = album.getSongs();
-		Map<Song, List<Object>> artistsBySongsAndRoleId = albumServ.getArtistsOrGroupsBySongsAndRoleId(songs, 10);
+		Map<Song, List<Map<String, Object>>> artistsBySongsAndRoleId = albumServ.getArtistsOrGroupsBySongsAndRoleId(songs, 10);
 		System.out.println(artistsBySongsAndRoleId);
 
 		
