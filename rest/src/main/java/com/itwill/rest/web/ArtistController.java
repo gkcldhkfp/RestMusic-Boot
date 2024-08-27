@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.itwill.rest.domain.Artist;
 import com.itwill.rest.dto.ArtistAlbumDto;
+import com.itwill.rest.dto.ArtistSongDto;
 import com.itwill.rest.service.ArtistService;
 
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,10 @@ public class ArtistController {
 		
 		Artist artist = artistSvc.findById(artistId);
 		
+		List<ArtistSongDto> list = artistSvc.readSongs(artistId);
+		
 		model.addAttribute("artist", artist);
+		model.addAttribute("songs", list);
 	}
 	
 	@GetMapping("/albums")

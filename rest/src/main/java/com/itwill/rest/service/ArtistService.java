@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.itwill.rest.domain.Artist;
 import com.itwill.rest.dto.ArtistAlbumDto;
+import com.itwill.rest.dto.ArtistSongDto;
 import com.itwill.rest.repository.ArtistRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,15 @@ public class ArtistService {
 		Artist artist = artistRepo.findById(id).orElseThrow();
 		
 		return artist;
+	}
+	
+	@Transactional(readOnly = true)
+	public List<ArtistSongDto> readSongs(Integer artistId) {
+		log.info("readSongs(artistId={})", artistId);
+		
+		List<ArtistSongDto> list = artistRepo.selectSongsByArtistId(artistId);
+		
+		return list;
 	}
 	
 	@Transactional(readOnly = true)

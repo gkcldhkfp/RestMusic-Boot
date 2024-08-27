@@ -1,6 +1,5 @@
 package com.itwill.rest.dto;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -10,12 +9,12 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor @AllArgsConstructor @Builder
-public class ArtistAlbumDto {
+public class ArtistSongDto {
+	private Integer songId;
 	private Integer albumId;
 	private String albumName;
 	private String albumImage;
-	private String albumType;
-	private LocalDate albumReleaseDate;
+	private String title;
 	private List<Integer> artistId;
 	private List<String> artistName;
 	private List<Integer> groupId;

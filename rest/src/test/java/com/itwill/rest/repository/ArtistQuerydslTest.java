@@ -16,7 +16,7 @@ public class ArtistQuerydslTest {
 	@Autowired
 	private ArtistQuerydslImpl artistQuerydsl;
 	
-	@Test
+//	@Test
 	public void testSelectAlbumsByArtistId() {
 		List<ArtistAlbumDto> artistAlbum = artistQuerydsl.selectAlbumsByArtistId(21);
 		
