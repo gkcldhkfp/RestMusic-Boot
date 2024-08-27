@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.itwill.rest.domain.Like;
 import com.itwill.rest.domain.LikeId;
+import com.itwill.rest.domain.Song;
 import com.itwill.rest.dto.SongChartDto;
 import com.itwill.rest.dto.SongLikeDto;
 import com.itwill.rest.repository.SongLikeRepository;
