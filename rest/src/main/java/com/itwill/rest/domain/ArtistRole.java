@@ -33,7 +33,6 @@ public class ArtistRole {
 	@ToString.Exclude
 	private Artist artist;
 
-	@MapsId("groupId")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "GROUP_ID")
 	@ToString.Exclude

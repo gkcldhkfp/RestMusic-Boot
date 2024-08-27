@@ -333,3 +333,13 @@ alter table pur_users
 drop constraint pur_users_id_fk;
 
 alter table pur_users add constraint pur_users_id_fk foreign key (id) references users (id) on delete cascade;
+
+
+
+------------------ PLAYLIST_SONGS 테이블 pk 추가
+-- 1. 새로운 열 추가
+ALTER TABLE PLAYLIST_SONGS
+ADD (playlist_song_id NUMBER(4) generated as identity);
+-- 2. 기본 키 제약 조건 추가
+ALTER TABLE PLAYLIST_SONGS
+ADD CONSTRAINT pk_playlist_songs_id PRIMARY KEY (playlist_song_id);
