@@ -4,7 +4,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -127,7 +126,6 @@ public class SecurityConfig {
 				.requestMatchers("/api/comment/**")
 				.hasAnyRole("ADMIN", "USER")
 				.anyRequest()
-				
 				// 위에 설정한 URL 주소를 제외한 모든 주소는
 				.permitAll()
 		// 모두 허용함.
@@ -138,13 +136,6 @@ public class SecurityConfig {
 		// ? 번갈아가면서 사용이 가능함. => 최종 리턴 타입이 AuthorizationManagerRequestMatcherRegistry 이어야
 		// 함.
 		);
-		
-		// 세션 관리 설정 추가
-//        http.sessionManagement(session -> session
-//            .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-//            .maximumSessions(1)
-//            .expiredUrl("/login?expired")
-//        );
 
 		return http.build(); // DefaultSecurityFilterChanin 객체를 생성해서 리턴.
 	}

@@ -2,11 +2,8 @@ package com.itwill.rest.service;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -39,14 +36,14 @@ public class UserService implements UserDetailsService {
 		log.info("create(dt = {})", dto);
 
 		User user = userRepo.save(dto.toEntity(passwordEncoder).addRole(UserRole.USER));
-				// save() -> (1) insert into members, (2) insert into member_roles
+		// save() -> (1) insert into members, (2) insert into member_roles
 		//?총 2개의 테이블에 insert되는 메서드이다.
 		return user;
 	}
 
 	@Override
 	public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-				// DB 테이블(members)에 username이 일치하는 사용자가 있으면 UserDatails 타입의 객체를 리턴하고
+		// DB 테이블(members)에 username이 일치하는 사용자가 있으면 UserDatails 타입의 객체를 리턴하고
 		// 그렇지 않으면 UsernameNotFoundException을 던짐(throws)
 		log.info("loadUserByUsername(userId={})", userId);
 		Optional<User> entity = userRepo.findByUserId(userId);
@@ -58,7 +55,8 @@ public class UserService implements UserDetailsService {
 			throw new UsernameNotFoundException(userId + ": 일치하는 사용자 정보 없음.");
 		}
 	}
-
+	
+	@Transactional
 	public boolean checkUserId(String userid) {
 		Optional<User> user = userRepo.findByUserId(userid);
 		if (!user.isPresent()) {
@@ -68,7 +66,8 @@ public class UserService implements UserDetailsService {
 			return false;
 		}
 	}
-
+	
+	@Transactional
 	public boolean checkEmail(String email) {
 		User user = userRepo.findByEmail(email);
 		if (user == null) {
@@ -77,7 +76,8 @@ public class UserService implements UserDetailsService {
 			return false;
 		}
 	}
-
+	
+	@Transactional
 	public boolean checkNickname(String nickname) {
 		User user = userRepo.findByNickname(nickname);
 		if (user == null) {

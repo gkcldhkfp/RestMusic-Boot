@@ -6,7 +6,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -91,7 +90,11 @@ public class AlbumRepositoryTest {
 
 		log.info("findByIdTest()");
 
-		Album album = albumRepo.findById(3).get(); // 천천히 가 앨범
+		Album album = albumRepo.findById(10).get(); // 천천히 가 앨범
+		List<TitleSong> titleSongs = album.getTitleSongs();
+		titleSongs.forEach(t -> {
+			System.out.println(t);
+		});
 
 	}
 
@@ -105,7 +108,7 @@ public class AlbumRepositoryTest {
 	}
 
 	// @Test
-	@Transactional()
+	// @Transactional()
 	public void saveTest() {
 
 		Album album = Album
@@ -192,7 +195,6 @@ public class AlbumRepositoryTest {
 			artists.forEach((a) -> {
 				ArtistRoleId artistRoleId = new ArtistRoleId();
 				artistRoleId.setArtistId(a.getId());
-				artistRoleId.setGroupId(group.getId());
 				artistRoleId.setRoleId(가수.getRoleId());
 				artistRoleId.setSongId(s.getSongId());
 				artistRoles.add(
@@ -214,6 +216,8 @@ public class AlbumRepositoryTest {
 		Album album = albumRepo.findById(17).get();
 		albumRepo.delete(album);
 	}
+
+
 
 	// @Test
 	// @Transactional
@@ -450,7 +454,7 @@ public class AlbumRepositoryTest {
 				.roleCode(가수)
 				.group(bol4)
 				.artist(ahn)
-				.id(new ArtistRoleId(ahn.getId(), bol4.getId(), song1.getSongId(), 가수.getRoleId()))
+				.id(new ArtistRoleId(ahn.getId(), song1.getSongId(), 가수.getRoleId()))
 				.build();
 
 		roles.add(song1Role1);
@@ -460,7 +464,7 @@ public class AlbumRepositoryTest {
 				.roleCode(가수)
 				.group(bol4)
 				.artist(woo)
-				.id(new ArtistRoleId(woo.getId(), bol4.getId(), song1.getSongId(), 가수.getRoleId()))
+				.id(new ArtistRoleId(woo.getId(), song1.getSongId(), 가수.getRoleId()))
 				.build();
 
 		roles.add(song1Role2);
@@ -470,7 +474,7 @@ public class AlbumRepositoryTest {
 				.roleCode(작사)
 				.group(bol4)
 				.artist(ahn)
-				.id(new ArtistRoleId(ahn.getId(), bol4.getId(), song1.getSongId(), 작사.getRoleId()))
+				.id(new ArtistRoleId(ahn.getId(), song1.getSongId(), 작사.getRoleId()))
 				.build();
 
 		roles.add(song1Role3);
@@ -480,7 +484,7 @@ public class AlbumRepositoryTest {
 				.roleCode(작사)
 				.group(bol4)
 				.artist(woo)
-				.id(new ArtistRoleId(woo.getId(), bol4.getId(), song1.getSongId(), 작사.getRoleId()))
+				.id(new ArtistRoleId(woo.getId(), song1.getSongId(), 작사.getRoleId()))
 				.build();
 
 		roles.add(song1Role4);
@@ -490,7 +494,7 @@ public class AlbumRepositoryTest {
 				.roleCode(작곡)
 				.group(bol4)
 				.artist(ahn)
-				.id(new ArtistRoleId(ahn.getId(), bol4.getId(), song1.getSongId(), 작곡.getRoleId()))
+				.id(new ArtistRoleId(ahn.getId(), song1.getSongId(), 작곡.getRoleId()))
 				.build();
 
 		roles.add(song1Role5);
@@ -500,7 +504,7 @@ public class AlbumRepositoryTest {
 				.roleCode(작곡)
 				.group(bol4)
 				.artist(ahn)
-				.id(new ArtistRoleId(ahn.getId(), bol4.getId(), song1.getSongId(), 작곡.getRoleId()))
+				.id(new ArtistRoleId(ahn.getId(), song1.getSongId(), 작곡.getRoleId()))
 				.build();
 
 		roles.add(song1Role6);
@@ -509,7 +513,7 @@ public class AlbumRepositoryTest {
 				.song(song1)
 				.roleCode(작곡)
 				.artist(van)
-				.id(new ArtistRoleId(van.getId(), bol4.getId(), song1.getSongId(), 작곡.getRoleId()))
+				.id(new ArtistRoleId(van.getId(), song1.getSongId(), 작곡.getRoleId()))
 				.build();
 
 		roles.add(song1Role7);
@@ -518,7 +522,7 @@ public class AlbumRepositoryTest {
 				.song(song1)
 				.roleCode(편곡)
 				.artist(van)
-				.id(new ArtistRoleId(van.getId(), bol4.getId(), song1.getSongId(), 편곡.getRoleId()))
+				.id(new ArtistRoleId(van.getId(), song1.getSongId(), 편곡.getRoleId()))
 				.build();
 
 		roles.add(song1Role8);
@@ -528,7 +532,7 @@ public class AlbumRepositoryTest {
 				.roleCode(가수)
 				.group(bol4)
 				.artist(ahn)
-				.id(new ArtistRoleId(ahn.getId(), bol4.getId(), song2.getSongId(), 가수.getRoleId()))
+				.id(new ArtistRoleId(ahn.getId(), song2.getSongId(), 가수.getRoleId()))
 				.build();
 
 		roles.add(song2Role1);
@@ -538,7 +542,7 @@ public class AlbumRepositoryTest {
 				.roleCode(가수)
 				.group(bol4)
 				.artist(woo)
-				.id(new ArtistRoleId(woo.getId(), bol4.getId(), song2.getSongId(), 가수.getRoleId()))
+				.id(new ArtistRoleId(woo.getId(), song2.getSongId(), 가수.getRoleId()))
 				.build();
 
 		roles.add(song2Role2);
@@ -548,7 +552,7 @@ public class AlbumRepositoryTest {
 				.roleCode(작사)
 				.group(bol4)
 				.artist(ahn)
-				.id(new ArtistRoleId(ahn.getId(), bol4.getId(), song2.getSongId(), 작사.getRoleId()))
+				.id(new ArtistRoleId(ahn.getId(), song2.getSongId(), 작사.getRoleId()))
 				.build();
 
 		roles.add(song2Role3);
@@ -558,7 +562,7 @@ public class AlbumRepositoryTest {
 				.roleCode(작곡)
 				.group(bol4)
 				.artist(ahn)
-				.id(new ArtistRoleId(ahn.getId(), bol4.getId(), song2.getSongId(), 작곡.getRoleId()))
+				.id(new ArtistRoleId(ahn.getId(), song2.getSongId(), 작곡.getRoleId()))
 				.build();
 
 		roles.add(song2Role4);
@@ -567,7 +571,7 @@ public class AlbumRepositoryTest {
 				.song(song2)
 				.roleCode(편곡)
 				.artist(van)
-				.id(new ArtistRoleId(van.getId(), bol4.getId(), song2.getSongId(), 편곡.getRoleId()))
+				.id(new ArtistRoleId(van.getId(), song2.getSongId(), 편곡.getRoleId()))
 				.build();
 
 		roles.add(song2Role5);
@@ -577,7 +581,7 @@ public class AlbumRepositoryTest {
 				.roleCode(가수)
 				.group(bol4)
 				.artist(ahn)
-				.id(new ArtistRoleId(ahn.getId(), bol4.getId(), song3.getSongId(), 가수.getRoleId()))
+				.id(new ArtistRoleId(ahn.getId(), song3.getSongId(), 가수.getRoleId()))
 				.build();
 
 		roles.add(song3Role1);
@@ -587,7 +591,7 @@ public class AlbumRepositoryTest {
 				.roleCode(가수)
 				.group(bol4)
 				.artist(woo)
-				.id(new ArtistRoleId(woo.getId(), bol4.getId(), song3.getSongId(), 가수.getRoleId()))
+				.id(new ArtistRoleId(woo.getId(), song3.getSongId(), 가수.getRoleId()))
 				.build();
 
 		roles.add(song3Role2);
@@ -597,7 +601,7 @@ public class AlbumRepositoryTest {
 				.roleCode(작사)
 				.group(bol4)
 				.artist(ahn)
-				.id(new ArtistRoleId(ahn.getId(), bol4.getId(), song3.getSongId(), 작사.getRoleId()))
+				.id(new ArtistRoleId(ahn.getId(), song3.getSongId(), 작사.getRoleId()))
 				.build();
 
 		roles.add(song3Role3);
@@ -607,7 +611,7 @@ public class AlbumRepositoryTest {
 				.roleCode(작곡)
 				.group(bol4)
 				.artist(ahn)
-				.id(new ArtistRoleId(ahn.getId(), bol4.getId(), song3.getSongId(), 작곡.getRoleId()))
+				.id(new ArtistRoleId(ahn.getId(), song3.getSongId(), 작곡.getRoleId()))
 				.build();
 
 		roles.add(song3Role4);
@@ -616,10 +620,12 @@ public class AlbumRepositoryTest {
 				.song(song3)
 				.roleCode(편곡)
 				.artist(van)
-				.id(new ArtistRoleId(van.getId(), bol4.getId(), song3.getSongId(), 편곡.getRoleId()))
+				.id(new ArtistRoleId(van.getId(), song3.getSongId(), 편곡.getRoleId()))
 				.build();
 
 		roles.add(song3Role5);
+
+		artistRoleRepo.saveAll(roles);
 
 	}
 

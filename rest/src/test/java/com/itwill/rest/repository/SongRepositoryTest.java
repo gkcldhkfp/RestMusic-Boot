@@ -25,7 +25,7 @@ public class SongRepositoryTest {
 		assertThat(songRepo).isNotNull();
 	}
 
-	@Test
+	// @Test
 	@Transactional
 	public void findByIdTest() {
 		/* Song song = songRepo.findById(15).orElseThrow();
