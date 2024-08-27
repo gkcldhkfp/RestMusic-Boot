@@ -1,6 +1,5 @@
 package com.itwill.rest.dto;
 
-import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,5 +17,7 @@ public class SongSearchResultDto {
 	private String albumImage;
 	private String albumTitle;
 	private String singerNames;
+	private String singerIds;
+	
 
 }

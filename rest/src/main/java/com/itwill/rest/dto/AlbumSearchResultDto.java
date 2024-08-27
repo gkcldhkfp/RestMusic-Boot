@@ -22,5 +22,9 @@ public class AlbumSearchResultDto {
 	private String albumType;
 
 	private LocalDate albumReleaseDate;
+	
+	private String singerNames;
+	
+	private String singerIds;
 
 }

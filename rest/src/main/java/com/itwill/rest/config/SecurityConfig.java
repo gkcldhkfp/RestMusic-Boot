@@ -21,7 +21,7 @@ public class SecurityConfig {
 	@Bean
 	// @Bean => 객체를 스프링 컨테이너에서 관리하도록 생성자를 bean으로 등록함.
 	// 스프링 레거시에서는 web.xml에서 bean 태그로 등록했음
-	public PasswordEncoder passwordEncoder() {
+	PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 		// ! 암호화 알고리즘 중 하나.
 		// ! BCryptPasswordEncoder는 PasswordEncoder 인터페이스를 구현한 수많은 클래스 중 하나임.

@@ -31,6 +31,8 @@ dependencies {
 	runtimeOnly 'com.oracle.database.jdbc:ojdbc11'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	
+
 
 	// lombok --------------
 	compileOnly 'org.projectlombok:lombok'
@@ -52,6 +54,9 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
 	// ---------------------------
+	
+	// mysql ---------------
+    implementation 'mysql:mysql-connector-java:8.0.33'
 }
 
 

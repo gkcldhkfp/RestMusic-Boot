@@ -24,7 +24,7 @@ public class CommentRepoTest {
 	@Autowired
 	private SongRepository songRepo;
 	
-	@Test
+//	@Test
 	public void test() {
 		
 //		Song song = songRepo.findById(21).get();

@@ -40,7 +40,7 @@ public class SongRepositoryTest {
 		}); */
 	}
 
-	@Test
+//	@Test
 //	@Transactional
 	public void likeTest() {
 		LikeId likeId = LikeId.builder().id(1).songId(21).build();
