@@ -34,6 +34,8 @@ public class Group {
 	private String groupName;
 
 	private String groupDescription;
+	
+	private String groupImage;
 
 	@OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
 	@ToString.Exclude

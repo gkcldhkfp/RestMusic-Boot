@@ -17,13 +17,10 @@ import com.itwill.rest.domain.QArtistRole;
 import com.itwill.rest.domain.QGroup;
 import com.itwill.rest.domain.QGroupMember;
 import com.itwill.rest.domain.QSong;
-import com.itwill.rest.domain.QTitleSong;
 import com.itwill.rest.dto.ArtistAlbumDto;
 import com.itwill.rest.dto.ArtistSongDto;
 import com.querydsl.core.Tuple;
-import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 @Repository
