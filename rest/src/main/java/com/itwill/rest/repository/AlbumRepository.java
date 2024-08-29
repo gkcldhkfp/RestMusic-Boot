@@ -123,4 +123,8 @@ public interface AlbumRepository extends JpaRepository<Album, Integer> {
 	    List<Object[]> findAllContentByKeywordFullText(@Param("keyword") String keyword);
 
 	
+
+	@Query(value = "SELECT * FROM ALBUMS WHERE GET_INITIAL_SOUND(album_name) LIKE CONCAT('%', GET_INITIAL_SOUND(:keyword), '%')", nativeQuery = true)
+	List<Album> findByAlbumNameInitialSound(@Param("keyword") String keyword);
+
 }

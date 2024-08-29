@@ -225,16 +225,16 @@
 								<th:block th:if="${s.value != null}">
 									<!-- Artist 리스트를 순회하여 각 artistName과 id를 처리 -->
 									<span th:each="singer, iterStat : ${s.value}">
-										<span th:if="${singer.groupName != null}">
-											<a th:href="@{/group/songs(groupId=${singer.id})}" th:text="${singer.groupName}"
+										<span th:if="${singer.type == 'group'}">
+											<a th:href="@{/group/songs(groupId=${singer.data.id})}" th:text="${singer.data.groupName}"
 											th:style="'cursor: pointer;'"
 											onmouseover="this.style.fontWeight='bold'; this.style.textDecoration='underline';"
 											onmouseout="this.style.fontWeight='normal'; this.style.textDecoration='none'; this.style.color='black';">
 
 											</a>
 										</span>
-										<span th:unless="${singer.groupName != null}">
-											<a th:href="@{/artist/songs(artistId=${singer.id})}" th:text="${singer.artistName}"
+										<span th:if="${singer.type == 'artist'}">
+											<a th:href="@{/artist/songs(artistId=${singer.data.id})}" th:text="${singer.data.artistName}"
 												th:style="'cursor: pointer;'"
 												onmouseover="this.style.fontWeight='bold'; this.style.textDecoration='underline';"
 												onmouseout="this.style.fontWeight='normal'; this.style.textDecoration='none'; this.style.color='black';"></a>
