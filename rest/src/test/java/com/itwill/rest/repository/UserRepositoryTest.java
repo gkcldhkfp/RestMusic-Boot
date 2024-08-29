@@ -1,5 +1,6 @@
 package com.itwill.rest.repository;
 
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,15 +18,8 @@ public class UserRepositoryTest {
 
 	@Autowired
 	private UserService userServ;
-
-	// @Test
-	@Transactional
-	public void diTest() {
-		log.info("userRepo = {}", userRepo);
-
-	}
-
-	// @Test
+	
+//	@Test
 	@Transactional
 	public void findTest() {
 		log.info("findTest");

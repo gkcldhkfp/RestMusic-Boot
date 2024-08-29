@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+	</head>
+	<body>
+        <th:block th:replace="~{/layout/fragments :: header}"></th:block>
+    
+		<main>
+            <div class="container">
+                <div class="m-5">
+                    <h2 style="font-weight: bold;">마이페이지</h2>
+                    <hr>
+                    <div class="d-flex align-items-center">
+                        <div class="p-3">
+                            <img alt="profileImg" 
+                                th:with="profileImg=@{/images/profileimage/profile.jpg}" 
+                                th:src="@{${user.userProfile} != null ? '/images/profileimage/' + ${user.userProfile} : ${profileImg}}"
+                                width="200px" height="200px" />
+                        </div>
+                        <div class="p-3">
+                            <!-- TODO: DB에 있는 해당 user 정보 출력 -->
+                            <h3 id="id" class="d-none" th:text="${user.id}"></h3>
+                            <h3 id="userId" class="d-none" th:text=${user.userId}></h3>
+                            <h3 style="font-weight: bold; font-size: 1.2rem;" th:text="'닉네임: ' + ${user.nickname}"></h3>
+                            <!-- 비밀번호 확인 모달을 여는 버튼 -->
+                            <c:url var="userUpdate" value="/user/update">
+                                <c:param name="userId" value="${user.userId}" />
+                            </c:url>
+                            <a class="btn btn-outline-primary mb-2" id="updateInfoBtn" href="${userUpdate}">ID/PW 변경 (내정보 관리)
+                            </a><br>
+                            <!-- 이용권 구매(결제창) 페이지 이동 버튼 -->
+                            <a class="btn btn-outline-primary" th:href="@{/purchase}">이용권 구매</a>
+                        </div>
+                    </div>
+                    <br>
+                    <h2 style="font-size: 1.2rem; text-align : center; font-weight: bold;">플레이리스트</h2>
+                    <hr>
+                    <!-- 추가할 박스 (카드) -->
+                    <div class="card">
+                        <div class="card-body" id="playLists">
+
+                        </div>
+                    </div>
+                    <div class="my-2">
+                        <button class="btn btn-primary border border-gray" style="background-color: gray; color: white;"
+                            data-bs-toggle="modal" data-bs-target="#addPlaylistModal">플레이리스트 추가</button>
+                    </div>
+                    <br>
+                    <h2 id="userLikesSection" style="font-size: 1.2rem; text-align : center; font-weight: bold;">좋아요 누른 곡</h2>
+                    <hr>
+                    <!-- 추가할 박스 (카드) -->
+                    <div class="card">
+                        <div class="card-body" id="resultTable">
+                            <table class="table table-striped" style="border: 1px solid #ddd;">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align: left; vertical-align: middle;">커버</th>
+                                        <th style="text-align: left; vertical-align: middle; width: 60%">노래 제목</th>
+                                        <th style="text-align: left; vertical-align: middle;">아티스트</th>
+                                        <th style="text-align: center; vertical-align: middle;">듣기</th>
+                                        <th style="text-align: center; vertical-align: middle;">재생목록</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="likeTableBody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- 페이지네이션 컨트롤 -->
+                    <nav>
+                        <ul class="pagination justify-content-center mt-4" id="pagination"></ul>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- 플레이 리스트 추가 모달 -->
+            <div class="modal fade" id="addPlaylistModal" tabindex="-1" aria-labelledby="addPlaylistModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addPlaylistModalLabel">플레이 리스트 추가</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="playlistForm">
+                                <div class="mb-3">
+                                    <label for="playlistName" class="form-label">플레이 리스트 제목</label>
+                                    <input type="text" class="form-control" id="playlistName" name="playlistName"
+                                        required>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success" id="btnAddPlaylist">확인</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 비밀번호 확인 모달 추가 -->
+            <div class="modal fade" id="passwordConfirmModal" tabindex="-1" aria-labelledby="passwordConfirmModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="passwordConfirmModalLabel">비밀번호 확인</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="passwordConfirmForm">
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">비밀번호를 입력하세요</label>
+                                    <input type="password" class="form-control" id="password" required>
+                                    <input type="hidden" id="userPassword" value="${user.password}">
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" id="confirmPasswordBtn">확인</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <th:block th:replace="~{/layout/fragments :: footer}"></th:block>
+        
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        
+        <script src="/js/mypage.js"></script>
+	</body>
+</html>
