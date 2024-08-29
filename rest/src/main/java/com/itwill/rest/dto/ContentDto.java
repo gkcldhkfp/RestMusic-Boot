@@ -1,6 +1,6 @@
 package com.itwill.rest.dto;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +15,7 @@ public class ContentDto {
     private String type;
     private Integer id;
     private String name;
-    private LocalDate releaseDate; // or use java.util.Date
+    private Date releaseDate; // or use java.util.Date
     private Integer likeCount;
 
   
