@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.itwill.rest.dto.GroupAlbumDto;
 import com.itwill.rest.dto.GroupInfoDto;
+import com.itwill.rest.dto.GroupSongDto;
 import com.itwill.rest.service.GroupService;
 
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,10 @@ public class GroupController {
 		
 		GroupInfoDto group = groupSvc.getGroupInfoByGroupId(groupId);
 		
+		List<GroupSongDto> list = groupSvc.readSongs(groupId);
+		
 		model.addAttribute("group", group);
+		model.addAttribute("songs", list);
 	}
 	
 	@GetMapping("/albums")

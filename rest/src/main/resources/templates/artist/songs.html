@@ -79,16 +79,31 @@
                                         </span>
                                     </td>
                                     <td style="text-align:left; vertical-align: middle; font-size: 14px;" class="fs-6">
-                                        <th:block th:each="artistName, iterStat : ${s.artistName}">
-                                        <th:block th:each="artistId, iterStat : ${s.artistId}">
-                                            <a th:href="@{/artist/songs(artistId=${#strings.arrayJoin(s.artistId, ',')})}" 
-                                               th:text="${#strings.trim(artistName)}"
-                                               style="color: gray; text-decoration: none;"
-                                               onmouseover="this.style.color='#007bff';"
-                                               onmouseout="this.style.color='gray';"></a>
-                                            <th:block th:if="${!iterStat.last}">, </th:block>
+                                    <!-- 그룹과 아티스트 이름을 통합하여 출력 -->
+                                    <th:block th:with="totalNames = ${#lists.size(s.groupNames) + #lists.size(s.artistNames)}">
+                                        <th:block th:each="index : ${#numbers.sequence(0, totalNames - 1)}">
+                                            <!-- 그룹 이름 출력 -->
+                                            <th:block th:if="${index < #lists.size(s.groupNames)}">
+                                                <a th:href="@{/group/songs(groupId=${s.groupIds[index]})}"
+                                                   th:text="${s.groupNames[index]}"
+                                                   style="color: gray; text-decoration: none;"
+                                                   onmouseover="this.style.color='#007bff';"
+                                                   onmouseout="this.style.color='gray';"></a>
+                                            </th:block>
+                                            <!-- 아티스트 이름 출력 -->
+                                            <th:block th:if="${index >= #lists.size(s.groupNames)}">
+                                                <a th:href="@{/artist/songs(artistId=${s.artistIds[index - #lists.size(s.groupNames)]})}"
+                                                   th:text="${s.artistNames[index - #lists.size(s.groupNames)]}"
+                                                   style="color: gray; text-decoration: none;"
+                                                   onmouseover="this.style.color='#007bff';"
+                                                   onmouseout="this.style.color='gray';"></a>
+                                            </th:block>
+                                            <!-- 항목 사이에 반점 추가 -->
+                                            <th:block th:if="${index < totalNames - 1}">
+                                                <span>, </span>
+                                            </th:block>
                                         </th:block>
-                                        </th:block>
+                                    </th:block>
                                     </td>
                                     <td style="text-align: center; vertical-align: middle;">
                                         <button

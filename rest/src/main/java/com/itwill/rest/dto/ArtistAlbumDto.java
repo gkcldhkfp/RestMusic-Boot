@@ -16,9 +16,9 @@ public class ArtistAlbumDto {
 	private String albumImage;
 	private String albumType;
 	private LocalDate albumReleaseDate;
-	private List<Integer> artistId;
-	private List<String> artistName;
-	private List<Integer> groupId;
-	private List<String> groupName;
+	private List<Integer> artistIds;
+	private List<String> artistNames;
+	private List<Integer> groupIds;
+	private List<String> groupNames;
 
 }

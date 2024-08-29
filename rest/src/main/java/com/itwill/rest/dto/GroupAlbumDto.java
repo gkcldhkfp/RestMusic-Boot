@@ -3,9 +3,6 @@ package com.itwill.rest.dto;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.itwill.rest.domain.Artist;
-import com.itwill.rest.domain.Group;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,7 +16,9 @@ public class GroupAlbumDto {
 	private String albumImage;
 	private String albumType;
 	private LocalDate albumReleaseDate;
-	private List<Artist> artists;
-	private List<Group> groups;
+	private List<Integer> artistIds;
+	private List<String> artistNames;
+	private List<Integer> groupIds;
+	private List<String> groupNames;
 
 }

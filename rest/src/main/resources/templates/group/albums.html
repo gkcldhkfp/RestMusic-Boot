@@ -67,29 +67,24 @@
                                                         onmouseover="this.style.color='blue';" onmouseout="this.style.color='black';" class="fs-6" th:text=${a.albumName}></a>
                                                 </h6>
                                                 <p class="card-text mb-1" style="font-size: 0.8rem;">
-                                                    <!-- 그룹 이름 출력 -->
-                                                    <th:block th:each="group, iterStat : ${a.groups}">
-                                                        <th:block th:if="${group.groupName != null}">
-                                                            <a th:href="@{/group/songs(groupId=${group.id})}" 
-                                                               th:text="${group.groupName}"
-                                                               style="color: gray; text-decoration: none;"
-                                                               onmouseover="this.style.color='#007bff';"
-                                                               onmouseout="this.style.color='gray';"></a>
-                                                            <th:block th:if="${!iterStat.last}">
-                                                                <span>, </span> <!-- 반점 추가 -->
+                                                    <th:block th:with="totalNames = ${#lists.size(a.groupNames) + #lists.size(a.artistNames)}">
+                                                        <th:block th:each="index : ${#numbers.sequence(0, totalNames - 1)}">
+                                                            <th:block th:if="${index < #lists.size(a.groupNames)}">
+                                                                <a th:href="@{/group/songs(groupId=${a.groupIds[index]})}"
+                                                                   th:text="${a.groupNames[index]}"
+                                                                   style="color: gray; text-decoration: none;"
+                                                                   onmouseover="this.style.color='#007bff';"
+                                                                   onmouseout="this.style.color='gray';"></a>
                                                             </th:block>
-                                                        </th:block>
-                                                    </th:block>
-                                                    <!-- 아티스트 이름 출력 -->
-                                                    <th:block th:each="artist, iterStat : ${a.artists}">
-                                                        <th:block th:if="${artist.artistName != null}">
-                                                            <a th:href="@{/artist/songs(artistId=${artist.id})}" 
-                                                               th:text="${artist.artistName}"
-                                                               style="color: gray; text-decoration: none;"
-                                                               onmouseover="this.style.color='#007bff';"
-                                                               onmouseout="this.style.color='gray';"></a>
-                                                            <th:block th:if="${!iterStat.last}">
-                                                                <span>, </span> <!-- 반점 추가 -->
+                                                            <th:block th:if="${index >= #lists.size(a.groupNames)}">
+                                                                <a th:href="@{/artist/songs(artistId=${a.artistIds[index - #lists.size(a.groupNames)]})}"
+                                                                   th:text="${a.artistNames[index - #lists.size(a.groupNames)]}"
+                                                                   style="color: gray; text-decoration: none;"
+                                                                   onmouseover="this.style.color='#007bff';"
+                                                                   onmouseout="this.style.color='gray';"></a>
+                                                            </th:block>
+                                                            <th:block th:if="${index < totalNames - 1}">
+                                                                <span>, </span>
                                                             </th:block>
                                                         </th:block>
                                                     </th:block>

@@ -15,10 +15,9 @@ public class GroupSongDto {
 	private String albumName;
 	private String albumImage;
 	private String title;
-	private List<Integer> artistId;
-	private List<String> artistName;
-	private List<Integer> groupId;
-	private List<String> groupName;
-	private List<String> groupMembers;
+	private List<Integer> artistIds;
+	private List<String> artistNames;
+	private List<Integer> groupIds;
+	private List<String> groupNames;
 
 }
