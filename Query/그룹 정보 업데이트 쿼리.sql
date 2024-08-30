@@ -1,3 +1,5 @@
+-- 위 설정 창 Edit - PreFerences ->  SQL Editor -> 아래 쪽 Safe Updates(~~~~~) 체크 해제 후 MySQL 워크벤치 껐다 키고 전체 실행 시키면 됨.
+
 -- 1. 안지영으로 업데이트
 UPDATE artists
 SET artist_name = '안지영', 
