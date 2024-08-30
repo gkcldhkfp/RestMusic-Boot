@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,6 +36,7 @@ public class UserController {
 
 	private final AlbumSongsService albumServ;
 
+	@PreAuthorize("hasRole('USER')") // -> 로그인한(USER Role을 가진) 유저만 접속할 수 있게 제한 
 	@GetMapping("/mypage")
 	public void myPage(@RequestParam(name = "id") Integer id, Model model) {
 		log.info("myPage(id={})", id);
