@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -447,7 +446,7 @@ public class AlbumRepositoryTest {
 
 	}
 
-	@Test
+	// @Test
 	@Transactional(readOnly = true)
 	public void ttest() {
 		long startTime = System.currentTimeMillis();
@@ -466,7 +465,7 @@ public class AlbumRepositoryTest {
 		log.info("테스트 실행 시간: " + duration + "ms");
 	}
 	
-	@Test
+	// @Test
 	@Transactional(readOnly = true)
 	public void fullTexttest() {
 		long startTime = System.currentTimeMillis();

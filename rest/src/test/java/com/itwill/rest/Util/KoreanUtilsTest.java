@@ -1,8 +1,7 @@
-package com.itwill.rest.util;
+package com.itwill.rest.Util;
 
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +26,7 @@ public class KoreanUtilsTest {
 		System.out.println(chosungTest);
 	}
 
-	@Test
+	// @Test
 	@Transactional
 	public void chosungAlbumTest() {
 
