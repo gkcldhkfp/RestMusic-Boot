@@ -9,10 +9,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.itwill.rest.domain.PlayList;
 import com.itwill.rest.domain.PlayListSong;
 import com.itwill.rest.domain.PlayListSongId;
+import com.itwill.rest.domain.Song;
 
-public interface PlayListSongRepository extends JpaRepository<PlayListSong, PlayListSongId> {
+public interface PlayListSongRepository extends JpaRepository<PlayListSong, Integer> {
+	
+	public PlayListSong findBySongAndPlayList(Song song, PlayList playList);
 	
 	List<PlayListSong> findByPlayListSongId_pListId(Integer id);
 	

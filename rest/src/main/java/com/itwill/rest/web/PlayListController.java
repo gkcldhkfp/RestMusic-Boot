@@ -23,6 +23,7 @@ import com.itwill.rest.domain.Group;
 import com.itwill.rest.domain.PlayList;
 import com.itwill.rest.domain.PlayListSong;
 import com.itwill.rest.domain.Song;
+import com.itwill.rest.domain.PlayListSongId;
 import com.itwill.rest.dto.playlist.PlayListCreateDto;
 import com.itwill.rest.dto.playlist.PlayListFirstAlbumImgDto;
 import com.itwill.rest.dto.playlist.PlayListSongInfoDto;
@@ -65,59 +66,59 @@ public class PlayListController {
 	public ResponseEntity<List<PlayListSongInfoDto>> getPlayListSong(@PathVariable Integer id) {
 		log.info("getPlayListSong(id={})", id);
 		
-		// 1. 플레이리스트의 곡 리스트 조회
-		List<PlayListSong> playListSongs = playListSvc.getSongByPlayListId(id);  // getPlayListSongsById 메서드를 추가하여 PlayListSong 리스트를 가져옴
-		List<PlayListSongInfoDto> list = new ArrayList<>();
-		
-		for (PlayListSong playListSong : playListSongs) {
-			Song song = playListSong.getSong();
-			PlayList playList = playListSong.getPlayList();
+	    // 1. 플레이리스트의 곡 리스트 조회
+	    List<PlayListSong> playListSongs = playListSvc.getSongByPlayListId(id);
+	    List<PlayListSongInfoDto> list = new ArrayList<>();
 
-			// 2.1 곡의 아티스트 및 그룹 정보를 조회
-			List<Song> innerSong = new ArrayList<>();
-			innerSong.add(song);
-			
-			Map<Song, List<Object>> songAndArtists = albumSongSvc.getArtistsOrGroupsBySongsAndRoleId(innerSong, 10);
-			List<Artist> sortedArtists = albumSongSvc.getSortedArtists(innerSong, 10);
-			List<Group> sortedGroups = albumSongSvc.getSortedGroups(innerSong, 10);
-			
-			List<Artist> artists = null;
-			if (!sortedGroups.isEmpty()) {
-				List<Artist> groupMembers = sortedGroups.stream()
-					.flatMap(group -> group.getGroupMembers().stream().map(gm -> gm.getArtist()))
-					.collect(Collectors.toList());
-				
-				artists = sortedArtists.stream()
-					.filter(artist -> groupMembers.stream().noneMatch(member -> member.equals(artist)))
-					.collect(Collectors.toList());
-			} else {
-				artists = sortedArtists;
-			}
-			
-			// DTO 생성
-			List<Integer> artistIds = artists.stream().map(a -> a.getId()).collect(Collectors.toList());
-			List<String> artistNames = artists.stream().map(a -> a.getArtistName()).collect(Collectors.toList());
-			List<Integer> groupIds = sortedGroups != null ? sortedGroups.stream().map(g -> g.getId()).collect(Collectors.toList()) : null;
-			List<String> groupNames = sortedGroups != null ? sortedGroups.stream().map(g -> g.getGroupName()).collect(Collectors.toList()) : null;
-			
-			PlayListSongInfoDto dto = PlayListSongInfoDto.builder()
-				.pListId(playList.getPListId())
-				.songId(song.getSongId())
-				.createdTime(playListSong.getCreatedTime())  // 여기서 createdTime 가져오기
-				.title(song.getTitle())
-				.albumId(song.getAlbum().getAlbumId())
-				.albumImage(song.getAlbum().getAlbumImage())  // Assuming album has an image
-				.albumName(song.getAlbum().getAlbumName())
-				.artistId(artistIds)
-				.artistName(artistNames)
-				.groupId(groupIds)
-				.groupName(groupNames)
-				.build();
-			
-			list.add(dto);
-		}
-		
-		return ResponseEntity.ok(list);
+	    for (PlayListSong playListSong : playListSongs) {
+	        Song song = playListSong.getSong();
+	        PlayList playList = playListSong.getPlayList();
+
+	        // 2.1 곡의 아티스트 및 그룹 정보를 조회
+	        List<Song> innerSong = new ArrayList<>();
+	        innerSong.add(song);
+	        
+	        Map<Song, List<Map<String, Object>>> songAndArtists = albumSongSvc.getArtistsOrGroupsBySongsAndRoleId(innerSong, 10);
+	        List<Artist> sortedArtists = albumSongSvc.getSortedArtists(innerSong, 10);
+	        List<Group> sortedGroups = albumSongSvc.getSortedGroups(innerSong, 10);
+	        
+	        List<Artist> artists = null;
+	        if (!sortedGroups.isEmpty()) {
+	            List<Artist> groupMembers = sortedGroups.stream()
+	                .flatMap(group -> group.getGroupMembers().stream().map(gm -> gm.getArtist()))
+	                .collect(Collectors.toList());
+	            
+	            artists = sortedArtists.stream()
+	                .filter(artist -> groupMembers.stream().noneMatch(member -> member.equals(artist)))
+	                .collect(Collectors.toList());
+	        } else {
+	            artists = sortedArtists;
+	        }
+	        
+	        // DTO 생성
+	        List<Integer> artistIds = artists.stream().map(a -> a.getId()).collect(Collectors.toList());
+	        List<String> artistNames = artists.stream().map(a -> a.getArtistName()).collect(Collectors.toList());
+	        List<Integer> groupIds = sortedGroups != null ? sortedGroups.stream().map(g -> g.getId()).collect(Collectors.toList()) : null;
+	        List<String> groupNames = sortedGroups != null ? sortedGroups.stream().map(g -> g.getGroupName()).collect(Collectors.toList()) : null;
+	        
+	        PlayListSongInfoDto dto = PlayListSongInfoDto.builder()
+	            .pListId(playList.getPListId())
+	            .songId(song.getSongId())
+	            .createdTime(playListSong.getCreatedTime())
+	            .title(song.getTitle())
+	            .albumId(song.getAlbum().getAlbumId())
+	            .albumImage(song.getAlbum().getAlbumImage())  // Assuming album has an image
+	            .albumName(song.getAlbum().getAlbumName())
+	            .artistId(artistIds)
+	            .artistName(artistNames)
+	            .groupId(groupIds)
+	            .groupName(groupNames)
+	            .build();
+	        
+	        list.add(dto);
+	    }
+
+	    return ResponseEntity.ok(list);
 	}
 	
 	@PostMapping("/addPlayList")
@@ -152,6 +153,26 @@ public class PlayListController {
 		playListSvc.deleteListSongBySongId(pListId, songId, localDateTime);
 		
 		return ResponseEntity.ok(pListId);
+	}
+	
+	@PostMapping("/checkSongInPlayList")
+	@ResponseBody
+	public ResponseEntity<Boolean> checkSongInPlayList(@RequestBody PlayListSongId id) {
+		log.debug("checkSongInPlayList");
+		
+		Boolean result = playListSvc.checkSongInPlayList(id);
+		
+		return ResponseEntity.ok(result);
+	}
+	
+	@PostMapping("/addSongToPlayList")
+	@ResponseBody
+	public ResponseEntity<Integer> addSongToPlayList(@RequestBody PlayListSongId id) {
+		log.debug("addSongToPlayList({})",id);
+		
+		int result = playListSvc.songAddToPlayList(id);
+		
+		return ResponseEntity.ok(result);
 	}
 
 }

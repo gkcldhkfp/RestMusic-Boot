@@ -49,33 +49,37 @@ public class AlbumSongsService {
 	 * 삽입 그룹에 포함되어 있지 않은 아티스트는 중복처리하여 리스트에 삽입
 	 */
 	@Transactional(readOnly = true)
-	public Map<Song, List<Object>> getArtistsOrGroupsBySongsAndRoleId(List<Song> songs, Integer roleId) {
-		Map<Song, List<Object>> songArtistGroupMap = new HashMap<>();
-
-		for (Song song : songs) {
-			Set<String> processedGroupNames = new HashSet<>(); // 이미 처리된 그룹 이름을 추적하는 Set
-			Set<String> processedArtistNames = new HashSet<>(); // 이미 처리된 아티스트 이름을 추적하는 Set
-			List<ArtistRole> artistRoles = artistRoleRepo.findBySongAndRoleCode_RoleId(song, roleId);
-			List<Object> artistsOrGroups = new ArrayList<>();
-
-			for (ArtistRole artistRole : artistRoles) {
-				Group group = artistRole.getGroup();
-				Artist artist = artistRole.getArtist();
-
-				if (group != null && !processedGroupNames.contains(group.getGroupName())) {
-					// 동일한 이름의 그룹이 아직 처리되지 않은 경우에만 추가
-					artistsOrGroups.add(group);
-					processedGroupNames.add(group.getGroupName());
-				} else if (group == null && !processedArtistNames.contains(artist.getArtistName())) {
-					// 그룹에 속하지 않은 아티스트 중 동일한 이름의 아티스트가 없는 경우에만 추가
-					artistsOrGroups.add(artist);
-					processedArtistNames.add(artist.getArtistName());
-				}
+	public Map<Song, List<Map<String, Object>>> getArtistsOrGroupsBySongsAndRoleId(List<Song> songs, Integer roleId) {
+			Map<Song, List<Map<String, Object>>> songArtistGroupMap = new HashMap<>();
+	
+			for (Song song : songs) {
+					Set<String> processedGroupNames = new HashSet<>();
+					Set<String> processedArtistNames = new HashSet<>();
+					List<ArtistRole> artistRoles = artistRoleRepo.findBySongAndRoleCode_RoleId(song, roleId);
+					List<Map<String, Object>> artistsOrGroups = new ArrayList<>();
+	
+					for (ArtistRole artistRole : artistRoles) {
+							Group group = artistRole.getGroup();
+							Artist artist = artistRole.getArtist();
+	
+							if (group != null && !processedGroupNames.contains(group.getGroupName())) {
+									Map<String, Object> groupMap = new HashMap<>();
+									groupMap.put("type", "group");
+									groupMap.put("data", group);
+									artistsOrGroups.add(groupMap);
+									processedGroupNames.add(group.getGroupName());
+							} else if (group == null && !processedArtistNames.contains(artist.getArtistName())) {
+									Map<String, Object> artistMap = new HashMap<>();
+									artistMap.put("type", "artist");
+									artistMap.put("data", artist);
+									artistsOrGroups.add(artistMap);
+									processedArtistNames.add(artist.getArtistName());
+							}
+					}
+					songArtistGroupMap.put(song, artistsOrGroups);
 			}
-			songArtistGroupMap.put(song, artistsOrGroups);
-		}
-
-		return songArtistGroupMap;
+	
+			return songArtistGroupMap;
 	}
 
 	/**

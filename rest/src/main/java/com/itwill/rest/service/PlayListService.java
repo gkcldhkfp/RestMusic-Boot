@@ -3,18 +3,21 @@ package com.itwill.rest.service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.itwill.rest.domain.PlayList;
 import com.itwill.rest.domain.PlayListSong;
+import com.itwill.rest.domain.PlayListSongId;
 import com.itwill.rest.domain.Song;
 import com.itwill.rest.domain.User;
 import com.itwill.rest.dto.playlist.PlayListCreateDto;
 import com.itwill.rest.dto.playlist.PlayListFirstAlbumImgDto;
 import com.itwill.rest.repository.PlayListRepository;
 import com.itwill.rest.repository.PlayListSongRepository;
+import com.itwill.rest.repository.SongRepository;
 import com.itwill.rest.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -25,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class PlayListService {
 	
+	private final SongRepository songRepo;
 	private final UserRepository userRepo;
 	private final PlayListRepository playListRepo;
 	private final PlayListSongRepository playListSongRepo;
@@ -85,4 +89,36 @@ public class PlayListService {
 
 		playListSongRepo.deleteSongByCreatedTime(pListId, songId, createdTime);
 	}
+	
+	public Boolean checkSongInPlayList(PlayListSongId id) {
+		log.info("checkSongInPlayList(id={})",id);
+		
+		Song song = songRepo.findById(id.getSongId()).get();
+		PlayList playList = playListRepo.findById(id.getPListId()).get();
+		
+		PlayListSong result = playListSongRepo.findBySongAndPlayList(song, playList);
+		
+		if(result == null) {
+			return true;
+		} else {
+			return false;
+		}
+		
+	}
+
+	@Transactional
+	public int songAddToPlayList(PlayListSongId id) {
+		log.info("songAddToPlayList(id={})",id);
+		
+		PlayList playList = playListRepo.findById(id.getPListId()).get();
+		Song song = songRepo.findById(id.getSongId()).get(); 
+		
+		playListSongRepo.save(PlayListSong.builder()
+				.playList(playList)
+				.song(song)
+				.build());
+		
+		return 1;
+	}
+
 }

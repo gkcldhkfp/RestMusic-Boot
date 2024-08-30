@@ -160,6 +160,7 @@ table {
                                         </span>
                                     </th:block>
 
+<<<<<<< HEAD
                                 </td>
                             </tr>
                             <tr>
@@ -294,6 +295,124 @@ table {
                                     th:data-id="${s.key.songId != null ? s.key.songId : ''}"
                                     style="background-image: url('../images/icon/playList.png'); width: 60px; height: 60px; background-size: cover; background-repeat: no-repeat;">
                                 </button> <!-- <button id="openModalBtn" type="button" class="btn btn-primary openModalBtn"
+=======
+								</td>
+							</tr>
+							<tr>
+								<td>발매일</td>
+								<td class="intro" id="date" th:text="${album.albumReleaseDate}"></td>
+							</tr>
+							<tr>
+								<td>장르</td>
+								<td id="genre" class="intro">
+									<span th:each="genre, iterStat : ${genres}">
+										<!-- TODO: 장르 차트 페이지로 링크 변경 -->
+										<a th:href="@{/artist/songs(artistId=${genre.genreId})}" th:text="${genre.genreName}"
+											th:style="'cursor: pointer;'"
+											onmouseover="this.style.fontWeight='bold'; this.style.textDecoration='underline';"
+											onmouseout="this.style.fontWeight='normal'; this.style.textDecoration='none'; this.style.color='black';"></a>
+										<!-- 마지막 원소가 아니라면 ", " 추가 -->
+										<span th:if="${!iterStat.last}">, </span>
+									</span>
+								</td>
+							</tr>
+							<tr style="text-align: left;">
+								<td>타이틀 곡</td>
+								<td id="titleSong" class="intro">
+									<span th:each="titleSong, iterStat : ${titleSongs}">
+										<a th:href="@{/song/detail(songId=${titleSong.song.songId})}" th:text="${titleSong.song.title}"
+											th:style="'cursor: pointer;'"
+											onmouseover="this.style.fontWeight='bold'; this.style.textDecoration='underline';"
+											onmouseout="this.style.fontWeight='normal'; this.style.textDecoration='none'; this.style.color='black';"></a>
+										<!-- 마지막 원소가 아니라면 ", " 추가 -->
+										<span th:if="${!iterStat.last}">, </span>
+									</span>
+								</td>
+							</tr>
+						</table>
+						<div id="like">
+							<button id="btnLike" title="앨범 좋아요" class="btn fs-3">♡</button>
+							<button id="btnListenAlbum" title="앨범 재생" class="btn intro ms-1" style="background-image: url('../images/icon/play.png'); 
+                                width: 45px; height: 45px; background-size: cover; background-repeat: no-repeat;"
+								th:data-id="${album.albumId}"></button>
+							<button id="btnAddCPListAlbum" title="앨범을 재생목록에 추가" class="btn intro ms-3" style="background-image: url('../images/icon/playList.png'); 
+                                width: 60px; height: 60px; background-size: cover; background-repeat: no-repeat;"
+								th:data-id="${album.albumId}"></button>
+							<button id="btnAddUPListAlbum" class="d-none intro btn mx-4" title="앨범을 내 리스트에 담기" style="background-image: url('../images/icon/myPlayList.png'); 
+                                width: 50px; height: 50px; background-size: cover; background-repeat: no-repeat;"
+								data-id="${album.albumId}"></button>
+						</div>
+					</div>
+				</section>
+			</div>
+			<div class="card-body table-responsive">
+				<h3>수록곡 (<span th:text="${songsCount}"></span>)</h3>
+				<table class="table table-striped table-hover">
+					<thead class="font-size-sm">
+						<th class="submenu">#</th>
+						<th class="submenu"></th>
+						<th style="width: 30%;">음원</th>
+						<th style="width: 30%;">아티스트</th>
+						<!-- <th class="submenu">좋아요</th> -->
+						<th class="submenu">듣기</th>
+						<th class="submenu">재생목록</th>
+						<th class="submenu">리스트</th>
+					</thead>
+					<tbody class="table-group-divider font-size-sm">
+						<tr th:each="s, status : ${albumSongs}">
+							<td th:text="${status.index + 1}"></td>
+							<td>
+								<!-- !비교 조건에 따라 Title 태그를 삽입 -->
+								<!-- 타이틀 곡 리스트에서 song 객체를 꺼내 그것과 출력할 음원을 비교함. -->
+								<!-- 타이틀 송인지 확인 -->
+								<span th:each="titleSong, iterStat : ${album.titleSongs}">
+									<span th:if="${#lists.contains(titleSong.song, s.key)}" class="fw-bold">Title</span>
+								</span>
+							</td>
+							<td class="fw-bold">
+								<a th:href="@{/song/detail(songId=${s.key.songId})}"
+									th:text="${s.key.title != null ? s.key.title : ''}"></a>
+							</td>
+							<td>
+								<!--! s.value가 Artist 객체들의 리스트라고 가정 -->
+								<th:block th:if="${s.value != null}">
+									<!-- Artist 리스트를 순회하여 각 artistName과 id를 처리 -->
+									<span th:each="singer, iterStat : ${s.value}">
+										<span th:if="${singer.type == 'group'}">
+											<a th:href="@{/group/songs(groupId=${singer.data.id})}" th:text="${singer.data.groupName}"
+											th:style="'cursor: pointer;'"
+											onmouseover="this.style.fontWeight='bold'; this.style.textDecoration='underline';"
+											onmouseout="this.style.fontWeight='normal'; this.style.textDecoration='none'; this.style.color='black';">
+
+											</a>
+										</span>
+										<span th:if="${singer.type == 'artist'}">
+											<a th:href="@{/artist/songs(artistId=${singer.data.id})}" th:text="${singer.data.artistName}"
+												th:style="'cursor: pointer;'"
+												onmouseover="this.style.fontWeight='bold'; this.style.textDecoration='underline';"
+												onmouseout="this.style.fontWeight='normal'; this.style.textDecoration='none'; this.style.color='black';"></a>
+										</span>
+										<!-- 마지막 원소가 아니라면 ", " 추가 -->
+										<span th:if="${!iterStat.last}">, </span>
+									</span>
+								</th:block>
+
+								<!-- `s.value`가 null일 때를 처리 -->
+								<th:block th:if="${s.value == null}">
+									<!-- 빈 상태를 처리하기 위한 블록, 필요에 따라 추가 -->
+								</th:block>
+							</td>
+							<td>
+								<button th:id="'listenBtn'" th:data-id="${s.key.songId != null ? s.key.songId : ''}" title="재생"
+									class="btn"
+									style="background-image: url('../images/icon/play.png'); width: 45px; height: 45px; background-size: cover; background-repeat: no-repeat;"></button>
+							</td>
+							<td>
+								<button th:id="'addCPList'" class="btn ms-1" th:data-id="${s.key.songId != null ? s.key.songId : ''}"
+									style="background-image: url('../images/icon/playList.png'); width: 60px; height: 60px; background-size: cover; background-repeat: no-repeat;">
+								</button>
+								<!-- <button id="openModalBtn" type="button" class="btn btn-primary openModalBtn"
+>>>>>>> origin/kdh
 															data-bs-toggle="modal" data-bs-target="#sessionListModal">
 															재생목록
 											</button> -->

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+</head>
+
+<body>
+	<header>
+		<div th:replace="~{/layout/fragments :: header}"></div>
+	</header>
+	<main>
+		<div class="card m-5">
+			<div class="card-header">
+				<h2>관리자 페이지</h2>
+			</div>
+			<div class="card-body row">
+				<a class="col" th:href="@{/admin/album}">
+					<button class="btn btn-outline-primary m-2 p-3" style="font-size: 1.5rem;">
+						앨범 관리
+					</button>
+				</a>
+				<a class="col" th:href="@{/admin/song}">
+					<button class="btn btn-outline-success m-2 p-3" style="font-size: 1.5rem;">
+						음원 관리
+					</button>
+				</a>
+				<a class="col" th:href="@{/admin/group}">
+					<button class="btn btn-outline-secondary m-2 p-3" style="font-size: 1.5rem;">
+						그룹 관리
+					</button>
+				</a>
+				<a class="col" th:href="@{/admin/artist}">
+					<button class="btn btn-outline-warning m-2 p-3" style="font-size: 1.5rem;">
+						아티스트 관리
+					</button>
+				</a>
+			</div>
+		</div>
+
+	</main>
+
+	<th:block th:replace="~{/layout/fragments :: footer}"></th:block>
+
+</body>
+
+</html>
