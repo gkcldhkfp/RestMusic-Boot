@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 public class SongSearchResultDto {
 
-	private int songId;
+	private Integer songId;
 	private String songTitle;
 	private String albumImage;
 	private String albumTitle;

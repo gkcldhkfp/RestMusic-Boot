@@ -1,9 +1,112 @@
 package com.itwill.rest.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.List;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import com.itwill.rest.domain.Album;
 import com.itwill.rest.domain.Song;
+import com.itwill.rest.dto.SongSearchResultDto;
 
 public interface SongRepository extends JpaRepository<Song, Integer>, SongQuerydsl {
+	
+	
+	@Query(value = "WITH song_data AS ( "
+			+ "     "
+			+ "    SELECT "
+			+ "        s.song_id, "
+			+ "        s.title AS name, "
+			+ "        a.album_id, "
+			+ "        a.album_name, "
+			+ "        a.album_image, "
+			+ "        COALESCE(g.group_name, art.artist_name) AS artist_name, "
+			+ "        COALESCE(g.group_id, art.artist_id) AS artist_id, "
+			+ "        CASE WHEN g.group_id IS NOT NULL THEN 'group' ELSE 'artist' END AS artist_type, "
+			+ "        'album' AS type "
+			+ "    FROM albums a "
+			+ "    LEFT JOIN songs s ON a.album_id = s.album_id "
+			+ "    LEFT JOIN artist_roles ar ON s.song_id = ar.song_id AND ar.role_id = 10 "
+			+ "    LEFT JOIN artists art ON ar.artist_id = art.artist_id "
+			+ "    LEFT JOIN `groups` g ON ar.group_id = g.group_id "
+			+ "    WHERE MATCH(a.album_name) AGAINST(:keyword IN BOOLEAN MODE) "
+			+ "     "
+			+ "    UNION ALL "
+			+ " "
+			+ "    "
+			+ "    SELECT "
+			+ "        s.song_id, "
+			+ "        s.title AS name, "
+			+ "        a.album_id, "
+			+ "        a.album_name, "
+			+ "        a.album_image, "
+			+ "        COALESCE(g.group_name, art.artist_name) AS artist_name, "
+			+ "        COALESCE(g.group_id, art.artist_id) AS artist_id, "
+			+ "        CASE WHEN g.group_id IS NOT NULL THEN 'group' ELSE 'artist' END AS artist_type, "
+			+ "        'artist' AS type "
+			+ "    FROM artists art "
+			+ "    LEFT JOIN artist_roles ar ON art.artist_id = ar.artist_id "
+			+ "    LEFT JOIN songs s ON ar.song_id = s.song_id "
+			+ "    LEFT JOIN albums a ON s.album_id = a.album_id "
+			+ "    LEFT JOIN `groups` g ON ar.group_id = g.group_id "
+			+ "    WHERE ar.role_id = 10 AND MATCH(art.artist_name) AGAINST(:keyword IN BOOLEAN MODE) "
+			+ " "
+			+ "    UNION ALL "
+			+ " "
+			+ "     "
+			+ "    SELECT "
+			+ "        s.song_id, "
+			+ "        s.title AS name, "
+			+ "        a.album_id, "
+			+ "        a.album_name, "
+			+ "        a.album_image, "
+			+ "        g.group_name AS artist_name, "
+			+ "        g.group_id AS artist_id, "
+			+ "        'group' AS artist_type, "
+			+ "        'group' AS type "
+			+ "    FROM `groups` g "
+			+ "    LEFT JOIN artist_roles ar ON g.group_id = ar.group_id "
+			+ "    LEFT JOIN songs s ON ar.song_id = s.song_id "
+			+ "    LEFT JOIN albums a ON s.album_id = a.album_id "
+			+ "    WHERE ar.role_id = 10 AND MATCH(g.group_name) AGAINST(:keyword IN BOOLEAN MODE) "
+			+ " "
+			+ "    UNION ALL "
+			+ " "
+			+ "     "
+			+ "    SELECT "
+			+ "        s.song_id, "
+			+ "        s.title AS name, "
+			+ "        s.album_id, "
+			+ "        a.album_name, "
+			+ "        a.album_image, "
+			+ "        COALESCE(g.group_name, art.artist_name) AS artist_name, "
+			+ "        COALESCE(g.group_id, art.artist_id) AS artist_id, "
+			+ "        CASE WHEN g.group_id IS NOT NULL THEN 'group' ELSE 'artist' END AS artist_type, "
+			+ "        'song' AS type "
+			+ "    FROM songs s "
+			+ "    LEFT JOIN albums a ON s.album_id = a.album_id "
+			+ "    LEFT JOIN artist_roles ar ON s.song_id = ar.song_id AND ar.role_id = 10 "
+			+ "    LEFT JOIN artists art ON ar.artist_id = art.artist_id "
+			+ "    LEFT JOIN `groups` g ON ar.group_id = g.group_id "
+			+ "    WHERE MATCH(s.title) AGAINST(:keyword IN BOOLEAN MODE) "
+			+ ")  "
+			+ "SELECT DISTINCT "
+			+ "    sd.song_id, "
+			+ "    sd.name AS title, "
+			+ "    sd.album_id, "
+			+ "    sd.album_name, "
+			+ "    sd.album_image, "
+			+ "    sd.artist_name, "
+			+ "    sd.artist_id, "
+			+ "    sd.artist_type, "
+			+ "    COALESCE(sl.like_count, 0) AS like_count  "
+			+ "FROM song_data sd  "
+			+ "LEFT JOIN (SELECT song_id, COUNT(*) AS like_count FROM likes GROUP BY song_id) AS sl ON sd.song_id = sl.song_id  "
+			+ "ORDER BY LENGTH(sd.name), like_count DESC  "
+			+ "LIMIT ? OFFSET ?; "
+			+ "", nativeQuery = true)
+	List<SongSearchResultDto> findByAlbumNameInitialSound(@Param("keyword") String keyword, Pageable pageable);
 	
 }

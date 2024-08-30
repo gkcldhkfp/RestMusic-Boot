@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,11 +64,7 @@ public class AlbumRepositoryTest {
 	@Autowired
 	private TitleSongRepository titleSongRepo;
 
-<<<<<<< HEAD
-//	@Test
-=======
 	// @Test
->>>>>>> refs/heads/develop
 	public void diTest() {
 		log.info("diTest(albumRepo = {})", albumRepo);
 		assertThat(albumRepo).isNotNull();
@@ -450,7 +447,7 @@ public class AlbumRepositoryTest {
 
 	}
 
-	@Test
+//	@Test
 	public void ttest() {
 		long startTime = System.currentTimeMillis();
 
