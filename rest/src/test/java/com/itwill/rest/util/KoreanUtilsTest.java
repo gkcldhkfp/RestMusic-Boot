@@ -1,4 +1,4 @@
-package com.itwill.rest.Util;
+package com.itwill.rest.util;
 
 import java.util.List;
 
