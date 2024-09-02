@@ -121,14 +121,14 @@
                                         <button
                                             style="background-image: url('../images/icon/play.png'); 
                                             width: 40px; height: 40px; background-size: cover; background-repeat: no-repeat;"
-                                            data-songId="${s.songId}"
-                                            data-id="${s.songId}"
+                                            th:data-songId="${s.songId}"
+                                            th:data-id="${s.songId}"
                                             class="playButton btn"
                                             id="listenBtn"></button>
                                     </td>
                                     <td style="text-align: center;">
                                         <button
-                                            data-id="${s.songId}"
+                                            th:data-id="${s.songId}"
                                             id="addCPList" title="재생목록에 추가"
                                             class="btn mt-3"
                                             style="background-image: url('../images/icon/playList.png'); 
@@ -139,7 +139,7 @@
                                         <button
                                             style="background-image: url('../images/icon/myPlayList.png'); 
                                             width: 40px; height: 40px; background-size: cover; background-repeat: no-repeat;"
-                                            data-songId="${s.songId}"
+                                            th:data-songId="${s.songId}"
                                             class="addPlayList btn"></button>
                                     </td>
                                 </tr>
@@ -185,6 +185,13 @@
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
         
         <script src="/js/group_songs.js"></script>
+        <script src="/js/addCurrentPlayList.js"></script>
+        
+        <script>
+            let loginUserId = '${loginUserId}';
+            let refresh = '${refresh}';
+            // 리다이렉트 시 재생페이지를 새로고침하기 위한 코드
+        </script>
         
         <th:block th:replace="~{/layout/fragments :: footer}"></th:block>
     </body>

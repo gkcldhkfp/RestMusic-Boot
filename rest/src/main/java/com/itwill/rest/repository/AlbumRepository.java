@@ -14,7 +14,7 @@ public interface AlbumRepository extends JpaRepository<Album, Integer> {
     @Query("SELECT DISTINCT ar.song.album.albumId FROM ArtistRole ar WHERE ar.group.id = :groupId")
     List<Integer> findAlbumIdsByGroupId(@Param("groupId") Integer groupId);
     
- // groupId로 모든 albumId를 찾는 메서드
+    // artistId로 모든 albumId를 찾는 메서드
     @Query("SELECT DISTINCT ar.song.album.albumId FROM ArtistRole ar WHERE ar.artist.id = :artistId")
     List<Integer> findAlbumIdsByArtistId(@Param("artistId") Integer artistId);
 	
