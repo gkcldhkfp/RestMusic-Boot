@@ -13,6 +13,7 @@ import com.itwill.rest.domain.Group;
 import com.itwill.rest.domain.GroupFirstCon;
 import com.itwill.rest.domain.Song;
 import com.itwill.rest.domain.SongFirstCon;
+import com.itwill.rest.dto.ChoSeongSearchDto;
 import com.itwill.rest.repository.AlbumFirstConRepository;
 import com.itwill.rest.repository.AlbumRepository;
 import com.itwill.rest.repository.ArtistFirstConRepository;
@@ -51,9 +52,11 @@ public class FirstConService {
 		// 현재 모든 앨범을 불러옴.
 		List<AlbumFirstCon> albumFirstCons = new ArrayList<>();
 		for (Album album : albums) {
+			String albumNameWithoutSpaces = album.getAlbumName().replaceAll("\\s+", "");
+			// 앨범 이름에서 공백을 제거
 			AlbumFirstCon albumFirstConName = AlbumFirstCon.builder()
 					.album(album)
-					.albumFirstConName(KoreanUtils.getInitialSound(album.getAlbumName()))
+					.albumFirstConName(KoreanUtils.getInitialSound(albumNameWithoutSpaces))
 					.build();
 			// 초성 앨범 객체를 생성
 			albumFirstCons.add(albumFirstConName);
@@ -73,9 +76,11 @@ public class FirstConService {
 		// 현재 모든 앨범을 불러옴.
 		List<SongFirstCon> songFirstCons = new ArrayList<>();
 		for (Song song : songs) {
+			String songTitleWithoutSpaces = song.getTitle().replaceAll("\\s+", "");
+			// 노래 제목에서 공백을 제거
 			SongFirstCon songFirstConName = SongFirstCon.builder()
 					.song(song)
-					.songFirstConName(KoreanUtils.getInitialSound(song.getTitle()))
+					.songFirstConName(KoreanUtils.getInitialSound(songTitleWithoutSpaces))
 					.build();
 			// 초성 앨범 객체를 생성
 			songFirstCons.add(songFirstConName);
@@ -95,9 +100,11 @@ public class FirstConService {
 		// 현재 모든 아티스트을 불러옴.
 		List<ArtistFirstCon> artistFirstCons = new ArrayList<>();
 		for (Artist artist : artists) {
+			String artistNameWithoutSpaces = artist.getArtistName().replaceAll("\\s+", "");
+			// 아티스트 이름에서 공백을 제거
 			ArtistFirstCon artistFirstConName = ArtistFirstCon.builder()
 					.artist(artist)
-					.artistFirstConName(KoreanUtils.getInitialSound(artist.getArtistName()))
+					.artistFirstConName(KoreanUtils.getInitialSound(artistNameWithoutSpaces))
 					.build();
 			// 초성 아티스트 객체를 생성
 			artistFirstCons.add(artistFirstConName);
@@ -117,9 +124,11 @@ public class FirstConService {
 		// 현재 모든 그룹을 불러옴.
 		List<GroupFirstCon> groupFirstCons = new ArrayList<>();
 		for (Group group : groups) {
+			String groupNameWithoutSpaces = group.getGroupName().replaceAll("\\s+", "");
+			// 그룹 이름에서 공백을 제거
 			GroupFirstCon groupFirstConName = GroupFirstCon.builder()
 					.group(group)
-					.groupFirstConName(KoreanUtils.getInitialSound(group.getGroupName()))
+					.groupFirstConName(KoreanUtils.getInitialSound(groupNameWithoutSpaces))
 					.build();
 			// 초성 그룹 객체를 생성
 			groupFirstCons.add(groupFirstConName);
@@ -129,5 +138,27 @@ public class FirstConService {
 		// 리스트를 데이터베이스에 삽입.
 		return savedGroupFirstCon;
 		// 결과 확인 용 리스트를 리턴.
+	}
+
+	/**
+	 * 초성으로 구성된 키워드를 전달받으면 초성에 해당하는 id로 name을 저장하는 서비스
+	 */
+	public List<ChoSeongSearchDto> searchDtos(String keyword) {
+		String keywordWithoutSpaces = keyword.replaceAll("\\s+", "");
+		List<ChoSeongSearchDto> choSeongBySearchTerm = convertToContentDto(albumRepo.findChoSeongBySearchTerm(keywordWithoutSpaces));
+		return choSeongBySearchTerm;
+	}
+
+		public List<ChoSeongSearchDto> convertToContentDto(List<Object[]> results) {
+		List<ChoSeongSearchDto> choSeongSearchDtos = new ArrayList<>();
+		for (Object[] result : results) {
+			ChoSeongSearchDto dto = new ChoSeongSearchDto();
+			dto.setType((String) result[0]);
+			dto.setId((Integer) result[1]);
+			dto.setName((String) result[2]);
+			dto.setLikeCount(((Long) result[4]).intValue()); // assuming like_count is a BigInteger
+			choSeongSearchDtos.add(dto);
+		}
+		return choSeongSearchDtos;
 	}
 }
