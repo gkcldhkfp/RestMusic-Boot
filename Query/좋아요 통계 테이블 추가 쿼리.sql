@@ -106,6 +106,7 @@ CREATE TABLE
 	`groups` ( -- 그룹 정보 (컬럼 3개)
 		group_id 			INT AUTO_INCREMENT, -- 그룹 번호 (5자리, 자동 생성)
 		group_name 			VARCHAR(200) NOT NULL, -- 그룹 이름 (200글자, 낫 널))
+		group_image 		VARCHAR(200), -- 그룹 이미지 (200바이트)
 		group_description 	VARCHAR(200), -- 그룹 설명 (200바이트)
 							PRIMARY KEY (group_id) -- 그룹 번호 (고유키)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
