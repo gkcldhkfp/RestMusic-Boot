@@ -2,7 +2,6 @@ package com.itwill.rest.util;
 
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,5 +48,4 @@ public class KoreanUtilsTest {
 		long duration = endTime - startTime;
 		log.info("테스트 실행 시간: " + duration + "ms");
 	}
-	
 }
