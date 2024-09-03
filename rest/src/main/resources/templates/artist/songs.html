@@ -215,10 +215,9 @@
         <script src="/js/artist_songs.js"></script>
         <script src="/js/addCurrentPlayList.js"></script>
         
-        <script>
-            let loginUserId = '${loginUserId}';
-            let refresh = '${refresh}';
-            // 리다이렉트 시 재생페이지를 새로고침하기 위한 코드
+        <script th:inline="javascript">
+            const refresh = /*[[${refresh}]]*/ '';
+            const loginUserId = /*[[${loginUserId}]]*/ null;
         </script>
         
         <th:block th:replace="~{/layout/fragments :: footer}"></th:block>

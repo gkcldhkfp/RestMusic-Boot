@@ -1,5 +1,5 @@
 /**
- * artist 폴더의 songs.html에 포함
+ * group 폴더의 songs.html에 포함
  */
 document.addEventListener('DOMContentLoaded', () => {
     const btnAddPlayLists = document.querySelectorAll('button.addPlayList');
@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function getPlayLists(event) {
         event.stopPropagation();
-        if (loginUserId == '') { // 유저아이디
+        if (loginUserId == null) { // 유저아이디
             alert('로그인이 필요합니다');
             return;
         }
