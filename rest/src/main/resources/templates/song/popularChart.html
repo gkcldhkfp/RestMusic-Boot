@@ -14,7 +14,6 @@
             <th:block th:replace="~{/layout/fragments :: header}"></th:block>
         </header>
         
-         
         <main>
             <div class="container my-3">
                 <table class="table table-hover">
@@ -40,7 +39,7 @@
                                     <img alt="앨범표지" th:src="@{/images/albumcover/{image}(image=${top.albumImage})}" class="img-fluid" />
                                 </a>
                                 <div>
-                                    <a th:href="@{/song/detail(songId=${top.songId})}" style="font: inherit; color: inherit; text-decoration: none;">
+                                    <a th:href="@{/song/details(songId=${top.songId})}" style="font: inherit; color: inherit; text-decoration: none;">
                                         <span th:text="${top.title}"></span><br>
                                     </a>          
                                     <!-- 그룹 정보가 있을 때만 표시 -->

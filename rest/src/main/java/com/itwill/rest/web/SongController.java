@@ -153,6 +153,7 @@ public class SongController {
 	    return ResponseEntity.ok(response);
 	}
 	
+	// 최신 음악
 	@GetMapping("/newest")
     public void newestSongs(Model model, Authentication authentication) {
 		log.info("newestSongs");

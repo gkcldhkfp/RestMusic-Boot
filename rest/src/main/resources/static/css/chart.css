@@ -336,5 +336,3 @@ td {
 .toggle-button.active .toggle-icon {
     transform: rotate(180deg); /* 활성화 시 아이콘 180도 회전 */
 }
-
-

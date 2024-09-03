@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.itwill.rest.domain.PlayList;
 import com.itwill.rest.domain.PlayListSong;
-import com.itwill.rest.domain.PlayListSongId;
 import com.itwill.rest.domain.Song;
 
 public interface PlayListSongRepository extends JpaRepository<PlayListSong, Integer> {
@@ -28,5 +27,5 @@ public interface PlayListSongRepository extends JpaRepository<PlayListSong, Inte
     @Transactional
     @Query("DELETE FROM PlayListSong p WHERE p.playList.pListId = :pListId AND p.song.songId = :songId AND p.createdTime = :createdTime")
 	void deleteSongByCreatedTime(@Param("pListId") Integer pListId, @Param("songId") Integer songId, @Param("createdTime") LocalDateTime createdTime);
-
+    
 }

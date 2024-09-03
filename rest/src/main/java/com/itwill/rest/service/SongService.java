@@ -1,8 +1,14 @@
 package com.itwill.rest.service;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -17,10 +23,12 @@ import com.itwill.rest.domain.Like;
 import com.itwill.rest.domain.LikeId;
 import com.itwill.rest.domain.Song;
 import com.itwill.rest.dto.SongChartDto;
+import com.itwill.rest.dto.SongDetailsDto;
 import com.itwill.rest.dto.SongLikeDto;
 import com.itwill.rest.repository.AlbumRepository;
 import com.itwill.rest.repository.ArtistRoleRepository;
 import com.itwill.rest.repository.GroupMemberRepository;
+import com.itwill.rest.repository.LikeRepository;
 import com.itwill.rest.repository.SongLikeRepository;
 import com.itwill.rest.repository.SongRepository;
 
@@ -37,6 +45,7 @@ public class SongService {
     private final ArtistRoleRepository artistRoleRepo;
     private final GroupMemberRepository groupMemberRepo;
     private final AlbumRepository albumRepo;
+    private final LikeRepository likeRepo;
 
     // top30
     @Transactional(readOnly = true)

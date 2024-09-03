@@ -181,7 +181,11 @@ create table
 		id number (4) generated as identity, -- 회원 번호 (4자리, 자동 생성)
 		user_name varchar2 (20 char) not null, --  회원 이름 (20글자, 낫 널)
 		user_id varchar2 (20) not null, -- 회원 아이디 (20바이트, 낫 널)
+<<<<<<< HEAD
+		password varchar2 (100 char) not null, -- 비밀번호 (30바이트, 낫 널)
+=======
 		password varchar2 (200) not null, -- 비밀번호 (200 바이트, 낫 널)
+>>>>>>> origin/develop
 		email varchar2 (30) not null, -- 이메일 (30바이트, 낫 널)
 		nickname varchar2 (20 char) not null, -- 닉네임 (20글자, 낫 널)
 		user_profile varchar2 (100), -- 회원_프로필 (100바이트)

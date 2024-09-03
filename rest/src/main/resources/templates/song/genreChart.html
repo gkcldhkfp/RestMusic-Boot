@@ -92,22 +92,11 @@
         <header>
             <th:block th:replace="~{/layout/fragments :: header}"></th:block>
         </header>
-        
-         
+            
         <main>
 		    <div class="container my-3">
 			    <!-- 장르 버튼을 동적으로 삽입할 컨테이너 -->
 	            <div id="genreButtons" class="d-flex justify-content-start mb-3 button_rbox"></div>
-		        <!-- <form id="genreForm" method="get" th:action="@{/song/genreChart}">
-		            <div class="d-flex justify-content-start mb-3 button_rbox">
-		                <div th:each="genre : ${genres}">
-		                    <button type="button" class="btn btn-genre me-2 genre-btn"
-		                            th:data-genre-name="${genre}" th:text="${genre}"
-		                            th:classappend="${genre == selectedGenre} ? 'active' : ''"></button>
-		                </div>
-		            </div>
-		        </form>
-		         -->
 		    </div>
 		    
 		    <div id="noChartMessage" class="text-center py-5" th:classappend="${genreSongs != null && genreSongs.size() > 0 ? 'd-none' : ''}">
@@ -145,7 +134,6 @@
 		    </div>
 		</main>
          
-    
         <!-- 플로팅 버튼 그룹 -->
         <div id="floatingButtonGroup" class="floating-button-group d-none">
             <div class="selected-count mb-2">0개 선택됨</div>

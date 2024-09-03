@@ -752,7 +752,7 @@ document.addEventListener("DOMContentLoaded", function() {
                       <img alt="앨범표지" src="/images/albumcover/${song.albumImage}" class="img-fluid" />
                     </a>
                     <div>
-                        <a href="/song/detail?songId=${song.songId}" style="font: inherit; color: inherit; text-decoration: none;">
+                        <a href="/song/details?songId=${song.songId}" style="font: inherit; color: inherit; text-decoration: none;">
                             <span>${song.title}</span><br>
                         </a>
                         ${song.groupNames && song.groupNames.length > 0 ? 
