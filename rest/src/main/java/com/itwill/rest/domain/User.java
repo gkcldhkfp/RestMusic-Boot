@@ -41,7 +41,7 @@ public class User implements UserDetails {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private Long id;
 
 	@Basic(optional = false)
 	@EqualsAndHashCode.Include // username field equals()와 hashCode()를 재정의할 때 사용.
@@ -70,7 +70,7 @@ public class User implements UserDetails {
 	private String hintAnswer;
 
 	@Builder.Default
-	private Integer isActive = 1;
+	private Long isActive = 1L;
 
 	private LocalDate deactivatedUntil;
 
@@ -146,7 +146,7 @@ public class User implements UserDetails {
     
     // 사용자 계정 비활성화 메서드
     public User deactivateUser(LocalDate deactivatedUntil) {
-        this.isActive = 0;
+        this.isActive = 0L;
         this.deactivatedUntil = deactivatedUntil;
         return this;
     }

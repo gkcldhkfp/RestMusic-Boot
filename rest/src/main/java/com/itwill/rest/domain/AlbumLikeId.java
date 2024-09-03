@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor @AllArgsConstructor
 @Builder @Embeddable
 public class AlbumLikeId {
-	private Integer albumId;
+	private Long albumId;
 
-	private Integer id;
+	private Long id;
 
 }

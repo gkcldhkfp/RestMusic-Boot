@@ -190,7 +190,7 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public boolean deactivateAccount(Integer id, String password) {
+    public boolean deactivateAccount(Long id, String password) {
         User user = userRepo.findById(id).orElse(null);
         if (user == null || !userRepo.checkPassword(id, password)) {
             return false;
@@ -201,15 +201,18 @@ public class UserService implements UserDetailsService {
         return true;
     }
 
+    @Transactional
     public boolean checkUserIsActive(String userId) {
         return userRepo.checkUserIsActive(userId);
     }
 
+    @Transactional
     public boolean checkDeactivationPeriod(String userId) {
         return userRepo.checkDeactivationPeriod(userId);
     }
 
-    public User getUserById(Integer id) {
+    @Transactional
+    public User getUserById(Long id) {
         return userRepo.findById(id).orElse(null);
     }
 	

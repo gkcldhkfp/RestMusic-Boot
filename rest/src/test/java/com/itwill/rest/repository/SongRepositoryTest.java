@@ -26,17 +26,17 @@ public class SongRepositoryTest {
 	}
 
 	// @Test
-	@Transactional
-	public void findByIdTest() {
-		/* Song song = songRepo.findById(15).orElseThrow();
-		log.info("song = {}", song);
-		Set<SongGenre> genres = song.getGenres();
-		genres.forEach((g) -> {
-			System.out.println(g.getGenreCode().getGenreName());
-		}); */
-		List<Song> songs = songRepo.findAllByOrderByAlbum_AlbumReleaseDateDesc();
-		System.out.println(songs);
-	}
+//	@Transactional
+//	public void findByIdTest() {
+//		Song song = songRepo.findById(15).orElseThrow();
+//		log.info("song = {}", song);
+//		Set<SongGenre> genres = song.getGenres();
+//		genres.forEach((g) -> {
+//			System.out.println(g.getGenreCode().getGenreName());
+//		});
+//		List<Song> songs = songRepo.findAllByOrderByAlbum_AlbumReleaseDateDesc();
+//		System.out.println(songs);
+//	}
 
 	// @Test
 	@Transactional

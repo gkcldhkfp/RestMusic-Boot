@@ -29,9 +29,9 @@ public class AlbumSongsServiceTest {
 	// @Test
 	@Transactional
 	public void readTest() {
-		Album album = albumRepo.findById(10).orElseThrow();
+		Album album = albumRepo.findById(10L).orElseThrow();
 		List<Song> songs = album.getSongs();
-		Map<Song, List<Map<String, Object>>> artistsBySongsAndRoleId = albumServ.getArtistsOrGroupsBySongsAndRoleId(songs, 10);
+		Map<Song, List<Map<String, Object>>> artistsBySongsAndRoleId = albumServ.getArtistsOrGroupsBySongsAndRoleId(songs, 10L);
 		System.out.println(artistsBySongsAndRoleId);
 
 		

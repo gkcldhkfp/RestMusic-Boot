@@ -31,7 +31,7 @@ public class Song {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer songId;
+	private Long songId;
 
 	@ToString.Exclude // ToString에서 제외. 안하면 무한루프에 빠질 수 있음.
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -59,6 +59,16 @@ public class Song {
 	@OneToMany(mappedBy = "song", fetch = FetchType.LAZY)
 	@Builder.Default
 	private List<SongGenre> genres = new ArrayList<>();
+ 	
+ 	@ToString.Exclude
+    @OneToMany(mappedBy = "likeId.songId", fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<Like> likes = new ArrayList<>();
+
+    // 편의 메서드 추가
+    public long getLikesCount() {
+        return likes.size();
+    }
 	
 /*	@ToString.Exclude
 	@OneToMany(mappedBy = "song", fetch = FetchType.LAZY)

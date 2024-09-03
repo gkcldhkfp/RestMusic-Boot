@@ -23,7 +23,7 @@ import lombok.ToString;
 public class PlayList {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer pListId;
+	private Long pListId;
 
 	private String pListName;
 

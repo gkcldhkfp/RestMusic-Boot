@@ -28,7 +28,6 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	// runtimeOnly 'com.oracle.database.jdbc:ojdbc11'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
@@ -53,6 +52,14 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
 	// ---------------------------
+	
+	// Apache Commons Lang for StringUtils
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+    // ---------------------------
+
+    // Google Guava for additional utilities
+    implementation 'com.google.guava:guava:31.1-jre'
+    // ---------------------------
 }
 
 

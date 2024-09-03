@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor @AllArgsConstructor
 @Builder
 public class GroupMemberId {
-	private Integer groupId;
+	private Long groupId;
 
-	private Integer artistId;
+	private Long artistId;
 }

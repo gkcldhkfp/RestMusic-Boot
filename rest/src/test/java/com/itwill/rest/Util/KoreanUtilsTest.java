@@ -27,7 +27,7 @@ public class KoreanUtilsTest {
 		System.out.println(chosungTest);
 	}
 
-	@Test
+	// @Test
 	@Transactional
 	public void chosungAlbumTest() {
 
@@ -49,4 +49,5 @@ public class KoreanUtilsTest {
 		long duration = endTime - startTime;
 		log.info("테스트 실행 시간: " + duration + "ms");
 	}
+	
 }

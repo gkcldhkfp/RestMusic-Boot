@@ -19,10 +19,10 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class GenreCode {
 	@Builder.Default
-	private Integer codeId = 2;
+	private Long codeId = 2L;
 	
 	@Id
-	private int genreId;
+	private long genreId;
 
 	private String genreName;
 }

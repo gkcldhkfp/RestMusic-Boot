@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 public class PlayListSongId {
-	private Integer pListId;
+	private Long pListId;
 
-	private Integer songId;
+	private Long songId;
 }

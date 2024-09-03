@@ -90,7 +90,7 @@ public class AlbumRepositoryTest {
 
 		log.info("findByIdTest()");
 
-		Album album = albumRepo.findById(10).get(); // 천천히 가 앨범
+		Album album = albumRepo.findById(10L).get(); // 천천히 가 앨범
 		List<TitleSong> titleSongs = album.getTitleSongs();
 		titleSongs.forEach(t -> {
 			System.out.println(t);
@@ -172,10 +172,10 @@ public class AlbumRepositoryTest {
 
 		log.info("group = {}", group);
 
-		RoleCode 가수 = roleCodeRepo.findById(10).get();
-		RoleCode 작곡 = roleCodeRepo.findById(20).get();
-		RoleCode 작사 = roleCodeRepo.findById(30).get();
-		RoleCode 편곡 = roleCodeRepo.findById(40).get();
+		RoleCode 가수 = roleCodeRepo.findById(10L).get();
+		RoleCode 작곡 = roleCodeRepo.findById(20L).get();
+		RoleCode 작사 = roleCodeRepo.findById(30L).get();
+		RoleCode 편곡 = roleCodeRepo.findById(40L).get();
 
 		List<Artist> artists = new ArrayList<>();
 		for (int i = 1; i <= 10; i++) {
@@ -213,7 +213,7 @@ public class AlbumRepositoryTest {
 	// @Test
 	public void deleteTest() {
 		log.info("deleteTest");
-		Album album = albumRepo.findById(17).get();
+		Album album = albumRepo.findById(17L).get();
 		albumRepo.delete(album);
 	}
 
@@ -353,16 +353,16 @@ public class AlbumRepositoryTest {
 
 		// 음원 장르 등록
 
-		GenreCode 발라드 = genreCodeRepo.findById(10).get();
-		GenreCode 팝 = genreCodeRepo.findById(20).get();
-		GenreCode 댄스일렉 = genreCodeRepo.findById(30).get();
-		GenreCode 알앤비 = genreCodeRepo.findById(40).get();
-		GenreCode 힙합 = genreCodeRepo.findById(50).get();
-		GenreCode 트로트 = genreCodeRepo.findById(60).get();
-		GenreCode OST = genreCodeRepo.findById(70).get();
-		GenreCode 인디 = genreCodeRepo.findById(80).get();
-		GenreCode 포크블루스 = genreCodeRepo.findById(90).get();
-		GenreCode 록메탈 = genreCodeRepo.findById(100).get();
+		GenreCode 발라드 = genreCodeRepo.findById(10L).get();
+		GenreCode 팝 = genreCodeRepo.findById(20L).get();
+		GenreCode 댄스일렉 = genreCodeRepo.findById(30L).get();
+		GenreCode 알앤비 = genreCodeRepo.findById(40L).get();
+		GenreCode 힙합 = genreCodeRepo.findById(50L).get();
+		GenreCode 트로트 = genreCodeRepo.findById(60L).get();
+		GenreCode OST = genreCodeRepo.findById(70L).get();
+		GenreCode 인디 = genreCodeRepo.findById(80L).get();
+		GenreCode 포크블루스 = genreCodeRepo.findById(90L).get();
+		GenreCode 록메탈 = genreCodeRepo.findById(100L).get();
 
 		List<SongGenre> genres = new ArrayList<>();
 
@@ -443,10 +443,10 @@ public class AlbumRepositoryTest {
 
 		// 역할 등록
 
-		RoleCode 가수 = roleCodeRepo.findById(10).get();
-		RoleCode 작곡 = roleCodeRepo.findById(20).get();
-		RoleCode 작사 = roleCodeRepo.findById(30).get();
-		RoleCode 편곡 = roleCodeRepo.findById(40).get();
+		RoleCode 가수 = roleCodeRepo.findById(10L).get();
+		RoleCode 작곡 = roleCodeRepo.findById(20L).get();
+		RoleCode 작사 = roleCodeRepo.findById(30L).get();
+		RoleCode 편곡 = roleCodeRepo.findById(40L).get();
 		List<ArtistRole> roles = new ArrayList<>();
 
 		ArtistRole song1Role1 = ArtistRole.builder()

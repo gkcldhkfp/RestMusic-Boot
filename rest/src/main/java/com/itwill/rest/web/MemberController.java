@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.savedrequest.DefaultSavedRequest;
+import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -44,8 +46,19 @@ public class MemberController {
     
     
     @GetMapping("/signin")
-    public void signIn() {
+    public void signIn(@RequestParam(required = false) String targetUrl, HttpServletRequest request) {
         log.info("GET signIn()");
+        
+        if (targetUrl != null && !targetUrl.isEmpty()) {
+            SavedRequest savedRequest = new DefaultSavedRequest.Builder()
+                .setScheme(request.getScheme())
+                .setServerName(request.getServerName())
+                .setServerPort(request.getServerPort())
+                .setContextPath(request.getContextPath())
+                .setRequestURI(targetUrl)
+                .build();
+            request.getSession().setAttribute("SPRING_SECURITY_SAVED_REQUEST", savedRequest);
+        }
     }
     
     @GetMapping("/signup")
@@ -199,7 +212,7 @@ public class MemberController {
         }
 
         User user = (User) authentication.getPrincipal();
-        Integer loginUserId = user.getId();
+        Long loginUserId = user.getId();
         User userDetails = userServ.getUserById(loginUserId);
         
         model.addAttribute("user", userDetails);
@@ -217,7 +230,7 @@ public class MemberController {
         }
 
         User user = (User) authentication.getPrincipal();
-        Integer id = user.getId();
+        Long id = user.getId();
         String password = dto.getPassword();
 
         boolean result = userServ.deactivateAccount(id, password);

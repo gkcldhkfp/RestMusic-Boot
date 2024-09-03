@@ -19,10 +19,10 @@ import lombok.ToString;
 public class RoleCode {
 
 	@Id
-	private Integer roleId;
+	private Long roleId;
 
 	@Builder.Default
-	private Integer codeId = 1;
+	private Long codeId = 1L;
 
 	private String roleName;
 	

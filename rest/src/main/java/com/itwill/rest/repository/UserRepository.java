@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import com.itwill.rest.domain.User;
 
 
-public interface UserRepository extends JpaRepository<User, Integer> {
+public interface UserRepository extends JpaRepository<User, Long> {
 	
 	@EntityGraph(attributePaths = "roles")
 
@@ -20,9 +20,9 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 	public User findByNickname(String nickname);
 
 	@Query("select count(u) > 0 from User u where u.id = :id and u.password = :password")
-    boolean checkPassword(Integer id, String password);
+    boolean checkPassword(Long id, String password);
 
-    @Query("select count(u) > 0 from User u where u.userId = :userId and u.isActive = 1")
+    @Query("select count(u) > 0 from User u where u.userId = :userId and u.isActive = 1L")
     boolean checkUserIsActive(String userId);
 
     @Query("select count(u) > 0 from User u where u.userId = :userId and u.deactivatedUntil > current_date")

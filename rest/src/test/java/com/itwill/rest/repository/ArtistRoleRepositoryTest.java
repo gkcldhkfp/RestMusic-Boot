@@ -28,9 +28,9 @@ public class ArtistRoleRepositoryTest {
 	// @Test
 	@Transactional
 	public void findBySongAndRoleCodeTest() {
-		Song song = songRepo.findById(101).orElseThrow();
+		Song song = songRepo.findById(101L).orElseThrow();
 		log.info("song = {}", song);
-		List<ArtistRole> artistRoles = artistRoleRepo.findBySongAndRoleCode_RoleId(song, 10);
+		List<ArtistRole> artistRoles = artistRoleRepo.findBySongAndRoleCode_RoleId(song, 10L);
 		artistRoles.forEach(a -> {
 			System.out.println(a);
 		});

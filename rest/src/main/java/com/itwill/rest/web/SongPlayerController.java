@@ -51,7 +51,7 @@ public class SongPlayerController {
 	@GetMapping("/song/addCurrentPlayList")
 	@ResponseBody
 	public ResponseEntity<SongPlayerDto> addCurrentPlayList(
-			@RequestParam(name = "songId") Integer songId,
+			@RequestParam(name = "songId") Long songId,
 			HttpSession session) throws JsonProcessingException {
 
 		// 세션에서 JSON 문자열을 가져옴
@@ -94,7 +94,7 @@ public class SongPlayerController {
 	@GetMapping("/song/listen")
 	@ResponseBody
 	public ResponseEntity<SongPlayerDto> listen(
-			@RequestParam(value = "songId") Integer songId,
+			@RequestParam(value = "songId") Long songId,
 			HttpSession session) throws JsonProcessingException {
 
 		session.setAttribute("cPListJson", null);
@@ -124,7 +124,7 @@ public class SongPlayerController {
 
 	// 요청받은 songId가 세션에 있는 지 검사하는 매핑 컨트롤러
 	@GetMapping("/song/getCPList")
-	public ResponseEntity<Boolean> getCPList(@RequestParam(value = "songId") Integer songId, HttpSession session) {
+	public ResponseEntity<Boolean> getCPList(@RequestParam(value = "songId") Long songId, HttpSession session) {
 
 		// 세션에서 현재 재생목록을 가져옴.
 		// 세션에서 JSON 문자열을 가져옴
