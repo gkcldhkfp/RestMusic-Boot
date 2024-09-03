@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.savedrequest.SavedRequest;
 
 @Configuration
 // -> 스프링 컨테이너에서 생성하고 관리하는 설정 컨포넌트.
@@ -93,8 +94,12 @@ public class SecurityConfig {
 		// Custom 로그인 페이지를 사용.
 		http.formLogin((login) -> login.
 			loginPage("/member/signin")
-			.defaultSuccessUrl("/home")
-			.permitAll());
+			.successHandler((request, response, authentication) -> {
+                SavedRequest savedRequest = (SavedRequest) request.getSession().getAttribute("SPRING_SECURITY_SAVED_REQUEST");
+                String targetUrl = savedRequest != null ? savedRequest.getRedirectUrl() : "/home";
+                response.sendRedirect(targetUrl);
+            })
+            .permitAll());
 
 
 		// ! frame태그 사용 시 스프링 시큐리티에서 해주어야하는 설정

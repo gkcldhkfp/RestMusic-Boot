@@ -59,6 +59,16 @@ public class Song {
 	@OneToMany(mappedBy = "song", fetch = FetchType.LAZY)
 	@Builder.Default
 	private List<SongGenre> genres = new ArrayList<>();
+ 	
+ 	@ToString.Exclude
+    @OneToMany(mappedBy = "likeId.songId", fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<Like> likes = new ArrayList<>();
+
+//    // 편의 메서드 추가
+//    public int getLikesCount() {
+//        return likes.size();
+//    }
 	
 /*	@ToString.Exclude
 	@OneToMany(mappedBy = "song", fetch = FetchType.LAZY)

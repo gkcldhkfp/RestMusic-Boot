@@ -1,4 +1,4 @@
-package com.itwill.rest.dto.playlist;
+package com.itwill.rest.dto;
 
 import lombok.Data;
 
