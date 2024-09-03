@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.itwill.rest.domain.PlayList;
 
-public interface PlayListRepository extends JpaRepository<PlayList, Long>, PlayListQuerydsl {
+public interface PlayListRepository extends JpaRepository<PlayList, Integer>, PlayListQuerydsl {
 
 }

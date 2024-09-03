@@ -15,11 +15,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class AlbumArtistDto {
-	private Long artistId;
+	private Integer artistId;
 
 	private String artistName;
 
-	private Long groupId;
+	private Integer groupId;
 
 	private String groupName;
 

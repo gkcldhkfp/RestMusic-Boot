@@ -30,7 +30,7 @@ import lombok.ToString;
 public class Album {
 	@Id // PK
 	@GeneratedValue(strategy = GenerationType.IDENTITY) // 자동번호생성
-	private Long albumId;
+	private Integer albumId;
 
 	private String albumName;
 

@@ -26,7 +26,7 @@ import lombok.ToString;
 public class Comment {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long cId;
+	private Integer cId;
 
 	@Basic(optional = false)
 	private String cText;

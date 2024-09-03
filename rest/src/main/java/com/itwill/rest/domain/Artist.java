@@ -26,7 +26,7 @@ public class Artist {
 	@Column(name = "ARTIST_ID")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@EqualsAndHashCode.Include
-	private Long id;
+	private Integer id;
 	
 	private String artistName;
 	

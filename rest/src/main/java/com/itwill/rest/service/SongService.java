@@ -119,9 +119,9 @@ public class SongService {
         }
 
         // 아티스트와 그룹 정보 추가
-        List<ArtistRole> artistRoles = artistRoleRepo.findBySongAndRoleCode_RoleId(song, 10L);
+        List<ArtistRole> artistRoles = artistRoleRepo.findBySongAndRoleCode_RoleId(song, 10);
         for (ArtistRole artistRole : artistRoles) {
-            Long artistId = artistRole.getArtist().getId();
+            Integer artistId = artistRole.getArtist().getId();
             String artistName = artistRole.getArtist().getArtistName();
             dto.getArtistIds().add(artistId);
             dto.getArtistNames().add(artistName);
@@ -142,7 +142,7 @@ public class SongService {
     
     
 	@Transactional(readOnly = true)
-	public Song selectBySongId(Long songId) {
+	public Song selectBySongId(Integer songId) {
 		log.info("songId = {}", songId);
 		Song song = songRepo.findById(songId).orElseThrow();
 		log.info("song = {}", song);
@@ -157,7 +157,7 @@ public class SongService {
     }
 
 	// 특정 곡의 좋아요 개수 확인
-    public int countSongLikes(Long songId) {
+    public int countSongLikes(Integer songId) {
     	log.info("countSongLikes(songId = {})", songId);
         return (int) songLikeRepo.countByLikeIdSongId(songId);
     }

@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE) @Builder
 public class PlayListFirstAlbumImgDto {
-	private Long plistId;
+	private Integer plistId;
 	private String plistName;
 	private String albumImage;
 

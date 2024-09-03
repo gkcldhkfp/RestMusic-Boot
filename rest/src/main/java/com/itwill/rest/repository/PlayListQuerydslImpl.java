@@ -21,7 +21,7 @@ public class PlayListQuerydslImpl extends QuerydslRepositorySupport implements P
     }
 
     @Override
-    public List<PlayListFirstAlbumImgDto> selectByUserId(Long id) {
+    public List<PlayListFirstAlbumImgDto> selectByUserId(Integer id) {
         QPlayList playlists = QPlayList.playList;
         QPlayListSong playlistSongs = QPlayListSong.playListSong;
         QSong songs = QSong.song;
@@ -52,5 +52,4 @@ public class PlayListQuerydslImpl extends QuerydslRepositorySupport implements P
             .orderBy(playlists.pListId.asc())
             .fetch();
     }
-    
 }

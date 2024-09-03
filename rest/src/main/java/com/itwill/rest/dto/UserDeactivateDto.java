@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor @AllArgsConstructor @Builder
 public class UserDeactivateDto {
-	private Long id;
+	private Integer id;
 	private String password;
 
 }

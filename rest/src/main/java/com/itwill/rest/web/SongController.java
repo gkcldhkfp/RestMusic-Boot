@@ -34,7 +34,7 @@ public class SongController {
     public void getPopularSongs(Model model, Authentication authentication) {
         log.info("getPopularSongs()");
 
-        Long loginUserId = null;
+        Integer loginUserId = null;
         if (authentication != null && authentication.isAuthenticated()) {
             User user = (User) authentication.getPrincipal();
             loginUserId = user.getId();
@@ -50,7 +50,7 @@ public class SongController {
 	public void showSongs(Model model, Authentication authentication) {
 	    log.info("showSongs");
 	    
-	    Long loginUserId = null;
+	    Integer loginUserId = null;
         if (authentication != null && authentication.isAuthenticated()) {
             User user = (User) authentication.getPrincipal();
             loginUserId = user.getId();
@@ -69,7 +69,7 @@ public class SongController {
 	        Authentication authentication) {
 	    log.info("getGenreSongsByPage(genreName = {}, page = {}, size = {})", genreName, page, size);
 
-	    Long loginUserId = null;
+	    Integer loginUserId = null;
 	    if (authentication != null && authentication.isAuthenticated()) {
 	        User user = (User) authentication.getPrincipal();
 	        loginUserId = user.getId();
@@ -100,7 +100,7 @@ public class SongController {
 	@GetMapping("/newest")
     public void newestSongs(Model model, Authentication authentication) {
 		log.info("newestSongs");
-        Long loginUserId = null;
+        Integer loginUserId = null;
         if (authentication != null && authentication.isAuthenticated()) {
             User user = (User) authentication.getPrincipal();
             loginUserId = user.getId();
@@ -117,7 +117,7 @@ public class SongController {
             Authentication authentication) {
         log.info("getNewestSongsByPage(page={}, size={})", page, size);
 
-        Long loginUserId = null;
+        Integer loginUserId = null;
         if (authentication != null && authentication.isAuthenticated()) {
             User user = (User) authentication.getPrincipal();
             loginUserId = user.getId();

@@ -13,7 +13,7 @@ import com.itwill.rest.Util.ConverterUtil;
 import com.itwill.rest.domain.Song;
 import com.itwill.rest.domain.SongConverter;
 
-public interface SongRepository extends JpaRepository<Song, Long> {
+public interface SongRepository extends JpaRepository<Song, Integer> {
 	// 앨범 발매일 기준 내림차순 정렬(페이징)
 	Page<Song> findByOrderByAlbum_AlbumReleaseDateDesc(Pageable pageable);
 	

@@ -30,7 +30,7 @@ public class AlbumSongsController {
 	private final AlbumSongsService albumServ;
 
 	@GetMapping("detail")
-	public void detail(@RequestParam(name = "albumId") Long albumId, Model model) {
+	public void detail(@RequestParam(name = "albumId") Integer albumId, Model model) {
 		log.info("detail(albumId = {})", albumId);
 
 		Album album = albumServ.readById(albumId);
@@ -43,17 +43,17 @@ public class AlbumSongsController {
 		model.addAttribute("songsCount", songs.size());
 
 		// 앨범의 수록곡과 그룹&가수를 매핑
-		Map<Song, List<Map<String, Object>>> songAndArtists = albumServ.getArtistsOrGroupsBySongsAndRoleId(songs, 10L);
+		Map<Song, List<Map<String, Object>>> songAndArtists = albumServ.getArtistsOrGroupsBySongsAndRoleId(songs, 10);
 		log.info("albumSongs = {}", songAndArtists);
 		model.addAttribute("albumSongs", songAndArtists);
 
 		// 앨범 참여 가수: 정렬, 중복처리
-		List<Artist> sortedArtists = albumServ.getSortedArtists(songs, 10L);
+		List<Artist> sortedArtists = albumServ.getSortedArtists(songs, 10);
 		log.info("sortedArtists = {}", sortedArtists);
 		model.addAttribute("albumArtist", sortedArtists);
 
 		// 앨범 참여 그룹 가져오기.
-		List<Group> sortedGroups = albumServ.getSortedGroups(songs, 10L);
+		List<Group> sortedGroups = albumServ.getSortedGroups(songs, 10);
 		if (!sortedGroups.isEmpty()) {
 			log.info("sortedGroups = {}", sortedGroups);
 			model.addAttribute("albumGroup", sortedGroups);

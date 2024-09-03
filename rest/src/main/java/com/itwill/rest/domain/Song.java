@@ -31,7 +31,7 @@ public class Song {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long songId;
+	private Integer songId;
 
 	@ToString.Exclude // ToString에서 제외. 안하면 무한루프에 빠질 수 있음.
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -66,7 +66,7 @@ public class Song {
     private List<Like> likes = new ArrayList<>();
 
     // 편의 메서드 추가
-    public long getLikesCount() {
+    public int getLikesCount() {
         return likes.size();
     }
 	

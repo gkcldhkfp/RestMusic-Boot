@@ -23,17 +23,17 @@ public class SongPlayerDto {
 
 	private String albumImage;
 
-	private Long songId;
+	private Integer songId;
 
 	private String title;
 
 	private String songPath;
 
-	private List<Long> artistId;
+	private List<Integer> artistId;
 
 	private List<String> artistName;
 
-	private List<Long> groupId;
+	private List<Integer> groupId;
 
 	private List<String> groupName;
 
@@ -41,7 +41,7 @@ public class SongPlayerDto {
 
 		// Set을 사용해 중복된 그룹과 아티스트를 처리
 		Set<String> processedGroupNames = new HashSet<>();
-		Set<Long> processedArtistIds = new HashSet<>();
+		Set<Integer> processedArtistIds = new HashSet<>();
 
 		// 그룹을 먼저 가져오기
 		List<Group> groups = albumServ.selectGroupBySong(song);

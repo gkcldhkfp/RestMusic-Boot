@@ -29,7 +29,7 @@ public class ArtistConverter {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ARTIST_CONVERTER_ID")
-    private Long id;
+    private Integer id;
 
     @OneToOne
     @JoinColumn(name = "artist_id")

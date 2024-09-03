@@ -39,7 +39,7 @@ public class PlayListService {
 	private final GroupMemberRepository groupMemberRepo;
 	
 	@Transactional(readOnly = true)
-	public List<PlayListFirstAlbumImgDto> getPlayListByUserId(Long id) {
+	public List<PlayListFirstAlbumImgDto> getPlayListByUserId(Integer id) {
 		log.info("getPlayListByUserId={}", id);
 		
 		List<PlayListFirstAlbumImgDto> result = playListRepo.selectByUserId(id);
@@ -64,14 +64,14 @@ public class PlayListService {
 	}
 	
 	@Transactional
-	public void deleteByListId(Long pListId) {
+	public void deleteByListId(Integer pListId) {
 		log.info("deleteById(pListId={})", pListId);
 		
 		playListRepo.deleteById(pListId);
 	}
 	
 	@Transactional(readOnly = true)
-	public PlayList getPlayListInfoByListId(Long pListId) {
+	public PlayList getPlayListInfoByListId(Integer pListId) {
 		log.info("getPlayListInfoByListId={}", pListId);
 		
 		PlayList playlist = playListRepo.findById(pListId).orElseThrow();
@@ -80,7 +80,7 @@ public class PlayListService {
 	}
 	
 	@Transactional(readOnly = true)
-	public List<PlayListSongInfoDto> getSongByPlayListId(Long id) {
+	public List<PlayListSongInfoDto> getSongByPlayListId(Integer id) {
 	    log.info("getSongByPlayListId(pListId={})", id);
 
 	    // 1. 플레이리스트에서 곡 정보를 조회
@@ -88,8 +88,8 @@ public class PlayListService {
 
 	    // 2. 곡 정보와 관련된 아티스트, 그룹, 앨범 정보를 추출하여 DTO로 변환
 	    return playListSongsData.stream().map(data -> {
-	        Long playListId = (Long) data[0];
-	        Long songId = (Long) data[1];
+	        Integer playListId = (Integer) data[0];
+	        Integer songId = (Integer) data[1];
 	        LocalDateTime createdTime = (LocalDateTime) data[2];
 
 	        // 곡 정보 조회
@@ -98,7 +98,7 @@ public class PlayListService {
 
 	        // 곡, 앨범 정보 추출
 	        String title = song.getTitle();
-	        Long albumId = album.getAlbumId();
+	        Integer albumId = album.getAlbumId();
 	        String albumImage = album.getAlbumImage();
 	        String albumName = album.getAlbumName();
 
@@ -117,13 +117,13 @@ public class PlayListService {
 	                .collect(Collectors.toList());
 
 	        // 그룹에 속한 아티스트 ID 목록
-	        List<Long> groupArtistIds = songGroups.stream()
+	        List<Integer> groupArtistIds = songGroups.stream()
 	                .flatMap(group -> groupMemberRepo.findByGroupId(group.getId()).stream())
 	                .map(groupMember -> groupMember.getArtist().getId())
 	                .collect(Collectors.toList());
 
 	        // 아티스트 ID와 이름 리스트 생성 (그룹에 속하지 않은 아티스트만)
-	        List<Long> artistIds = songArtists.stream()
+	        List<Integer> artistIds = songArtists.stream()
 	                .filter(artist -> !groupArtistIds.contains(artist.getId()))
 	                .map(Artist::getId)
 	                .collect(Collectors.toList());
@@ -134,7 +134,7 @@ public class PlayListService {
 	                .collect(Collectors.toList());
 
 	        // 그룹 ID와 이름 리스트 생성
-	        List<Long> groupIds = songGroups.stream()
+	        List<Integer> groupIds = songGroups.stream()
 	                .map(Group::getId)
 	                .collect(Collectors.toList());
 
@@ -159,7 +159,7 @@ public class PlayListService {
 	}
 	
 	@Transactional
-	public void deleteListSongBySongId(Long pListId, Long songId, LocalDateTime createdTime) {
+	public void deleteListSongBySongId(Integer pListId, Integer songId, LocalDateTime createdTime) {
 		log.info("deleteByListId(pListId={}, songId={}, createdTime={})", pListId, songId, createdTime);
 
 		playListSongRepo.deleteSongByCreatedTime(pListId, songId, createdTime);
@@ -182,7 +182,7 @@ public class PlayListService {
 	}
 
 	@Transactional
-	public long songAddToPlayList(PlayListSongId id) {
+	public int songAddToPlayList(PlayListSongId id) {
 		log.info("songAddToPlayList(id={})",id);
 		
 		PlayList playList = playListRepo.findById(id.getPListId()).get();

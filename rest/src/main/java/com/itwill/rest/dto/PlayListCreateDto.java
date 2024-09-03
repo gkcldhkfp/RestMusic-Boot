@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class PlayListCreateDto {
-	private Long id;
+	private Integer id;
 	private String pListName;
 
 }

@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor @NoArgsConstructor
 public class TitleSongId {
 
-	private Long songId;
-	private Long albumId;
+	private Integer songId;
+	private Integer albumId;
 	
 	
 }

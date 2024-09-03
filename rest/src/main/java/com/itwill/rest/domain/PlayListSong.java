@@ -37,7 +37,7 @@ public class PlayListSong {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long playlistSongId;
+	private Integer playlistSongId;
 	
 //	@MapsId("pListId")
 	@ManyToOne(fetch = FetchType.LAZY)

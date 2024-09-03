@@ -29,7 +29,7 @@ public class GroupConverter {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "GROUP_CONVERTER_ID")
-    private Long id;
+    private Integer id;
 
     @OneToOne
     @JoinColumn(name = "group_id")

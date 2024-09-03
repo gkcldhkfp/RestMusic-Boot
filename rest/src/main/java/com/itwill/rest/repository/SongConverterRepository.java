@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import com.itwill.rest.Util.ConverterUtil;
 import com.itwill.rest.domain.SongConverter;
 
-public interface SongConverterRepository extends JpaRepository<SongConverter, Long> {
+public interface SongConverterRepository extends JpaRepository<SongConverter, Integer> {
 	
 	// SongConverter의 제목 검색 쿼리
     @Query("SELECT sc FROM SongConverter sc WHERE LOWER(sc.songConverterTitle) LIKE LOWER(CONCAT('%', :keyword, '%'))")

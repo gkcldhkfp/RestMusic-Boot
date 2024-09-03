@@ -212,7 +212,7 @@ public class MemberController {
         }
 
         User user = (User) authentication.getPrincipal();
-        Long loginUserId = user.getId();
+        Integer loginUserId = user.getId();
         User userDetails = userServ.getUserById(loginUserId);
         
         model.addAttribute("user", userDetails);
@@ -230,7 +230,7 @@ public class MemberController {
         }
 
         User user = (User) authentication.getPrincipal();
-        Long id = user.getId();
+        Integer id = user.getId();
         String password = dto.getPassword();
 
         boolean result = userServ.deactivateAccount(id, password);

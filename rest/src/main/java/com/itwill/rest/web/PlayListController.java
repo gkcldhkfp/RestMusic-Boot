@@ -43,7 +43,7 @@ public class PlayListController {
 	private final AlbumSongsService albumSongSvc;
 	
 	@GetMapping("/playlists/playlist")
-	public void playlist(@RequestParam(name = "plistId") Long pListId, Model model) {
+	public void playlist(@RequestParam(name = "plistId") Integer pListId, Model model) {
 		log.info("playlist(plistId={})", pListId);
 		
 		PlayList playList = playListSvc.getPlayListInfoByListId(pListId);
@@ -53,7 +53,7 @@ public class PlayListController {
 	
 	@GetMapping("/getPlayList/{id}")
 	@ResponseBody
-	public ResponseEntity<List<PlayListFirstAlbumImgDto>> getPlayList(@PathVariable Long id) {
+	public ResponseEntity<List<PlayListFirstAlbumImgDto>> getPlayList(@PathVariable Integer id) {
 		log.info("getPlayList(id={})", id);
 		
 		List<PlayListFirstAlbumImgDto> result = playListSvc.getPlayListByUserId(id);
@@ -63,7 +63,7 @@ public class PlayListController {
 	
 	@GetMapping("/getPlayListSong/{id}")
 	@ResponseBody
-	public ResponseEntity<List<PlayListSongInfoDto>> getPlayListSong(@PathVariable Long id) {
+	public ResponseEntity<List<PlayListSongInfoDto>> getPlayListSong(@PathVariable Integer id) {
 		log.info("getPlayListSong(id={})", id);
 		
 		List<PlayListSongInfoDto> playListSongInfo = playListSvc.getSongByPlayListId(id);
@@ -83,7 +83,7 @@ public class PlayListController {
 	
 	@DeleteMapping("/deletePlayList/{pListId}")
 	@ResponseBody
-	public ResponseEntity<Long> deleteByListId(@PathVariable Long pListId) {
+	public ResponseEntity<Integer> deleteByListId(@PathVariable Integer pListId) {
 		log.info("deleteById(pListId={})", pListId);
 		
 		playListSvc.deleteByListId(pListId);
@@ -93,8 +93,8 @@ public class PlayListController {
 	
 	@DeleteMapping("/deletePlayListSong/{pListId}/{songId}/{createdTime}")
 	@ResponseBody
-	public ResponseEntity<Long> deleteListSongBySongId(
-			@PathVariable Long pListId, @PathVariable Long songId, @PathVariable String createdTime) {
+	public ResponseEntity<Integer> deleteListSongBySongId(
+			@PathVariable Integer pListId, @PathVariable Integer songId, @PathVariable String createdTime) {
 		log.info("deleteListSongBySongId(pListId={})", pListId);
 		
 		LocalDateTime localDateTime =  LocalDateTime.parse(createdTime, DateTimeFormatter.ISO_DATE_TIME);
@@ -116,10 +116,10 @@ public class PlayListController {
 	
 	@PostMapping("/addSongToPlayList")
 	@ResponseBody
-	public ResponseEntity<Long> addSongToPlayList(@RequestBody PlayListSongId id) {
+	public ResponseEntity<Integer> addSongToPlayList(@RequestBody PlayListSongId id) {
 		log.debug("addSongToPlayList({})",id);
 		
-		long result = playListSvc.songAddToPlayList(id);
+		int result = playListSvc.songAddToPlayList(id);
 		
 		return ResponseEntity.ok(result);
 	}

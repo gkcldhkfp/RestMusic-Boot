@@ -10,10 +10,10 @@ import lombok.NoArgsConstructor;
 @Embeddable
 public class ArtistRoleId {
 
-	private Long artistId;
+	private Integer artistId;
 
-	private Long songId;
+	private Integer songId;
 
-	private Long roleId;
+	private Integer roleId;
 
 }

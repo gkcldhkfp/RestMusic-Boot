@@ -37,7 +37,7 @@ public class AlbumSongsService {
 	 * 앨범 아이디로 앨범 객체를 리턴하는 메서드
 	 */
 	@Transactional(readOnly = true)
-	public Album readById(Long albumId) {
+	public Album readById(Integer albumId) {
 		log.info("read(albumId = {})", albumId);
 		Album album = albumRepo.findById(albumId).orElseThrow();
 		log.info("album = {}", album);
@@ -50,7 +50,7 @@ public class AlbumSongsService {
 	 * 그룹에 포함되어 있지 않은 아티스트는 중복처리하여 리스트에 삽입
 	 */
 	@Transactional(readOnly = true)
-	public Map<Song, List<Map<String, Object>>> getArtistsOrGroupsBySongsAndRoleId(List<Song> songs, Long roleId) {
+	public Map<Song, List<Map<String, Object>>> getArtistsOrGroupsBySongsAndRoleId(List<Song> songs, Integer roleId) {
 			Map<Song, List<Map<String, Object>>> songArtistGroupMap = new HashMap<>();
 	
 			for (Song song : songs) {
@@ -89,20 +89,20 @@ public class AlbumSongsService {
 	 */
 
 	@Transactional(readOnly = true)
-	public List<Artist> getSortedArtists(List<Song> songs, Long roleId) {
-		Map<Artist, Long> artistCountMap = new HashMap<>();
+	public List<Artist> getSortedArtists(List<Song> songs, Integer roleId) {
+		Map<Artist, Integer> artistCountMap = new HashMap<>();
 
 		for (Song song : songs) {
 			List<ArtistRole> artistRoles = artistRoleRepo.findBySongAndRoleCode_RoleId(song, roleId);
 			for (ArtistRole artistRole : artistRoles) {
 				Artist artist = artistRole.getArtist();
-				artistCountMap.put(artist, artistCountMap.getOrDefault(artist, 0L) + 1);
+				artistCountMap.put(artist, artistCountMap.getOrDefault(artist, 0) + 1);
 			}
 		}
 
 		// 가장 많이 등장한 가수를 먼저 보여주고, 횟수가 동일하면 이름 순으로 정렬함.
 		return artistCountMap.entrySet().stream()
-				.sorted(Map.Entry.<Artist, Long>comparingByValue(Comparator.reverseOrder())
+				.sorted(Map.Entry.<Artist, Integer>comparingByValue(Comparator.reverseOrder())
 						.thenComparing(Map.Entry.comparingByKey(Comparator.comparing(Artist::getArtistName))))
 				.map(Map.Entry::getKey)
 				.collect(Collectors.toList());
@@ -113,7 +113,7 @@ public class AlbumSongsService {
 	 */
 	@Transactional(readOnly = true)
 	public List<Group> selectGroupBySong(Song song) {
-		List<ArtistRole> artistRoles = artistRoleRepo.findBySongAndRoleCode_RoleId(song, 10L);
+		List<ArtistRole> artistRoles = artistRoleRepo.findBySongAndRoleCode_RoleId(song, 10);
 		List<Group> groups = new ArrayList<>();
 		if (artistRoles == null || artistRoles.size() == 0) {
 			// 테스트할 때 아티스트가 없는 경우에도 음원을 재생하기 위한 조건문
@@ -135,19 +135,19 @@ public class AlbumSongsService {
 
 	@Transactional(readOnly = true)
 	public List<GenreCode> getSortedGenres(List<Song> songs) {
-		Map<GenreCode, Long> genreCountMap = new HashMap<>();
+		Map<GenreCode, Integer> genreCountMap = new HashMap<>();
 
 		for (Song song : songs) {
 			List<SongGenre> songGenres = song.getGenres();
 			for (SongGenre songGenre : songGenres) {
 				GenreCode genreCode = songGenre.getGenreCode();
-				genreCountMap.put(genreCode, genreCountMap.getOrDefault(genreCode, 0L) + 1);
+				genreCountMap.put(genreCode, genreCountMap.getOrDefault(genreCode, 0) + 1);
 			}
 		}
 
 		// 가장 많이 등장한 장르를 먼저 보여주고, 횟수가 동일하면 장르 이름 순으로 정렬함.
 		return genreCountMap.entrySet().stream()
-				.sorted(Map.Entry.<GenreCode, Long>comparingByValue(Comparator.reverseOrder())
+				.sorted(Map.Entry.<GenreCode, Integer>comparingByValue(Comparator.reverseOrder())
 						.thenComparing(Map.Entry.comparingByKey(Comparator.comparing(GenreCode::getGenreName))))
 				.map(Map.Entry::getKey)
 				.collect(Collectors.toList());
@@ -159,8 +159,8 @@ public class AlbumSongsService {
 	 */
 
 	@Transactional(readOnly = true)
-	public List<Group> getSortedGroups(List<Song> songs, Long roleId) {
-		Map<Group, Long> groupCountMap = new HashMap<>();
+	public List<Group> getSortedGroups(List<Song> songs, Integer roleId) {
+		Map<Group, Integer> groupCountMap = new HashMap<>();
 		Set<String> processedGroupNames = new HashSet<>(); // 이미 처리된 그룹 이름을 추적하는 Set
 
 		for (Song song : songs) {
@@ -169,7 +169,7 @@ public class AlbumSongsService {
 				Group group = artistRole.getGroup();
 				if (group != null && !processedGroupNames.contains(group.getGroupName())) {
 					// 동일한 이름의 그룹이 아직 처리되지 않은 경우에만 추가
-					groupCountMap.put(group, groupCountMap.getOrDefault(group, 0L) + 1);
+					groupCountMap.put(group, groupCountMap.getOrDefault(group, 0) + 1);
 					processedGroupNames.add(group.getGroupName());
 				}
 			}
@@ -177,7 +177,7 @@ public class AlbumSongsService {
 
 		// 가장 많이 등장한 그룹을 먼저 보여주고, 횟수가 동일하면 이름 순으로 정렬함.
 		return groupCountMap.entrySet().stream()
-				.sorted(Map.Entry.<Group, Long>comparingByValue(Comparator.reverseOrder())
+				.sorted(Map.Entry.<Group, Integer>comparingByValue(Comparator.reverseOrder())
 						.thenComparing(Map.Entry.comparingByKey(Comparator.comparing(Group::getGroupName))))
 				.map(Map.Entry::getKey)
 				.collect(Collectors.toList());
@@ -187,8 +187,8 @@ public class AlbumSongsService {
 	 * 음원 객체로 참여 그룹의 리스트를 리턴하는 메서드
 	 */
 	@Transactional(readOnly = true)
-	public List<Group> getGroupsBySong(Song song, Long roleId) {
-		Map<Group, Long> groupCountMap = new HashMap<>();
+	public List<Group> getGroupsBySong(Song song, Integer roleId) {
+		Map<Group, Integer> groupCountMap = new HashMap<>();
 		Set<String> processedGroupNames = new HashSet<>(); // 이미 처리된 그룹 이름을 추적하는 Set
 
 		List<ArtistRole> artistRoles = artistRoleRepo.findBySongAndRoleCode_RoleId(song, roleId);
@@ -196,14 +196,14 @@ public class AlbumSongsService {
 			Group group = artistRole.getGroup();
 			if (group != null && !processedGroupNames.contains(group.getGroupName())) {
 				// 동일한 이름의 그룹이 아직 처리되지 않은 경우에만 추가
-				groupCountMap.put(group, groupCountMap.getOrDefault(group, 0L) + 1);
+				groupCountMap.put(group, groupCountMap.getOrDefault(group, 0) + 1);
 				processedGroupNames.add(group.getGroupName());
 			}
 		}
 
 		// 가장 많이 등장한 그룹을 먼저 보여주고, 횟수가 동일하면 이름 순으로 정렬함.
 		return groupCountMap.entrySet().stream()
-				.sorted(Map.Entry.<Group, Long>comparingByValue(Comparator.reverseOrder())
+				.sorted(Map.Entry.<Group, Integer>comparingByValue(Comparator.reverseOrder())
 						.thenComparing(Map.Entry.comparingByKey(Comparator.comparing(Group::getGroupName))))
 				.map(Map.Entry::getKey)
 				.collect(Collectors.toList());
@@ -214,7 +214,7 @@ public class AlbumSongsService {
 	 */
 	@Transactional(readOnly = true)
 	public List<Artist> selectSingersBySong(Song song) {
-		List<ArtistRole> artistRoles = artistRoleRepo.findBySongAndRoleCode_RoleId(song, 10L);
+		List<ArtistRole> artistRoles = artistRoleRepo.findBySongAndRoleCode_RoleId(song, 10);
 		List<Artist> artists = new ArrayList<>();
 		artistRoles.forEach(ar -> {
 			artists.add(ar.getArtist());
@@ -227,7 +227,7 @@ public class AlbumSongsService {
 	 */
 	@Transactional(readOnly = true)
 	public List<Artist> selectComposerBySong(Song song) {
-		List<ArtistRole> artistRoles = artistRoleRepo.findBySongAndRoleCode_RoleId(song, 20L);
+		List<ArtistRole> artistRoles = artistRoleRepo.findBySongAndRoleCode_RoleId(song, 20);
 		List<Artist> artists = new ArrayList<>();
 		artistRoles.forEach(ar -> {
 			artists.add(ar.getArtist());
@@ -240,7 +240,7 @@ public class AlbumSongsService {
 	 */
 	@Transactional(readOnly = true)
 	public List<Artist> selectWriterBySong(Song song) {
-		List<ArtistRole> artistRoles = artistRoleRepo.findBySongAndRoleCode_RoleId(song, 30L);
+		List<ArtistRole> artistRoles = artistRoleRepo.findBySongAndRoleCode_RoleId(song, 30);
 		List<Artist> artists = new ArrayList<>();
 		artistRoles.forEach(ar -> {
 			artists.add(ar.getArtist());
@@ -253,7 +253,7 @@ public class AlbumSongsService {
 	 */
 	@Transactional(readOnly = true)
 	public List<Artist> selectArrangerBySong(Song song) {
-		List<ArtistRole> artistRoles = artistRoleRepo.findBySongAndRoleCode_RoleId(song, 40L);
+		List<ArtistRole> artistRoles = artistRoleRepo.findBySongAndRoleCode_RoleId(song, 40);
 		List<Artist> artists = new ArrayList<>();
 		artistRoles.forEach(ar -> {
 			artists.add(ar.getArtist());
@@ -266,7 +266,7 @@ public class AlbumSongsService {
 	 */
 	@Transactional(readOnly = true)
 	public Set<Artist> selectSingersByAlbum(Album album) {
-		List<ArtistRole> artistRoles = artistRoleRepo.findBySong_AlbumAndRoleCode_RoleId(album, 10L);
+		List<ArtistRole> artistRoles = artistRoleRepo.findBySong_AlbumAndRoleCode_RoleId(album, 10);
 		Set<Artist> artists = new HashSet<>();
 		artistRoles.forEach(ar -> {
 			artists.add(ar.getArtist());

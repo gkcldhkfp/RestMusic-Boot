@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SongLikeDto {
-	private Long songId;
-	private Long loginUserId;
+	private Integer songId;
+	private Integer loginUserId;
 }

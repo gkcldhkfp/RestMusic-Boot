@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor @AllArgsConstructor
 @Builder
 public class SongGenreId {
-	private long songId;
+	private int songId;
 
-	private long genreId;
+	private int genreId;
 }
