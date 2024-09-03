@@ -21,7 +21,7 @@ VALUES ('볼빨간사춘기');
 -- 3.5 볼빨간 사춘기 그룹 설명과 이미지 추가: 아직 이미지 컬럼이 없어서 실행이 안되므로 나중에 써야됨.
 UPDATE `groups`
 SET group_name = '볼빨간사춘기', 
---    group_image = '볼빨간사춘기사진.jpg', 
+    group_image = '볼빨간사춘기사진.jpg', 
     group_description = '볼빨간사춘기설명.txt'
 WHERE group_name = '볼빨간사춘기';
 
@@ -169,7 +169,7 @@ VALUES ('AKMU (악뮤)');
 -- 3.5 악뮤 그룹 설명과 이미지 추가
 UPDATE `groups`
 SET group_name = 'AKMU (악뮤)', 
---    group_image = '악뮤사진.jpg', 
+    group_image = '악뮤사진.jpg', 
     group_description = '악뮤설명.txt'
 WHERE group_name = 'AKMU (악뮤)';
 
@@ -337,7 +337,7 @@ VALUES ('NewJeans');
 -- 3.5 뉴진스 그룹 설명과 이미지 추가 (그룹 이미지 추가는 나중에)
 UPDATE `groups`
 SET group_name = 'NewJeans', 
---    group_image = 'NewJeans사진.jpg', 
+    group_image = 'NewJeans사진.jpg', 
     group_description = 'NewJeans 설명'
 WHERE group_name = 'NewJeans';
 
@@ -465,7 +465,7 @@ VALUES ('kissOfLife');
 -- 3.5 'kissOfLife' 그룹 설명과 이미지 추가 (그룹 이미지 추가는 나중에)
 UPDATE `groups`
 SET group_name = 'kissOfLife', 
---    group_image = 'kissOfLife사진.jpg', 
+    group_image = 'kissOfLife사진.jpg', 
     group_description = 'kissOfLife 설명'
 WHERE group_name = 'kissOfLife';
 
@@ -558,7 +558,7 @@ VALUES ('babymonster');
 -- 3.5 babymonster 그룹 설명과 이미지 추가 (그룹 이미지 추가는 나중에)
 UPDATE `groups`
 SET group_name = 'babymonster', 
-    -- group_image = 'babymonster사진.jpg', 
+     group_image = 'babymonster사진.jpg', 
     group_description = 'babymonster 설명'
 WHERE group_name = 'babymonster';
 
@@ -661,7 +661,7 @@ VALUES ('illit');
 -- 3.5 illit 그룹 설명과 이미지 추가 (그룹 이미지 추가는 나중에)
 UPDATE `groups`
 SET group_name = 'illit', 
-    -- group_image = 'illit사진.jpg', 
+     group_image = 'illit사진.jpg', 
     group_description = 'illit 설명'
 WHERE group_name = 'illit';
 
@@ -758,7 +758,7 @@ VALUES ('VIVIZ');
 -- 3.5 VIVIZ 그룹 설명과 이미지 추가 (그룹 이미지 추가는 나중에)
 UPDATE `groups`
 SET group_name = 'VIVIZ', 
---    group_image = 'VIVIZ사진.jpg', 
+    group_image = 'VIVIZ사진.jpg', 
     group_description = 'VIVIZ 설명'
 WHERE group_name = 'VIVIZ';
 
@@ -837,7 +837,7 @@ VALUES ('aespa');
 -- 3.5 aespa 그룹 설명과 이미지 추가 (그룹 이미지 추가는 나중에)
 UPDATE `groups`
 SET group_name = 'aespa', 
---    group_image = 'aespa사진.jpg', 
+    group_image = 'aespa사진.jpg', 
     group_description = 'aespa 설명'
 WHERE group_name = 'aespa';
 
@@ -916,7 +916,7 @@ VALUES ('10cm');
 -- 3.5 10cm 그룹 설명과 이미지 추가 (그룹 이미지 추가는 나중에)
 UPDATE `groups`
 SET group_name = '10cm', 
---    group_image = '10cm사진.jpg', 
+    group_image = '10cm사진.jpg', 
     group_description = '10cm 설명'
 WHERE group_name = '10cm';
 
