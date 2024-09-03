@@ -16,6 +16,5 @@ public interface SongGenreRepository extends JpaRepository<SongGenre, SongGenreI
 	
 	// GenreCode를 통해 SongGenre 리스트를 페이징하여 조회하는 메서드
     Page<SongGenre> findByGenreCode(GenreCode genreCode, Pageable pageable);
-
-//	List<SongGenre> findByGenreCode(GenreCode genreCode);
+    
 }

@@ -65,10 +65,10 @@ public class Song {
     @Builder.Default
     private List<Like> likes = new ArrayList<>();
 
-    // 편의 메서드 추가
-    public int getLikesCount() {
-        return likes.size();
-    }
+//    // 편의 메서드 추가
+//    public int getLikesCount() {
+//        return likes.size();
+//    }
 	
 /*	@ToString.Exclude
 	@OneToMany(mappedBy = "song", fetch = FetchType.LAZY)

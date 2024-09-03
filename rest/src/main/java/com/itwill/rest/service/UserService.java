@@ -87,6 +87,16 @@ public class UserService implements UserDetailsService {
 		}
 	}
 	
+	// 마이페이지에서 유저 정보를 유저 id로 찾아오는 메서드
+	@Transactional(readOnly = true)
+	public User readById(Integer id) {
+		log.info("readById={}", id);
+		
+		User user = userRepo.findById(id).orElseThrow();
+		
+		return user;
+	}
+	
 	@Transactional(readOnly = true)
     public User readInfo(String userId) {
         return userRepo.findByUserId(userId)
