@@ -1,6 +1,8 @@
 package com.itwill.rest.repository;
 
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -20,5 +22,5 @@ public interface SongQuerydsl {
 	
 	Page<AlbumSearchResultDto> searchAlbums(String keyword, String sortType, Pageable pageable);
 	
-	Page<SongSearchResultDto> searchSongs(String keyword, String sortType, Pageable pageable);
+	List<Object[]> findSongsByKeyword(String keyword, int limit, int offset, String sort);
 }

@@ -3,6 +3,7 @@ package com.itwill.rest.web;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.itwill.rest.domain.Artist;
 import com.itwill.rest.domain.Group;
 import com.itwill.rest.domain.Song;
+import com.itwill.rest.domain.User;
 import com.itwill.rest.dto.SongDetailsDto;
 import com.itwill.rest.service.AlbumSongsService;
 import com.itwill.rest.service.SongService;
@@ -28,9 +30,9 @@ public class SongController {
 	private final SongService songSvc;
 	private final AlbumSongsService albumServ;
 	
-	@GetMapping("/details")
-	public void details(@RequestParam(name = "songId") int songId, Model model) {
-		log.info("details({})", songId);
+	@GetMapping("/detail")
+	public void details(@RequestParam(name = "songId") int songId, Model model, Authentication authentication) {
+		log.info("detail({})", songId);
 		
 		
 		SongDetailsDto dto = songSvc.readDetails(songId);
@@ -40,7 +42,12 @@ public class SongController {
 		log.info("cover={}",dto.getAlbumImage());
 		log.info("cover={}",dto.getWriters());
 		
-		
+		Integer loginUserId = null;
+        if (authentication != null && authentication.isAuthenticated()) {
+            User user = (User) authentication.getPrincipal();
+            loginUserId = user.getId();
+        }
+        model.addAttribute("loginUserId", loginUserId);
 		
 //		log.info("ly={}", dto.getLyrics());
 		
@@ -74,6 +81,21 @@ public class SongController {
 			model.addAttribute("albumGroup", null);
 
 		}
+	}
+	
+	@GetMapping("/search")
+	public void searchSongs(@RequestParam String keyword, @RequestParam String sortType, 
+			Model model, Authentication authentication) {
+		
+		Integer loginUserId = null;
+        if (authentication != null && authentication.isAuthenticated()) {
+            User user = (User) authentication.getPrincipal();
+            loginUserId = user.getId();
+        }
+        model.addAttribute("loginUserId", loginUserId);
+        
+        
+		
 	}
 	
 }

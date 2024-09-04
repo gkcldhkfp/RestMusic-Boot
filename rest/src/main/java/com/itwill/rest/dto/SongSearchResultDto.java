@@ -13,11 +13,15 @@ import lombok.NoArgsConstructor;
 public class SongSearchResultDto {
 
 	private Integer songId;
-	private String songTitle;
+	private String title;
+	private Integer albumId;
+	private String albumName;
 	private String albumImage;
-	private String albumTitle;
-	private String singerNames;
-	private String singerIds;
-	
+	private String artistName;
+	private String groupName; 
+	private String artistId;
+	private String groupId;
+    private Integer likeCount;
+
 
 }
