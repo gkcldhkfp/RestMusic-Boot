@@ -1,6 +1,6 @@
 package com.itwill.rest.repository;
 
-import com.itwill.rest.dto.playlist.PlayListFirstAlbumImgDto;
+import com.itwill.rest.dto.PlayListFirstAlbumImgDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

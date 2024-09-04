@@ -49,7 +49,5 @@ public class ArtistRole {
 	@JoinColumn(name = "ROLE_ID")
 	@ToString.Exclude
 	private RoleCode roleCode;
-
-
-
+	
 }

@@ -5,11 +5,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class SongLikeDto {
-	
 	private Integer songId;
-	private Integer userId;
-
+	private Integer loginUserId;
+	
 }
