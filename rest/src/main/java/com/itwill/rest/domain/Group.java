@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
-@Table(name="GROUPS")
+@Table(name="`GROUPS`")
 @Getter @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode @ToString
@@ -32,6 +32,8 @@ public class Group {
 	private Integer id;
 
 	private String groupName;
+	
+	private String groupImage;
 
 	private String groupDescription;
 

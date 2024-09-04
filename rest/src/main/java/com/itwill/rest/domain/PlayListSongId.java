@@ -1,5 +1,7 @@
 package com.itwill.rest.domain;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -14,4 +16,5 @@ public class PlayListSongId {
 	private Integer pListId;
 
 	private Integer songId;
+	
 }

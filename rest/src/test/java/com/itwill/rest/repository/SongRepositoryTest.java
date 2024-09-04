@@ -2,9 +2,20 @@ package com.itwill.rest.repository;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.itwill.rest.domain.Like;
+import com.itwill.rest.domain.LikeId;
+import com.itwill.rest.dto.SongSearchResultDto;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -14,6 +25,9 @@ public class SongRepositoryTest {
 	@Autowired
 	private SongRepository songRepo;
 
+	@Autowired
+	private LikeRepository likeRepo;
+	
 	// @Test
 	@Transactional
 	public void diTest() {
@@ -31,9 +45,45 @@ public class SongRepositoryTest {
 		}); */
 	}
 
-	// @Test
+//	@Test
+//	@Transactional
+	public void likeTest() {
+		LikeId likeId = LikeId.builder().id(1).songId(21).build();
+		Optional<Like> like = likeRepo.findById(likeId);
+		log.info("like={}",like);
+		if(like.isEmpty()) {
+			Like like1 = Like.builder().likeId(likeId).build(); 
+			likeRepo.save(like1);
+		} else {
+			likeRepo.delete(like.get());
+		}
+	}
+	
+	@Test
 	@Transactional
-	public void saveTest() {
+	public void searchTest() {
+		 List<Object[]> results = songRepo.findSongsByKeywordOrderByAccuracy("dum", 40, 0);
+		 
+	     List<SongSearchResultDto> dtos = new ArrayList<>();
+
+
+		 for (Object[] result : results) {
+	            SongSearchResultDto dto = new SongSearchResultDto();
+	            dto.setSongId(((Number) result[0]).intValue());
+	            dto.setTitle((String) result[1]);
+	            dto.setAlbumId(((Number) result[2]).intValue());
+	            dto.setAlbumName((String) result[3]);
+	            dto.setAlbumImage((String) result[4]);
+	            dto.setArtistName((String) result[5]);
+	            dto.setGroupName((String) result[6]);
+	            dto.setArtistId((String) result[7]);
+	            dto.setGroupId((String) result[8]);
+	            dto.setLikeCount(((Number) result[9]).intValue());
+	            dtos.add(dto);
+	        }
+	       
+		
+	        dtos.forEach(System.out :: println);
 		
 	}
 }

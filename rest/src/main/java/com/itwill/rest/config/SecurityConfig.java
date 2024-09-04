@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.savedrequest.SavedRequest;
 
 @Configuration
 // -> 스프링 컨테이너에서 생성하고 관리하는 설정 컨포넌트.
@@ -21,7 +22,7 @@ public class SecurityConfig {
 	@Bean
 	// @Bean => 객체를 스프링 컨테이너에서 관리하도록 생성자를 bean으로 등록함.
 	// 스프링 레거시에서는 web.xml에서 bean 태그로 등록했음
-	public PasswordEncoder passwordEncoder() {
+	PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 		// ! 암호화 알고리즘 중 하나.
 		// ! BCryptPasswordEncoder는 PasswordEncoder 인터페이스를 구현한 수많은 클래스 중 하나임.
@@ -93,8 +94,12 @@ public class SecurityConfig {
 		// Custom 로그인 페이지를 사용.
 		http.formLogin((login) -> login.
 			loginPage("/member/signin")
-			.defaultSuccessUrl("/home")
-			.permitAll());
+			.successHandler((request, response, authentication) -> {
+                SavedRequest savedRequest = (SavedRequest) request.getSession().getAttribute("SPRING_SECURITY_SAVED_REQUEST");
+                String targetUrl = savedRequest != null ? savedRequest.getRedirectUrl() : "/home";
+                response.sendRedirect(targetUrl);
+            })
+            .permitAll());
 
 
 		// ! frame태그 사용 시 스프링 시큐리티에서 해주어야하는 설정
@@ -123,8 +128,8 @@ public class SecurityConfig {
 				.hasAnyRole("USER")
 				// 위의 주소는 아이디/비밀번호 인증이 필요함
 				// .requestMatchers("").hasRole("ADMIN") 이런식으로 연결이 가능.
-				.requestMatchers("/api/comment/**")
-				.hasAnyRole("ADMIN", "USER")
+//				.requestMatchers("/api/comment/**")
+//				.hasAnyRole("ADMIN", "USER")
 				.anyRequest()
 				// 위에 설정한 URL 주소를 제외한 모든 주소는
 				.permitAll()
