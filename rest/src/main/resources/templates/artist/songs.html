@@ -63,7 +63,7 @@
                             <tbody id="resultTable">
                                 <tr th:each="s : ${songs}">
                                     <td style="text-align: center; vertical-align: middle;">
-                                        <input type="checkbox" class="songCheckbox" th:data-songId="${s.songId}">
+                                        <input type="checkbox" class="songCheckbox" th:data-song-id="${s.songId}">
                                     </td>
                                     <td style="text-align: left; vertical-align: middle; font-size: 14px;">
                                         <a th:href="@{/album/detail(albumId=*{s.albumId})}">

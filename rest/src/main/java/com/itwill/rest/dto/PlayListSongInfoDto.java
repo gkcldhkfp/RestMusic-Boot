@@ -1,4 +1,4 @@
-package com.itwill.rest.dto.playlist;
+package com.itwill.rest.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;

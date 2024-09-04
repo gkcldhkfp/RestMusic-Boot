@@ -23,10 +23,10 @@ import com.itwill.rest.domain.Group;
 import com.itwill.rest.domain.PlayList;
 import com.itwill.rest.domain.PlayListSong;
 import com.itwill.rest.domain.Song;
+import com.itwill.rest.dto.PlayListCreateDto;
+import com.itwill.rest.dto.PlayListFirstAlbumImgDto;
+import com.itwill.rest.dto.PlayListSongInfoDto;
 import com.itwill.rest.domain.PlayListSongId;
-import com.itwill.rest.dto.playlist.PlayListCreateDto;
-import com.itwill.rest.dto.playlist.PlayListFirstAlbumImgDto;
-import com.itwill.rest.dto.playlist.PlayListSongInfoDto;
 import com.itwill.rest.service.AlbumSongsService;
 import com.itwill.rest.service.PlayListService;
 

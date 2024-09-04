@@ -4,7 +4,7 @@ import com.itwill.rest.domain.QAlbum;
 import com.itwill.rest.domain.QPlayList;
 import com.itwill.rest.domain.QPlayListSong;
 import com.itwill.rest.domain.QSong;
-import com.itwill.rest.dto.playlist.PlayListFirstAlbumImgDto;
+import com.itwill.rest.dto.PlayListFirstAlbumImgDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
