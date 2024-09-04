@@ -1,9 +1,11 @@
 package com.itwill.rest.service;
 
+import java.util.List;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,9 +15,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.itwill.rest.domain.Album;
+import com.itwill.rest.domain.Artist;
+import com.itwill.rest.domain.Group;
+import com.itwill.rest.domain.Like;
+import com.itwill.rest.domain.Song;
 import com.itwill.rest.domain.User;
 import com.itwill.rest.domain.UserRole;
+import com.itwill.rest.dto.UserLikeDto;
 import com.itwill.rest.dto.UserSignUpDto;
+import com.itwill.rest.repository.GroupMemberRepository;
+import com.itwill.rest.repository.LikeRepository;
+import com.itwill.rest.repository.SongRepository;
 import com.itwill.rest.dto.UserUpdateDto;
 import com.itwill.rest.repository.UserRepository;
 
@@ -30,6 +41,9 @@ public class UserService implements UserDetailsService {
 
 	private final UserRepository userRepo;
 	private final PasswordEncoder passwordEncoder;
+	private final LikeRepository likeRepo;
+	private final SongRepository songRepo;
+	private final GroupMemberRepository groupMemberRepo;
 
 	@Transactional
 	public User create(UserSignUpDto dto) {
@@ -98,6 +112,89 @@ public class UserService implements UserDetailsService {
 	}
 	
 	@Transactional(readOnly = true)
+	public List<UserLikeDto> selectLikesByUserid(Integer id) {
+		
+		List<UserLikeDto> list = userRepo.selectLikesByUserid(id);
+		
+		return list;
+	}
+	
+	@Transactional(readOnly = true)
+	public List<UserLikeDto> getLikeSongByUserId(Integer id) {
+	    // 1. 사용자 ID로 Like 엔티티 조회
+	    List<Like> likes = likeRepo.findByLikeId_id(id);
+	    
+	    // 2. Like 엔티티에서 Song 객체를 추출
+	    List<Song> songs = likes.stream()
+	            .map(like -> {
+	                // LikeId에서 songId를 통해 Song 엔티티를 조회
+	                Integer songId = like.getLikeId().getSongId();
+	                return songRepo.findById(songId).orElse(null);
+	            })
+	            .filter(song -> song != null) // Null 값 필터링
+	            .collect(Collectors.toList());
+
+	    // 3. Song 객체를 UserLikeDto로 변환
+	    return songs.stream()
+	            .map(song -> {
+	                // 3.1. Song 객체에서 Album 정보 추출
+	                Album album = song.getAlbum();
+	                
+	                // 3.2. Song 객체에서 Artist 및 Group 정보 추출
+	                List<Artist> songArtists = song.getArtistRole().stream()
+	                        .filter(artistRole -> artistRole.getRoleCode().getRoleId() == 10)
+	                        .map(artistRole -> artistRole.getArtist())
+	                        .distinct()
+	                        .collect(Collectors.toList());
+
+	                List<Group> songGroups = song.getArtistRole().stream()
+	                        .filter(artistRole -> artistRole.getRoleCode().getRoleId() == 10)
+	                        .filter(artistRole -> artistRole.getGroup() != null)
+	                        .map(artistRole -> artistRole.getGroup())
+	                        .distinct()
+	                        .collect(Collectors.toList());
+	                
+	                // 그룹에 속한 아티스트 ID 목록
+	                List<Integer> groupArtistIds = songGroups.stream()
+	                        .flatMap(group -> groupMemberRepo.findByGroupId(group.getId()).stream())
+	                        .map(groupMember -> groupMember.getArtist().getId())
+	                        .collect(Collectors.toList());
+
+	                // 3.3. Artist와 Group ID 및 이름 리스트 생성
+	                List<Integer> artistIds = songArtists.stream()
+	                        .filter(artist -> !groupArtistIds.contains(artist.getId()))
+	                        .map(Artist::getId)
+	                        .collect(Collectors.toList());
+
+	                List<String> artistNames = songArtists.stream()
+	                        .filter(artist -> !groupArtistIds.contains(artist.getId()))
+	                        .map(Artist::getArtistName)
+	                        .collect(Collectors.toList());
+
+	                List<Integer> groupIds = songGroups.stream()
+	                        .map(Group::getId)
+	                        .collect(Collectors.toList());
+
+	                List<String> groupNames = songGroups.stream()
+	                        .map(Group::getGroupName)
+	                        .collect(Collectors.toList());
+
+	                // 3.4. UserLikeDto 객체 생성 및 반환
+	                return UserLikeDto.builder()
+	                        .songId(song.getSongId())
+	                        .title(song.getTitle())
+	                        .albumId(album.getAlbumId())
+	                        .albumName(album.getAlbumName())
+	                        .albumImage(album.getAlbumImage())
+	                        .artistId(artistIds)
+	                        .artistName(artistNames)
+	                        .groupId(groupIds)
+	                        .groupName(groupNames)
+	                        .build();
+	            })
+	            .collect(Collectors.toList());
+	}
+	
     public User readInfo(String userId) {
         return userRepo.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("User with ID " + userId + " not found"));

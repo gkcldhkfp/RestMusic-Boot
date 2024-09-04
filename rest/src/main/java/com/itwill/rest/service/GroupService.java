@@ -9,11 +9,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.itwill.rest.domain.Album;
 import com.itwill.rest.domain.Artist;
 import com.itwill.rest.domain.Group;
-import com.itwill.rest.dto.ArtistAlbumDto;
-import com.itwill.rest.dto.ArtistSongDto;
+import com.itwill.rest.dto.GroupAlbumDto;
+import com.itwill.rest.dto.GroupInfoDto;
+import com.itwill.rest.dto.GroupSongDto;
 import com.itwill.rest.repository.AlbumRepository;
 import com.itwill.rest.repository.ArtistRepository;
 import com.itwill.rest.repository.GroupMemberRepository;
+import com.itwill.rest.repository.GroupRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,27 +23,45 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class ArtistService {
+public class GroupService {
 	
-	private final ArtistRepository artistRepo;
+	private final GroupRepository groupRepo;
 	private final GroupMemberRepository groupMemberRepo;
+	private final ArtistRepository artistRepo;
 	private final AlbumRepository albumRepo;
 	
 	@Transactional(readOnly = true)
-	public Artist findById(Integer id) {
-		log.info("findById={}", id);
+    public GroupInfoDto getGroupInfoByGroupId(Integer groupId) {
+		// groupId로 그룹을 조회
+        Group group = groupRepo.findById(groupId).orElseThrow();
 		
-		Artist artist = artistRepo.findById(id).orElseThrow();
-		
-		return artist;
-	}
+        // 그룹에 속한 아티스트 ID를 조회
+        List<Integer> artistIds = groupMemberRepo.findByGroupId(groupId).stream()
+                .map(groupMember -> groupMember.getArtist().getId())
+                .collect(Collectors.toList());
+
+        // 아티스트 정보를 조회
+        List<Artist> artists = artistRepo.findAllById(artistIds);
+        
+        // 그룹 정보와 아티스트 정보를 포함하는 DTO로 변환
+        GroupInfoDto dto = GroupInfoDto.builder()
+                .groupId(group.getId())
+                .groupName(group.getGroupName())
+                .groupDescription(group.getGroupDescription())
+                .groupImage(group.getGroupImage())
+                .artists(artists)
+                .build();
+        
+        // DTO 리턴
+        return dto;
+    }
 	
 	@Transactional(readOnly = true)
-	public List<ArtistSongDto> readSongs(Integer artistId) {
-		log.info("readSongs(artistId={})", artistId);
+	public List<GroupSongDto> readSongs(Integer groupId) {
+		log.info("readSongs(groupId={})", groupId);
 		
-		// 1. artistId로 해당 ARTIST가 참여한 앨범 ID를 조회
-	    List<Integer> albumIds = albumRepo.findAlbumIdsByArtistId(artistId);
+	    // 1. groupId로 해당 GROUP이 참여한 앨범 ID를 조회
+	    List<Integer> albumIds = albumRepo.findAlbumIdsByGroupId(groupId);
 
 	    // 2. 앨범 ID 리스트를 이용하여 앨범 정보를 조회
 	    List<Album> albums = albumRepo.findAllById(albumIds);
@@ -50,7 +70,8 @@ public class ArtistService {
 	    return albums.stream()
 	            .flatMap(album -> album.getSongs().stream())
 	            .filter(song -> song.getArtistRole().stream()
-	                    .anyMatch(artistRole -> artistId.equals(artistRole.getArtist().getId()))) // artistId를 equal 시켜서 앨범에서 해당 artist가 참여한 곡들만 get해옴.
+	            		.filter(artistRole -> artistRole.getGroup() != null)
+	                    .anyMatch(artistRole -> groupId.equals(artistRole.getGroup().getId()))) // groupId를 equal 시켜서 앨범에서 해당 group이 참여한 곡들만 get해옴.
 	            .map(song -> {
 	                // 곡에 포함된 아티스트와 그룹을 추출
 	                List<Artist> songArtists = song.getArtistRole().stream()
@@ -93,7 +114,7 @@ public class ArtistService {
 	                        .map(Group::getGroupName)
 	                        .collect(Collectors.toList());
 
-	                return ArtistSongDto.builder()
+	                return GroupSongDto.builder()
 	                        .songId(song.getSongId())
 	                        .albumId(song.getAlbum().getAlbumId())
 	                        .albumName(song.getAlbum().getAlbumName())
@@ -109,29 +130,29 @@ public class ArtistService {
 	}
 	
 	@Transactional(readOnly = true)
-	public List<ArtistAlbumDto> readAlbums(Integer artistId) {
-		log.info("readAlbums={artistId={}}", artistId);
+	public List<GroupAlbumDto> readAlbums(Integer groupId) {
+		log.info("readAlbums(groupId={})", groupId);
 		
-	    // 1. artistId로 해당 GROUP이 참여한 앨범 ID를 조회
-		List<Integer> albumIds = albumRepo.findAlbumIdsByArtistId(artistId);
+	    // 1. groupId로 해당 GROUP이 참여한 앨범 ID를 조회
+		List<Integer> albumIds = albumRepo.findAlbumIdsByGroupId(groupId);
 
 	    // 2. 앨범 ID 리스트를 이용하여 앨범 정보를 조회
 	    List<Album> albums = albumRepo.findAllById(albumIds);
 
 	    // 3. 앨범에 포함된 아티스트와 그룹 정보를 추출하여 DTO로 변환
-	    List<ArtistAlbumDto> artistAlbumDtos = albums.stream()
+	    List<GroupAlbumDto> groupAlbumDtos = albums.stream()
 	            .map(album -> {
 	                // 앨범에 포함된 아티스트와 그룹을 추출
 	                List<Artist> albumArtists = album.getSongs().stream()
 	                        .flatMap(song -> song.getArtistRole().stream())
-	                        .filter(artistRole -> artistRole.getRoleCode().getRoleId() == 10)
+	                		.filter(artistRole -> artistRole.getRoleCode().getRoleId() == 10)
 	                        .map(artistRole -> artistRole.getArtist())
 	                        .distinct()
 	                        .collect(Collectors.toList());
 
 	                List<Group> albumGroups = album.getSongs().stream()
 	                        .flatMap(song -> song.getArtistRole().stream())
-	                        .filter(artistRole -> artistRole.getRoleCode().getRoleId() == 10)
+	                		.filter(artistRole -> artistRole.getRoleCode().getRoleId() == 10)
 	                        .filter(artistRole -> artistRole.getGroup() != null)
 	                        .map(artistRole -> artistRole.getGroup())
 	                        .filter(groupObj -> groupObj != null)
@@ -164,7 +185,7 @@ public class ArtistService {
 	                        .map(Group::getGroupName)
 	                        .collect(Collectors.toList());
 
-	                return ArtistAlbumDto.builder()
+	                return GroupAlbumDto.builder()
 	                        .albumId(album.getAlbumId())
 	                        .albumName(album.getAlbumName())
 	                        .albumImage(album.getAlbumImage())
@@ -178,7 +199,7 @@ public class ArtistService {
 	            })
 	            .collect(Collectors.toList());
 
-	    return artistAlbumDtos;
+	    return groupAlbumDtos;
 	}
 
 }

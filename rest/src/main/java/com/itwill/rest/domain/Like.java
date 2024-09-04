@@ -1,5 +1,6 @@
 package com.itwill.rest.domain;
 
+
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

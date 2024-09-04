@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.itwill.rest.domain.Artist;
 import com.itwill.rest.domain.User;
-import com.itwill.rest.dto.ArtistAlbumDto;
-import com.itwill.rest.dto.ArtistSongDto;
-import com.itwill.rest.service.ArtistService;
+import com.itwill.rest.dto.GroupAlbumDto;
+import com.itwill.rest.dto.GroupInfoDto;
+import com.itwill.rest.dto.GroupSongDto;
+import com.itwill.rest.service.GroupService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,18 +21,18 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 @Controller
-@RequestMapping("/artist")
-public class ArtistController {
+@RequestMapping("/group")
+public class GroupController {
 	
-	private final ArtistService artistSvc;
+	private final GroupService groupSvc;
 	
 	@GetMapping("/songs")
-	public void songs(@RequestParam(name = "artistId") Integer artistId, Model model, Authentication authentication) {
-		log.info("songs(artistId={})", artistId);
+	public void songs(@RequestParam(name = "groupId") Integer groupId, Model model, Authentication authentication) {
+		log.info("songs(groupId={})", groupId);
 		
-		Artist artist = artistSvc.findById(artistId);
+		GroupInfoDto group = groupSvc.getGroupInfoByGroupId(groupId);
 		
-		List<ArtistSongDto> list = artistSvc.readSongs(artistId);
+		List<GroupSongDto> list = groupSvc.readSongs(groupId);
 		
         Integer loginUserId = null;
         if (authentication != null && authentication.isAuthenticated()) {
@@ -41,20 +41,20 @@ public class ArtistController {
         }
         log.info("loginUserId={}", loginUserId);
 		
-		model.addAttribute("artist", artist);
+		model.addAttribute("group", group);
 		model.addAttribute("songs", list);
 		model.addAttribute("loginUserId", loginUserId);
 	}
 	
 	@GetMapping("/albums")
-	public void albums(@RequestParam(name = "artistId") Integer artistId, Model model) {
-		log.info("albums(artistId={})", artistId);
+	public void albums(@RequestParam(name = "groupId") Integer groupId, Model model) {
+		log.info("albums(groupId={})", groupId);
 		
-		Artist artist = artistSvc.findById(artistId);
+		GroupInfoDto group = groupSvc.getGroupInfoByGroupId(groupId);
 		
-		List<ArtistAlbumDto> list = artistSvc.readAlbums(artistId);
+		List<GroupAlbumDto> list = groupSvc.readAlbums(groupId);
 		
-		model.addAttribute("artist", artist);
+		model.addAttribute("group", group);
 		model.addAttribute("albums", list);
 	}
 
