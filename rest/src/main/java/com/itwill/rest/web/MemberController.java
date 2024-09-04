@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.itwill.rest.domain.User;
 import com.itwill.rest.dto.UserDeactivateDto;
 import com.itwill.rest.dto.UserSignUpDto;
+import com.itwill.rest.dto.UserUpdateDto;
 import com.itwill.rest.service.EmailService;
 import com.itwill.rest.service.MailSendService;
 import com.itwill.rest.service.UserService;
