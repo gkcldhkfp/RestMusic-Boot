@@ -19,17 +19,17 @@ public class EmailService {
     @Autowired
     private JavaMailSender emailSender;
 
-    @Value("${mail.smtp.port}")
+    @Value("${spring.mail.port}")
     private int port;
-    @Value("${mail.smtp.socketFactory.port}")
+    @Value("${spring.mail.socketFactory.port}")
     private int socketPort;
-    @Value("${mail.smtp.auth}")
+    @Value("${spring.mail.properties.mail.smtp.auth}")
     private boolean auth;
-    @Value("${mail.smtp.starttls.enable}")
+    @Value("${spring.mail.properties.mail.smtp.starttls.enable}")
     private boolean starttls;
-    @Value("${mail.smtp.starttls.required}")
+    @Value("${spring.mail.properties.mail.smtp.starttls.required}")
     private boolean startlls_required;
-    @Value("${mail.smtp.socketFactory.fallback}")
+    @Value("${spring.mail.properties.mail.smtp.socketFactory.fallback}")
     private boolean fallback;
     @Value("${AdminMail.id}")
     private String id;

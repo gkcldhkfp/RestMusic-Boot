@@ -13,7 +13,10 @@ import com.itwill.rest.domain.User;
 import com.itwill.rest.dto.UserSignUpDto;
 import com.itwill.rest.service.UserService;
 
+import jakarta.servlet.http.HttpSession;
+
 import com.itwill.rest.service.EmailService;
+import com.itwill.rest.service.MailSendService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +31,8 @@ public class MemberController {
     private final UserService userServ;
     
     private final EmailService emailService;
+    
+    private final MailSendService mailSendService;
 
     @GetMapping("/signin")
     public void signIn() {
@@ -113,4 +118,28 @@ public class MemberController {
         boolean result = userServ.checkNickname(nickname);
         return ResponseEntity.ok(result ? "Y" : "N");
     }
+    
+    // 이메일 인증 번호 발송
+    @GetMapping("/sendEmailAuth")
+    @ResponseBody
+    public ResponseEntity<String> sendEmailAuth(@RequestParam(name = "email") String email, HttpSession session) {
+        log.debug("sendEmailAuth(email={})", email);
+        String authNumber = mailSendService.joinEmail(email);
+        session.setAttribute("EMAIL_AUTH_NUMBER", authNumber);
+        return ResponseEntity.ok(authNumber);
+    }
+
+    // 이메일 인증 번호 검증
+    @PostMapping("/verifyEmailAuth")
+    @ResponseBody
+    public ResponseEntity<String> verifyEmailAuth(@RequestParam(name = "inputAuthNumber") String inputAuthNumber, HttpSession session) {
+        String authNumber = (String) session.getAttribute("EMAIL_AUTH_NUMBER");
+        log.debug("verifyEmailAuth(authNumber={}, inputAuthNumber={})", authNumber, inputAuthNumber);
+        if (authNumber != null && authNumber.equals(inputAuthNumber)) {
+            return ResponseEntity.ok("Y");
+        } else {
+            return ResponseEntity.ok("N");
+        }
+    }
+    
 }

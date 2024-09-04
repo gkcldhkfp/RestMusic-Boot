@@ -11,22 +11,22 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 @Configuration
 public class EmailConfig {
 
-    @Value("${mail.smtp.host}")
+    @Value("${spring.mail.host}")
     private String host;
     
-    @Value("${mail.smtp.port}")
+    @Value("${spring.mail.port}")
     private int port;
 
-    @Value("${mail.smtp.auth}")
+    @Value("${spring.mail.properties.mail.smtp.auth}")
     private boolean auth;
 
-    @Value("${mail.smtp.starttls.enable}")
+    @Value("${spring.mail.properties.mail.smtp.starttls.enable}")
     private boolean starttls;
 
-    @Value("${mail.smtp.username}")
+    @Value("${spring.mail.username}")
     private String username;
 
-    @Value("${mail.smtp.password}")
+    @Value("${spring.mail.password}")
     private String password;
 
     @Bean
