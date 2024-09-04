@@ -2,10 +2,7 @@ package com.itwill.rest.web;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -18,16 +15,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.itwill.rest.domain.Artist;
-import com.itwill.rest.domain.Group;
 import com.itwill.rest.domain.PlayList;
-import com.itwill.rest.domain.PlayListSong;
-import com.itwill.rest.domain.Song;
 import com.itwill.rest.dto.PlayListCreateDto;
 import com.itwill.rest.dto.PlayListFirstAlbumImgDto;
 import com.itwill.rest.dto.PlayListSongInfoDto;
 import com.itwill.rest.domain.PlayListSongId;
-import com.itwill.rest.service.AlbumSongsService;
 import com.itwill.rest.service.PlayListService;
 
 import lombok.RequiredArgsConstructor;
@@ -39,8 +31,6 @@ import lombok.extern.slf4j.Slf4j;
 public class PlayListController {
 	
 	private final PlayListService playListSvc;
-	
-	private final AlbumSongsService albumSongSvc;
 	
 	@GetMapping("/playlists/playlist")
 	public void playlist(@RequestParam(name = "plistId") Integer pListId, Model model) {
@@ -123,5 +113,5 @@ public class PlayListController {
 		
 		return ResponseEntity.ok(result);
 	}
-
+	
 }

@@ -1,18 +1,37 @@
 package com.itwill.rest.web;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.savedrequest.DefaultSavedRequest;
+import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.itwill.rest.domain.User;
+import com.itwill.rest.dto.UserDeactivateDto;
 import com.itwill.rest.dto.UserSignUpDto;
+import com.itwill.rest.dto.UserUpdateDto;
 import com.itwill.rest.service.UserService;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,8 +46,19 @@ public class MemberController {
     
     
     @GetMapping("/signin")
-    public void signIn() {
+    public void signIn(@RequestParam(required = false) String targetUrl, HttpServletRequest request) {
         log.info("GET signIn()");
+        
+        if (targetUrl != null && !targetUrl.isEmpty()) {
+            SavedRequest savedRequest = new DefaultSavedRequest.Builder()
+                .setScheme(request.getScheme())
+                .setServerName(request.getServerName())
+                .setServerPort(request.getServerPort())
+                .setContextPath(request.getContextPath())
+                .setRequestURI(targetUrl)
+                .build();
+            request.getSession().setAttribute("SPRING_SECURITY_SAVED_REQUEST", savedRequest);
+        }
     }
     
     @GetMapping("/signup")
@@ -106,4 +136,119 @@ public class MemberController {
         boolean result = userServ.checkNickname(nickname);
         return ResponseEntity.ok(result ? "Y" : "N");
     }
+    
+    @GetMapping("/update")
+    public void myPage(@RequestParam(name = "userId") String userId, Model model) {
+        log.debug("userId={}", userId);
+
+        User user = userServ.readInfo(userId); // 유저 정보 불러오기(프로필 사진, 닉네임 출력)
+        model.addAttribute("user", user);
+    }
+    
+    // 프로필 이미지 변경
+    @PostMapping("/updateProfileImage")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> updateProfileImage(
+            @RequestParam("userId") String userId,
+            @RequestParam("profileImage") MultipartFile profileImage,
+            HttpServletRequest request) {
+        boolean isUpdated = userServ.updateProfileImage(userId, profileImage, request);
+        Map<String, Object> response = new HashMap<>();
+
+        if (isUpdated) {
+            String imageUrl = "/images/profileimage/" + profileImage.getOriginalFilename();
+            response.put("success", true);
+            response.put("message", "Profile image updated successfully");
+            response.put("imageUrl", imageUrl);
+            return ResponseEntity.ok(response);
+        } else {
+            response.put("success", false);
+            response.put("message", "Failed to update profile image");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    // 프로필 이미지 삭제
+    @DeleteMapping("/deleteProfileImage/{userId}")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> deleteProfileImage(@PathVariable String userId) {
+        Map<String, Object> response = new HashMap<>();
+        boolean isDeleted = userServ.deleteUserProfile(userId);
+
+        if (isDeleted) {
+            response.put("success", true);
+            response.put("message", "Profile image deleted successfully");
+            return ResponseEntity.ok(response);
+        } else {
+            response.put("success", false);
+            response.put("message", "Failed to delete profile image");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    // 사용자 정보 수정
+    @PostMapping("/update")
+    public String update(UserUpdateDto dto,
+            @RequestParam(value = "profileImage", required = false) MultipartFile profileImage) throws IOException {
+        log.debug("POST: update(dto = {}, file = {})", dto, profileImage);
+
+        if (profileImage != null && !profileImage.isEmpty()) {
+            String filePath = profileImage.getOriginalFilename();
+            File destinationFile = new File(filePath);
+            profileImage.transferTo(destinationFile);
+            dto.setUserProfile(filePath);
+        }
+
+        userServ.update(dto);
+
+        return "redirect:/member/mypage?userId=" + dto.getUserId();
+    }
+
+    // 사용자 계정 비활성화 페이지
+    @GetMapping("/deactivateUser")
+    public String deactivateAccount(Model model, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return "redirect:/member/signin";
+        }
+
+        User user = (User) authentication.getPrincipal();
+        Integer loginUserId = user.getId();
+        User userDetails = userServ.getUserById(loginUserId);
+        
+        model.addAttribute("user", userDetails);
+        model.addAttribute("loginUserId", loginUserId);
+
+        return "member/deactivateUser";
+    }
+
+    // 사용자 계정 비활성화
+    @PostMapping("/deactivateUser")
+    @ResponseBody
+    public ResponseEntity<?> deactivateAccount(@RequestBody UserDeactivateDto dto, Authentication authentication, HttpServletResponse response) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인 필요");
+        }
+
+        User user = (User) authentication.getPrincipal();
+        Integer id = user.getId();
+        String password = dto.getPassword();
+
+        boolean result = userServ.deactivateAccount(id, password);
+
+        if (result) {
+            // 세션 무효화
+            SecurityContextHolder.clearContext();
+            
+            // 쿠키 삭제
+            Cookie cookie = new Cookie("user", null);
+            cookie.setMaxAge(0);
+            cookie.setPath("/");
+            response.addCookie(cookie);
+
+            return ResponseEntity.ok().body("계정이 탈퇴되었습니다.");
+        } else {
+            return ResponseEntity.badRequest().body("비밀번호가 일치하지 않습니다.");
+        }
+    }
+    
 }

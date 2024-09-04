@@ -4,9 +4,10 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -446,34 +447,38 @@ public class AlbumRepositoryTest {
 
 	}
 
+
 	// @Test
+	@Transactional(readOnly = true)
 	public void ttest() {
 		long startTime = System.currentTimeMillis();
 
-		List<ContentDto> dtos = convertToContentDto(albumRepo.findAllContentByKeyword("20"));
+		List<ContentDto> dtos = convertToContentDto(albumRepo.findAllContentByKeyword("밤양갱"));
 
-		dtos.forEach(x -> System.out.println(x));
-
+		
 		// 종료 시간 기록
 		long endTime = System.currentTimeMillis();
 		log.info("chosungAlbumTest 종료");
-
+		
 		// 걸린 시간 계산 및 출력
 		long duration = endTime - startTime;
+		dtos.forEach(x -> System.out.println(x));
+		System.out.println(dtos.size());
 		log.info("테스트 실행 시간: " + duration + "ms");
 	}
 	
-//	@Test
+	// @Test
+	@Transactional(readOnly = true)
 	public void fullTexttest() {
 		long startTime = System.currentTimeMillis();
 
-		List<ContentDto> dtos = convertToContentDto(albumRepo.findAllContentByKeywordFullText("20"));
+		List<ContentDto> dtos = convertToContentDto(albumRepo.findAllContentByKeywordFullText("밤양갱"));
 
-		dtos.forEach(x -> System.out.println(x));
-
+		
 		// 종료 시간 기록
 		long endTime = System.currentTimeMillis();
 		log.info("chosungAlbumTest 종료");
+		dtos.forEach(x -> System.out.println(x));
 
 		// 걸린 시간 계산 및 출력
 		long duration = endTime - startTime;
@@ -487,7 +492,7 @@ public class AlbumRepositoryTest {
 			dto.setType((String) result[0]);
 			dto.setId((Integer) result[1]);
 			dto.setName((String) result[2]);
-			dto.setReleaseDate(result[3] != null ? (LocalDate) result[3] : null);
+			dto.setReleaseDate(result[3] != null ? (Date) result[3] : null);
 			dto.setLikeCount(((Long) result[4]).intValue()); // assuming like_count is a BigInteger
 			contentDtos.add(dto);
 		}

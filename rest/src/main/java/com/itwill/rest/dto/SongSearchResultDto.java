@@ -12,12 +12,16 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 public class SongSearchResultDto {
 
-	private int songId;
-	private String songTitle;
+	private Integer songId;
+	private String title;
+	private Integer albumId;
+	private String albumName;
 	private String albumImage;
-	private String albumTitle;
-	private String singerNames;
-	private String singerIds;
-	
+	private String artistName;
+	private String groupName; 
+	private String artistId;
+	private String groupId;
+    private Integer likeCount;
+
 
 }

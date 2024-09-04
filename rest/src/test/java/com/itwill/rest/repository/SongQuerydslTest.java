@@ -1,21 +1,11 @@
 package com.itwill.rest.repository;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 
-import com.itwill.rest.domain.Album;
-import com.itwill.rest.domain.Song;
 import com.itwill.rest.dto.SearchResultDto;
-import com.itwill.rest.dto.SongDetailsDto;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,7 +19,7 @@ public class SongQuerydslTest {
 	@Autowired
 	private AlbumRepository albumRepo;
 	
-	@Test
+	// @Test
 //	@Transactional
 	public void querydlstest() {
 		// 시작 시간 기록

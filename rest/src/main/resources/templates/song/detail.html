@@ -233,7 +233,7 @@
     <script th:inline="javascript">
 					const songId = /*[[${data.songId}]]*/'';
 
-					let authUser = 1;
+					let authUser = /*[[${loginUserId}]]*/ 1;
 
 					const writers = /*[[${data.writers}]]*/'[]';
 					const writerIds = /*[[${data.writerIds}]]*/'[]';

@@ -32,10 +32,10 @@ public class Group {
 	private Integer id;
 
 	private String groupName;
-
-	private String groupDescription;
 	
 	private String groupImage;
+
+	private String groupDescription;
 
 	@OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
 	@ToString.Exclude

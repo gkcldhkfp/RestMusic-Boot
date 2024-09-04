@@ -54,6 +54,5 @@ public class PlayListSong {
 	@LastModifiedDate
 	@Column(name = "CREATED_TIME")
 	private LocalDateTime createdTime;
-
 	
 }

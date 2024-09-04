@@ -7,5 +7,5 @@ import com.itwill.rest.dto.PlayListFirstAlbumImgDto;
 public interface PlayListQuerydsl {
 
 	List<PlayListFirstAlbumImgDto> selectByUserId(Integer id);
-
+	
 }
