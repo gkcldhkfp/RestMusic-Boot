@@ -253,4 +253,49 @@ public class SongService {
         songLikeRepo.deleteById(likeId);
     }
     
+    
+    
+    
+    
+    
+    
+    // 메인 top10
+    @Transactional(readOnly = true)
+    public List<SongChartDto> getTop10Songs() {
+        // 좋아요 수 기준으로 정렬된 상위 30개의 노래를 조회
+        List<Song> topSongs = songRepo.findByOrderByLikesCountDesc().stream()
+                                      .limit(10)
+                                      .collect(Collectors.toList());
+
+        // 상위 10곡을 SongChartDto로 변환하여 반환
+        return topSongs.stream()
+                .map(this::convertToSongChartDto)
+                .collect(Collectors.toList());
+    }
+    
+    
+    
+    
+ 
+
+        public List<SongChartDto> getNewestSongs() {
+            // 최신 음악을 발매일 기준으로 내림차순 정렬하여 상위 10개 조회
+            List<Song> songs = songRepo.findByOrderByAlbum_AlbumReleaseDateDesc().stream()
+            							.limit(10)
+            							.collect(Collectors.toList());
+            							
+
+            // 조회된 곡 목록을 SongChartDto로 변환하여 반환
+            return mapToSongChartDto(songs);
+        }
+
+        private List<SongChartDto> mapToSongChartDto(List<Song> songs) {
+            return songs.stream()
+                    .map(this::convertToSongChartDto)
+                    .collect(Collectors.toList());
+        }
+
+
+
+    
 }

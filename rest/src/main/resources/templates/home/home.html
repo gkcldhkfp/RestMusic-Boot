@@ -167,19 +167,19 @@
         <div class="slideshow-container mt-5">
             <div class="mySlides">
                 <div class="numbertext"></div>
-                <a th:href="@{/Rest/playlists/playlist(plistId=3)}">
+                <a th:href="@{/playlists/playlist(plistId=3)}">
                     <img th:src="@{/data/imagee1.gif}" style="width: 100%" />
                 </a>
             </div>
             <div class="mySlides">
                 <div class="numbertext"></div>
-                <a th:href="@{/Rest/playlists/playlist(plistId=4)}">
+                <a th:href="@{/playlists/playlist(plistId=4)}">
                     <img th:src="@{/data/imagee3.gif}" style="width: 100%" />
                 </a>
             </div>
             <div class="mySlides">
                 <div class="numbertext"></div>
-                <a th:href="@{/Rest/playlists/playlist(plistId=16)}">
+                <a th:href="@{/playlists/playlist(plistId=16)}">
                     <img th:src="@{/data/imagee2.gif}" style="width: 100%" />
                 </a>
             </div>
@@ -195,30 +195,52 @@
 
         <!-- 메인컨텐츠 -->
         <div class="content-container">
-            <a class="h3-style" th:href="@{/Rest/song/popularChart}">
+            <a class="h3-style" th:href="@{/song/popularChart}">
                 <h3>Rest Top 10 차트</h3>
             </a>
 
-            <!-- <div class="card-container">
-                <div class="card border-0" th:each="l, status : ${topTenList}">
-                    <p th:text="${status.index + 1}" style="display: none;"></p>
-
-                    <a th:href="@{/album/detail(albumId=${l.albumId})}" class="album-link"> <img
-                            th:src="@{/images/albumcover/{l.albumImage}(l.albumImage=${l.albumImage})}"
-                            alt="Album cover">
+            <div class="card-container">
+                <div class="card border-0" th:each="l, iterStat : ${topTenList}">
+                    <!-- Index 표시 (숨김) -->
+                    <p th:text="${iterStat.index + 1}" style="display: none;"></p>
+            
+                    <!-- 앨범 디테일 페이지로 이동 -->
+                    <a th:href="@{/album/detail(albumId=${l.albumId})}" class="album-link">
+                        <img th:src="@{/images/albumcover/{image}(image=${l.albumImage})}" alt="Album cover">
                     </a>
-
-                    <a th:href="@{/song/detail(songId=${l.songId})}"
-                        style="font: inherit; color: inherit; text-decoration: none;">
+            
+                    <!-- 음원 디테일 페이지로 이동 -->
+                    <a th:href="@{/song/detail(songId=${l.songId})}" style="font: inherit; color: inherit; text-decoration: none;">
                         <small th:text="${l.title}"></small>
                     </a>
-
-                    <a th:href="@{/artist/songs(artistId=${l.artistId})}"
-                        style="margin-top: -5px; font: inherit; color: gray; text-decoration: none;">
-                        <small th:text="${l.artistName}" style="font-size: 0.75rem;"></small>
-                    </a>
+            
+                    <!-- 그룹 이름 또는 아티스트 이름 표시 및 상세 페이지로 이동 -->
+                    <div style="margin-top: -5px;">
+                        <th:block th:if="${#lists.isEmpty(l.groupNames)}">
+                            <th:block th:each="artistName, artistIndex : ${l.artistNames}">
+                                <a th:href="@{/artist/songs(artistId=${l.artistIds[artistIndex.index]})}" 
+                                   style="font: inherit; color: gray; text-decoration: none; font-size: 0.75rem;">
+                                    <small th:text="${artistName}"></small>
+                                </a>
+                                <th:block th:if="${!artistIndex.last}">
+                                    <span>, </span>
+                                </th:block>
+                            </th:block>
+                        </th:block>
+                        <th:block th:if="${!#lists.isEmpty(l.groupNames)}">
+                            <th:block th:each="groupName, groupIndex : ${l.groupNames}">
+                                <a th:href="@{/group/detail(groupId=${l.groupIds[groupIndex.index]})}"
+                                   style="font-weight: bold; color: gray; text-decoration: none; font-size: 0.75rem;">
+                                    <small th:text="${groupName}"></small>
+                                </a>
+                                <th:block th:if="${!groupIndex.last}">
+                                    <span>, </span>
+                                </th:block>
+                            </th:block>
+                        </th:block>
+                    </div>
                 </div>
-            </div> -->
+            </div>
             <br> <br>
 
             <h3>Rest 추천 뮤직 비디오</h3>
@@ -264,32 +286,83 @@
             <br> <br>
 
             <!-- 신규 음원 -->
-            <a class="h3-style" th:href="@{/Rest/song/newSongs}">
-                <h3>Rest 신규 음원</h3>
+            <a class="h3-style" th:href="@{/song/newSongs}">
+                <h3>Rest 신규 앨범</h3>
             </a>
-
-            <!-- <div class="card-container">
-                <div class="card border-0" th:each="l, status : ${newSongList}">
-                    <p th:text="${status.index + 1}" style="display: none;"></p>
-
-                    <a th:href="@{/album/detail(albumId=${l.albumId})}" class="album-link"> <img
-                            th:src="@{/images/albumcover/{l.albumImage}(l.albumImage=${l.albumImage})}"
-                            alt="Album cover">
+            <div class="card-container">
+                <div class="card border-0" th:each="l, iterStat : ${newestList}">
+                    <!-- Index 표시 (숨김) -->
+                    <p th:text="${iterStat.index + 1}" style="display: none;"></p>
+            
+                    <!-- 앨범 디테일 페이지로 이동 -->
+                    <a th:href="@{/album/detail(albumId=${l.albumId})}" class="album-link">
+                        <img th:src="@{/images/albumcover/{image}(image=${l.albumImage})}" alt="Album cover">
                     </a>
-
-                    <a th:href="@{/song/detail(songId=${l.songId})}"
-                        style="font: inherit; color: inherit; text-decoration: none;">
+            
+                    <!-- 음원 디테일 페이지로 이동 -->
+                    <a th:href="@{/song/detail(songId=${l.songId})}" style="font: inherit; color: inherit; text-decoration: none;">
                         <small th:text="${l.title}"></small>
                     </a>
-
-                    <a th:href="@{/artist/songs(artistId=${l.artistId})}"
-                        style="margin-top: -5px; font: inherit; color: gray; text-decoration: none;">
-                        <small th:text="${l.artistName}" style="font-size: 0.75rem;"></small>
-                    </a>
+            
+                    <!-- 그룹 이름 또는 아티스트 이름 표시 및 상세 페이지로 이동 -->
+                    <div style="margin-top: -5px;">
+                        <th:block th:if="${#lists.isEmpty(l.groupNames)}">
+                            <th:block th:each="artistName, artistIndex : ${l.artistNames}">
+                                <a th:href="@{/artist/songs(artistId=${l.artistIds[artistIndex.index]})}" 
+                                   style="font: inherit; color: gray; text-decoration: none; font-size: 0.75rem;">
+                                    <small th:text="${artistName}"></small>
+                                </a>
+                                <th:block th:if="${!artistIndex.last}">
+                                    <span>, </span>
+                                </th:block>
+                            </th:block>
+                        </th:block>
+                        <th:block th:if="${!#lists.isEmpty(l.groupNames)}">
+                            <th:block th:each="groupName, groupIndex : ${l.groupNames}">
+                                <a th:href="@{/group/detail(groupId=${l.groupIds[groupIndex.index]})}"
+                                   style="font-weight: bold; color: gray; text-decoration: none; font-size: 0.75rem;">
+                                    <small th:text="${groupName}"></small>
+                                </a>
+                                <th:block th:if="${!groupIndex.last}">
+                                    <span>, </span>
+                                </th:block>
+                            </th:block>
+                        </th:block>
+                    </div>
                 </div>
-            </div> -->
+            </div>
+        </div>
+            
             <br> <br>
     </main>
+    
+    <script>
+                    let slideIndex = 0;
+                    showSlides();
+
+                    function showSlides() {
+                        let i;
+                        let slides = document
+                                .getElementsByClassName("mySlides");
+                        let dots = document.getElementsByClassName("dot");
+                        for (i = 0; i < slides.length; i++) {
+                            slides[i].style.display = "none";
+                        }
+                        slideIndex++;
+                        if (slideIndex > slides.length) {
+                            slideIndex = 1
+                        }
+                        for (i = 0; i < dots.length; i++) {
+                            dots[i].className = dots[i].className.replace(
+                                    " active", "");
+                        }
+                        slides[slideIndex - 1].style.display = "block";
+                        dots[slideIndex - 1].className += " active";
+                        setTimeout(showSlides, 2000); // Change image every 2 seconds
+                    }
+                    
+                
+                </script>
 
     <th:block th:replace="~{/layout/fragments :: footer}"></th:block>
 
