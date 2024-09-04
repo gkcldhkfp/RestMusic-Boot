@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -445,6 +446,7 @@ public class AlbumRepositoryTest {
 		artistRoleRepo.saveAll(roles);
 
 	}
+
 
 	// @Test
 	@Transactional(readOnly = true)

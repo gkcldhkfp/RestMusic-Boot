@@ -101,11 +101,11 @@
                         <p class="mt-2" id="genre">장르</p>
                         <div class="mt-3">
                             <button id="btnLike" class="btn fs-3"></button>
-                            <button data-id="${data.songId}"
+                            <button th:data-id="${data.songId}"
                                 id="listenBtn" title="재생" class="btn"
                                 style="background-image: url('../images/icon/play.png'); width: 45px; height: 45px; background-size: cover; background-repeat: no-repeat;"></button>
 
-                            <button data-id="${data.songId}"
+                            <button th:data-id="${data.songId}"
                                 id="addCPList" title="재생목록에 추가"
                                 class="btn ms-1"
                                 style="background-image: url('../images/icon/playList.png'); width: 60px; height: 60px; background-size: cover; background-repeat: no-repeat;"></button>
@@ -233,7 +233,7 @@
     <script th:inline="javascript">
 					const songId = /*[[${data.songId}]]*/'';
 
-					let authUser = 1;
+					let authUser = /*[[${loginUserId}]]*/ 1;
 
 					const writers = /*[[${data.writers}]]*/'[]';
 					const writerIds = /*[[${data.writerIds}]]*/'[]';
@@ -255,6 +255,6 @@
 
     <script th:src="@{/js/comment.js}"></script>
     <script th:src="@{/js/songDetails.js}"></script>
-    <!-- <script th:src="@{/js/addCurrentPlayList.js}"></script> -->
+    <script th:src="@{/js/addCurrentPlayList.js}"></script>
 </body>
 </html>

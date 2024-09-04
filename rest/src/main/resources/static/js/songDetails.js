@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function redirectToLogin() {
         const currentUrl = window.location.href;
-        window.location.href = `/Rest/user/signin?target=${encodeURIComponent(currentUrl)}`;
+        window.location.href = `/member/signin?target=${encodeURIComponent(currentUrl)}`;
     }
     
     
@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
 
     btnLike.addEventListener('click', () => {
-    if(authUser == '') {
+    if(authUser == null) {
         if(confirm("로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?")){
             redirectToLogin();
         }
