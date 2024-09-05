@@ -112,7 +112,7 @@ table {
                                                     th:each="group, iterStat : ${albumGroup}">
                                                     <a
                                                         th:text="${group.groupName}"
-                                                        th:href="@{/group/songs(id=${group.id})}"
+                                                        th:href="@{/group/songs(groupId=${group.id})}"
                                                         th:style="'cursor: pointer; font-weight: normal; text-decoration: none; color: black;'"
                                                         onmouseover="this.style.fontWeight='bold'; this.style.textDecoration='underline';"
                                                         onmouseout="this.style.fontWeight='normal'; this.style.textDecoration='none'; this.style.color='black';"></a>
@@ -134,7 +134,7 @@ table {
                                                     th:each="artist, iterStat : ${filteredArtists}">
                                                     <a
                                                         th:text="${artist.artistName}"
-                                                        th:href="@{/artist/songs(id=${artist.id})}"
+                                                        th:href="@{/artist/songs(artistId=${artist.id})}"
                                                         th:style="'cursor: pointer; font-weight: normal; text-decoration: none; color: black;'"
                                                         onmouseover="this.style.fontWeight='bold'; this.style.textDecoration='underline';"
                                                         onmouseout="this.style.fontWeight='normal'; this.style.textDecoration='none'; this.style.color='black';"></a>
@@ -151,7 +151,7 @@ table {
                                             th:each="artist, iterStat : ${albumArtist}">
                                             <a
                                             th:text="${artist.artistName}"
-                                            th:href="@{/artist/songs(id=${artist.id})}"
+                                            th:href="@{/artist/songs(artistId=${artist.id})}"
                                             th:style="'cursor: pointer; font-weight: normal; text-decoration: none; color: black;'"
                                             onmouseover="this.style.fontWeight='bold'; this.style.textDecoration='underline';"
                                             onmouseout="this.style.fontWeight='normal'; this.style.textDecoration='none'; this.style.color='black';">
@@ -171,7 +171,7 @@ table {
 								<td id="genre" class="intro">
 									<span th:each="genre, iterStat : ${genres}">
 										<!-- TODO: 장르 차트 페이지로 링크 변경 -->
-										<a th:href="@{/artist/songs(artistId=${genre.genreId})}" th:text="${genre.genreName}"
+										<a th:href="@{/song/genreChart(genreName=${genre.genreName})}" th:text="${genre.genreName}"
 											th:style="'cursor: pointer;'"
 											onmouseover="this.style.fontWeight='bold'; this.style.textDecoration='underline';"
 											onmouseout="this.style.fontWeight='normal'; this.style.textDecoration='none'; this.style.color='black';"></a>
