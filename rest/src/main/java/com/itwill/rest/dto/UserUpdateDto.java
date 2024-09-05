@@ -6,6 +6,7 @@ import lombok.Data;
 // 정보 수정 요청에서 요청 파라미터들을 저장하기 위한 DTO
 @Data
 public class UserUpdateDto {
+	private Integer id;
 	private String userId;
 	private String userName;
     private String password;
@@ -17,6 +18,7 @@ public class UserUpdateDto {
 
     public User toEntity() {
         return User.builder()
+        		.id(id)
         		.userId(userId)
         		.userName(userName)
                 .password(password)
