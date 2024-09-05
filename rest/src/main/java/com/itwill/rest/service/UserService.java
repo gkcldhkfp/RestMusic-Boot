@@ -1,5 +1,6 @@
 package com.itwill.rest.service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.io.File;
 import java.io.IOException;
@@ -133,9 +134,14 @@ public class UserService implements UserDetailsService {
 	            })
 	            .filter(song -> song != null) // Null 값 필터링
 	            .collect(Collectors.toList());
+	    
+	    // 3. Song 객체를 title 기준으로 정렬
+	    List<Song> sortedSongs = songs.stream()
+	            .sorted(Comparator.comparing(Song::getTitle))
+	            .collect(Collectors.toList());
 
-	    // 3. Song 객체를 UserLikeDto로 변환
-	    return songs.stream()
+	    // 4. Song 객체를 UserLikeDto로 변환
+	    return sortedSongs.stream()
 	            .map(song -> {
 	                // 3.1. Song 객체에서 Album 정보 추출
 	                Album album = song.getAlbum();

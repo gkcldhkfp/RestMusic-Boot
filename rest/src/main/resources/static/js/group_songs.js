@@ -2,6 +2,54 @@
  * group 폴더의 songs.html에 포함
  */
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('사용자 ID는 ' + (loginUserId !== null ? loginUserId : '로그인되지 않음'));
+    
+    // group 좋아요 관련 코드
+    const btnLike = document.querySelector('button#btnLike');
+    const data = { groupId, id:loginUserId };
+    
+    if(loginUserId != ''){
+    axios
+        .post('/api/group/isLiked', data)
+        .then((response) => {
+            if (response.data) {
+                btnLike.textContent = '♥';
+            } else {
+                btnLike.textContent = '♡';
+            }
+        }
+        )
+        .catch((error) => {
+            console.log(error);
+        });
+    } else {
+        btnLike.textContent = '♡';
+    }
+    
+    btnLike.addEventListener('click', () => {
+    if(loginUserId == null) {
+        if(confirm("로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?")){
+            redirectToLogin();
+        }
+        return;
+        }
+        axios
+            .put('/api/group/like', data)
+            .then((response) => {
+                if (response.data) {
+                    btnLike.textContent = '♥';
+                } else {
+                    btnLike.textContent = '♡';
+                }
+            }
+            )
+            .catch((error) => {
+                console.log(error);
+            });
+
+    });
+    
+    // playlist 작동 관련 코드
     const btnAddPlayLists = document.querySelectorAll('button.addPlayList');
     const playListModal = new bootstrap.Modal(document.querySelector('div#staticBackdrop3'), { backdrop: 'static' });
     

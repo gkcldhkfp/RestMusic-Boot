@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.itwill.rest.domain.PlayList;
 import com.itwill.rest.dto.PlayListCreateDto;
 import com.itwill.rest.dto.PlayListFirstAlbumImgDto;
+import com.itwill.rest.dto.PlayListNameUpdateDto;
 import com.itwill.rest.dto.PlayListSongInfoDto;
 import com.itwill.rest.domain.PlayListSongId;
 import com.itwill.rest.service.PlayListService;
@@ -112,6 +114,18 @@ public class PlayListController {
 		int result = playListSvc.songAddToPlayList(id);
 		
 		return ResponseEntity.ok(result);
+	}
+	
+	@PutMapping("/updatePlayListName/{pListId}")
+	@ResponseBody
+	public ResponseEntity<Integer> updatePlayListName(@PathVariable Integer pListId, @RequestBody PlayListNameUpdateDto dto) {
+		log.info("updatePlayListName(id={}, dto={})", pListId, dto);
+		
+		dto.setPListId(pListId);
+		
+    	playListSvc.updatePlayListNameByListId(dto);
+    	
+    	return ResponseEntity.ok(pListId);
 	}
 	
 }
