@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.itwill.rest.domain.User;
 import com.itwill.rest.dto.UserDeactivateDto;
 import com.itwill.rest.dto.UserSignUpDto;
+import com.itwill.rest.dto.UserUpdateDto;
 import com.itwill.rest.service.EmailService;
 import com.itwill.rest.service.MailSendService;
 import com.itwill.rest.service.UserService;
@@ -200,7 +201,7 @@ public class MemberController {
 
 		userServ.update(dto);
 
-		return "redirect:/member/mypage?userId=" + dto.getUserId();
+		return "redirect:/member/mypage?id=" + dto.getId();
 	}
 
 	// 사용자 계정 비활성화 페이지

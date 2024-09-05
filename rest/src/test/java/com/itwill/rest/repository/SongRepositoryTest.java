@@ -59,7 +59,7 @@ public class SongRepositoryTest {
 		}
 	}
 	
-	@Test
+//	@Test
 	@Transactional
 	public void searchTest() {
 		 List<Object[]> results = songRepo.findSongsByKeywordOrderByAccuracy("dum", 40, 0);

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
 	<meta charset="UTF-8">
@@ -167,7 +167,7 @@
 				<a id="refresh" href="${refresh}" target="songFrame" style="display: none;">새로고침</a>
 			</div> -->
 
-	<th:block th:replace="~{/layout/fragments :: footer}"></th:block>
+	<th:block th:replace="~{layout/fragments :: footer}"></th:block>
 
 
 	<script th:inline="javascript">
