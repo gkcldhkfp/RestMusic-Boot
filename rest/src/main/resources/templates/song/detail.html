@@ -3,7 +3,7 @@
 <head>
 <th:block th:replace="~{layout/fragments :: documentHeader}"></th:block>
 
-<!-- <link href="./css/common.css" rel="stylesheet" /> -->
+<link th:href="@{/css/common.css}" rel="stylesheet">
 <!-- 공통 CSS 파일 포함 -->
 <title>Rest</title>
 
@@ -231,27 +231,27 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <script th:inline="javascript">
-					const songId = /*[[${data.songId}]]*/'';
+                    const songId = /*[[${data.songId}]]*/'';
 
-					let authUser = /*[[${loginUserId}]]*/ 1;
+                    let authUser = /*[[${loginUserId}]]*/ 1;
 
-					const writers = /*[[${data.writers}]]*/'[]';
-					const writerIds = /*[[${data.writerIds}]]*/'[]';
+                    const writers = /*[[${data.writers}]]*/'[]';
+                    const writerIds = /*[[${data.writerIds}]]*/'[]';
 
-					const singers = /*[[${data.singers}]]*/"";
-					const singerIds = /*[[${data.singerIds}]]*/'[]';
+                    const singers = /*[[${data.singers}]]*/"";
+                    const singerIds = /*[[${data.singerIds}]]*/'[]';
 
-					const composers = /*[[${data.composers}]]*/'[]';
-					const composerIds = /*[[${data.composerIds}]]*/'[]';
+                    const composers = /*[[${data.composers}]]*/'[]';
+                    const composerIds = /*[[${data.composerIds}]]*/'[]';
 
-					const arrangers = /*[[${data.arrangers}]]*/'[]';
-					const arrangerIds = /*[[${data.arrangerIds}]]*/'[]';
+                    const arrangers = /*[[${data.arrangers}]]*/'[]';
+                    const arrangerIds = /*[[${data.arrangerIds}]]*/'[]';
 
-					const genres = /*[[${data.genres}]]*/'[]';
+                    const genres = /*[[${data.genres}]]*/'[]';
 
-					let refresh = '${refresh}';
-					// 리다이렉트 시 재생페이지를 새로고침하기 위한 코드
-				</script>
+                    let refresh = '${refresh}';
+                    // 리다이렉트 시 재생페이지를 새로고침하기 위한 코드
+                </script>
 
     <script th:src="@{/js/comment.js}"></script>
     <script th:src="@{/js/songDetails.js}"></script>
