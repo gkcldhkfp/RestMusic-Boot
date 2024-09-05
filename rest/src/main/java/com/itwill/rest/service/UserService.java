@@ -270,7 +270,7 @@ public class UserService implements UserDetailsService {
         if (user == null) {
             return false;
         }
-        user.updateProfile(""); // Clear profile
+        user.updateProfile(null); // Clear profile
         userRepo.save(user);
         return true;
     }
