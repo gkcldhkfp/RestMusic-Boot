@@ -111,7 +111,7 @@
     <body>
         <header>
             <div class="container-fluid">
-                <th:block th:replace="~{/layout/fragments :: header}"></th:block>
+                <th:block th:replace="~{layout/fragments :: header}"></th:block>
             </div>
         </header>
     
@@ -245,7 +245,7 @@
             </div>
         </div>
         
-        <th:block th:replace="~{/layout/fragments :: footer}"></th:block>
+        <th:block th:replace="~{layout/fragments :: footer}"></th:block>
         
         <script th:inline="javascript">
             const refresh = /*[[${refresh}]]*/ '';

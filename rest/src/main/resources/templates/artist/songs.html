@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 	<head>
-		<th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+		<th:block th:replace="~{layout/fragments :: documentHeader}"></th:block>
         <link rel="stylesheet" th:href="@{/css/artist_songs.css}">
 	</head>
 	<body>
-        <th:block th:replace="~{/layout/fragments :: header}"></th:block>
+        <th:block th:replace="~{layout/fragments :: header}"></th:block>
 		
         <main>
             <div class="container" style="padding: 30px;">
@@ -220,6 +220,6 @@
             const loginUserId = /*[[${loginUserId}]]*/ null;
         </script>
         
-        <th:block th:replace="~{/layout/fragments :: footer}"></th:block>
+        <th:block th:replace="~{layout/fragments :: footer}"></th:block>
 	</body>
 </html>
