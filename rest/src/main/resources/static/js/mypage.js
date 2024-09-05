@@ -383,7 +383,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // 클라이언트 측에서 비밀번호 비교
         if (password === userPassword) {
             passwordConfirmModal.hide();
-            location.href = '../user/update?userId=' + userId;
+            location.href = '../member/update?userId=' + userId;
         } else {
             alert('비밀번호가 올바르지 않습니다.');
         }

@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.savedrequest.DefaultSavedRequest;
 import org.springframework.security.web.savedrequest.SavedRequest;
@@ -275,5 +276,15 @@ public class MemberController {
 			return ResponseEntity.ok("N");
 		}
 	}
+	
+	// 비밀번호 검증(정보수정 페이지 진입전 사용)
+    @GetMapping("/checkPwd")
+    public boolean checkPassword(@AuthenticationPrincipal User user,
+                                @RequestParam String checkPassword, Model model){
+        log.info("checkPassword(user={}, checkPassword={})", user, checkPassword);
+        Integer id = user.getId();
+
+        return userServ.checkPassword(id, checkPassword);
+    }
 
 }

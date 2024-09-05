@@ -27,7 +27,7 @@ public class UserController {
 
 	private final UserService userSvc;
 
-	@PreAuthorize("hasRole('USER')") // -> 로그인한(USER Role을 가진) 유저만 접속할 수 있게 제한 
+	@PreAuthorize("hasRole('USER') and #id == authentication.principal.id") // -> 로그인한(USER Role을 가진) 유저만 접속할 수 있게 제한 
 	@GetMapping("/mypage")
 	public void myPage(@RequestParam(name = "id") Integer id, Model model) {
 		log.info("myPage(id={})", id);

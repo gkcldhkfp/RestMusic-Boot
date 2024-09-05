@@ -62,9 +62,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function getPlayLists(event) {
         event.stopPropagation();
-        if (loginUserId == null) { // 유저아이디
-            alert('로그인이 필요합니다');
-            return;
+        if (loginUserId == null) { // 로그인하지 않은 경우
+            if (confirm('로그인이 필요합니다. 로그인 하시겠습니까?')) {
+                // 현재 페이지의 경로를 인코딩하여 로그인 후 다시 돌아오도록 처리
+                const currentPath = encodeURIComponent(location.pathname + location.search);
+                location.href = `/member/signin?targetUrl=${currentPath}`; // 로그인 페이지로 이동
+            }
+            return; // 로그인하지 않으면 함수 종료
         }
         songId = event.target.closest('button').getAttribute('data-songId');
 

@@ -329,4 +329,13 @@ public class UserService implements UserDetailsService {
         return userRepo.findById(id).orElse(null);
     }
     
+    // 비밀번호 일치 확인(정보수정 페이지에서 사용)
+    public boolean checkPassword(Integer id, String checkPassword) {
+        User user = userRepo.findById(id).orElseThrow(() ->
+                new IllegalArgumentException("해당 회원이 존재하지 않습니다."));
+        String realPassword = user.getPassword();
+        boolean matches = passwordEncoder.matches(checkPassword, realPassword);
+        return matches;
+    }
+    
 }

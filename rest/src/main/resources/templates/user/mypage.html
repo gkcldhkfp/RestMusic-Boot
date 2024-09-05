@@ -112,7 +112,7 @@
                                 <div class="mb-3">
                                     <label for="password" class="form-label">비밀번호를 입력하세요</label>
                                     <input type="password" class="form-control" id="password" required>
-                                    <input type="hidden" id="userPassword" value="${user.password}">
+                                    <input type="hidden" id="userPassword" th:value="${user.password}">
                                 </div>
                             </form>
                         </div>
