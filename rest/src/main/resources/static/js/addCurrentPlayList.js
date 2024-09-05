@@ -363,9 +363,13 @@ document.addEventListener('DOMContentLoaded', () => {
 				li.className = 'list-group-item';
 				// 음원 아티스트와 음원 제목을 삽입.
 				if(data[i].groupName !== null) {
-					li.textContent = data[i].groupName + '-' + data[i].title;
+					if(data[i].artistName !== null) {
+						li.textContent = data[i].groupName + ', ' + data[i].artistName + ' - ' + data[i].title;
+					} else {
+						li.textContent = data[i].groupName + ' - ' + data[i].title;
+					}
 				} else {
-					li.textContent = data[i].artistName + '-' + data[i].title;
+					li.textContent = data[i].artistName + ' - ' + data[i].title;
 				}
 				if (i == index) { // 현재 재생중인 곡인 지 검사
 					// 볼드체로 변경
