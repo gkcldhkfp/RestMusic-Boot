@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import com.itwill.rest.domain.User;
 
 
-public interface UserRepository extends JpaRepository<User, Integer> {
+public interface UserRepository extends JpaRepository<User, Integer>, UserQuerydsl {
 	
 	@EntityGraph(attributePaths = "roles")
 

@@ -47,9 +47,8 @@ public class AlbumSongsService {
 	}
 
 	/**
-	 * 수록곡을 출력할 때 그룹과 가수를 처리하기 위한 서비스 메서드
-	 * 그룹의 멤버는 그룹으로 대체해서 출력. 그룹 이름은 중복처리하여 리스트에 삽입
-	 * 그룹에 포함되어 있지 않은 아티스트는 중복처리하여 리스트에 삽입
+	 * 수록곡을 출력할 때 그룹과 가수를 처리하기 위한 서비스 메서드 그룹의 멤버는 그룹으로 대체해서 출력. 그룹 이름은 중복처리하여 리스트에
+	 * 삽입 그룹에 포함되어 있지 않은 아티스트는 중복처리하여 리스트에 삽입
 	 */
 	@Transactional(readOnly = true)
 	public Map<Song, List<Map<String, Object>>> getArtistsOrGroupsBySongsAndRoleId(List<Song> songs, Integer roleId) {
@@ -86,8 +85,7 @@ public class AlbumSongsService {
 	}
 
 	/**
-	 * 앨범 정보 출력을 위한 참여 가수
-	 * 가장 많이 등장한 가수를 먼저 보여줌.
+	 * 앨범 정보 출력을 위한 참여 가수 가장 많이 등장한 가수를 먼저 보여줌.
 	 */
 
 	@Transactional(readOnly = true)
@@ -106,8 +104,7 @@ public class AlbumSongsService {
 		return artistCountMap.entrySet().stream()
 				.sorted(Map.Entry.<Artist, Integer>comparingByValue(Comparator.reverseOrder())
 						.thenComparing(Map.Entry.comparingByKey(Comparator.comparing(Artist::getArtistName))))
-				.map(Map.Entry::getKey)
-				.collect(Collectors.toList());
+				.map(Map.Entry::getKey).collect(Collectors.toList());
 	}
 
 	/**
@@ -131,8 +128,7 @@ public class AlbumSongsService {
 	}
 
 	/**
-	 * 앨범 정보 출력을 위한 참여 가수
-	 * 가장 많이 등장한 가수를 먼저 보여줌.
+	 * 앨범 정보 출력을 위한 참여 가수 가장 많이 등장한 가수를 먼저 보여줌.
 	 */
 
 	@Transactional(readOnly = true)
@@ -151,13 +147,11 @@ public class AlbumSongsService {
 		return genreCountMap.entrySet().stream()
 				.sorted(Map.Entry.<GenreCode, Integer>comparingByValue(Comparator.reverseOrder())
 						.thenComparing(Map.Entry.comparingByKey(Comparator.comparing(GenreCode::getGenreName))))
-				.map(Map.Entry::getKey)
-				.collect(Collectors.toList());
+				.map(Map.Entry::getKey).collect(Collectors.toList());
 	}
 
 	/**
-	 * 앨범 정보 출력을 위한 장르
-	 * 가장 많이 등장한 장르를 먼저 보여줌.
+	 * 앨범 정보 출력을 위한 장르 가장 많이 등장한 장르를 먼저 보여줌.
 	 */
 
 	@Transactional(readOnly = true)
@@ -169,10 +163,13 @@ public class AlbumSongsService {
 			List<ArtistRole> artistRoles = artistRoleRepo.findBySongAndRoleCode_RoleId(song, roleId);
 			for (ArtistRole artistRole : artistRoles) {
 				Group group = artistRole.getGroup();
-				if (group != null && !processedGroupNames.contains(group.getGroupName())) {
-					// 동일한 이름의 그룹이 아직 처리되지 않은 경우에만 추가
-					groupCountMap.put(group, groupCountMap.getOrDefault(group, 0) + 1);
-					processedGroupNames.add(group.getGroupName());
+				if (group != null) {
+					if (!processedGroupNames.contains(group.getGroupName())) {
+
+						// 동일한 이름의 그룹이 아직 처리되지 않은 경우에만 추가
+						groupCountMap.put(group, groupCountMap.getOrDefault(group, 0) + 1);
+						processedGroupNames.add(group.getGroupName());
+					}
 				}
 			}
 		}
@@ -181,8 +178,7 @@ public class AlbumSongsService {
 		return groupCountMap.entrySet().stream()
 				.sorted(Map.Entry.<Group, Integer>comparingByValue(Comparator.reverseOrder())
 						.thenComparing(Map.Entry.comparingByKey(Comparator.comparing(Group::getGroupName))))
-				.map(Map.Entry::getKey)
-				.collect(Collectors.toList());
+				.map(Map.Entry::getKey).collect(Collectors.toList());
 	}
 
 	/**
@@ -196,10 +192,13 @@ public class AlbumSongsService {
 		List<ArtistRole> artistRoles = artistRoleRepo.findBySongAndRoleCode_RoleId(song, roleId);
 		for (ArtistRole artistRole : artistRoles) {
 			Group group = artistRole.getGroup();
-			if (group != null && !processedGroupNames.contains(group.getGroupName())) {
-				// 동일한 이름의 그룹이 아직 처리되지 않은 경우에만 추가
-				groupCountMap.put(group, groupCountMap.getOrDefault(group, 0) + 1);
-				processedGroupNames.add(group.getGroupName());
+			if (group != null) {
+				if (!processedGroupNames.contains(group.getGroupName())) {
+
+					// 동일한 이름의 그룹이 아직 처리되지 않은 경우에만 추가
+					groupCountMap.put(group, groupCountMap.getOrDefault(group, 0) + 1);
+					processedGroupNames.add(group.getGroupName());
+				}
 			}
 		}
 
@@ -207,8 +206,7 @@ public class AlbumSongsService {
 		return groupCountMap.entrySet().stream()
 				.sorted(Map.Entry.<Group, Integer>comparingByValue(Comparator.reverseOrder())
 						.thenComparing(Map.Entry.comparingByKey(Comparator.comparing(Group::getGroupName))))
-				.map(Map.Entry::getKey)
-				.collect(Collectors.toList());
+				.map(Map.Entry::getKey).collect(Collectors.toList());
 	}
 
 	/**

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 	<head>
-		<th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+		<th:block th:replace="~{layout/fragments :: documentHeader}"></th:block>
 	</head>
 	<body>
-        <th:block th:replace="~{/layout/fragments :: header}"></th:block>
+        <th:block th:replace="~{layout/fragments :: header}"></th:block>
     
 		<main>
             <div class="container">
@@ -127,10 +127,16 @@
             </div>
         </main>
         
-        <th:block th:replace="~{/layout/fragments :: footer}"></th:block>
+        <th:block th:replace="~{layout/fragments :: footer}"></th:block>
+        
+        <script th:inline="javascript">
+            const refresh = /*[[${refresh}]]*/ '';
+         // 리다이렉트 시 재생페이지를 새로고침하기 위한 코드
+        </script>
         
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
         
         <script src="/js/mypage.js"></script>
+        <script src="/js/addCurrentPlayList.js"></script>
 	</body>
 </html>

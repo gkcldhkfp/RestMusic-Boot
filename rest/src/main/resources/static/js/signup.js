@@ -249,7 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 이메일 인증번호 발송 함수
     function sendEmailAuth(event) {
-        /* const email = inputEmail.value;
+         const email = inputEmail.value;
         if (email) {
             axios.get('/member/sendEmailAuth', {
                 params: { email: email }
@@ -269,12 +269,12 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         } else {
             alert('이메일을 입력해주세요.');
-        } */
+        } 
     }
     
     // 이메일 인증번호 확인 함수
     function checkAuthNumber(event) {
-        /* const inputAuthNumber = document.querySelector('input#emailVerificationCode').value;
+        const inputAuthNumber = document.querySelector('input#emailVerificationCode').value;
         const checkEmailVerificationResult = document.querySelector('span#emailVerificationResult');
 
         if (inputAuthNumber == authNumber) {  // 전역 변수와 비교
@@ -288,7 +288,7 @@ document.addEventListener('DOMContentLoaded', () => {
             checkEmailVerificationResult.classList.add('text-danger');
             checkEmailVerificationResult.classList.remove('text-success');
         }
-        changeButtonState(); // 버튼의 활성화/비활성화 상태를 변경 */
+        changeButtonState(); // 버튼의 활성화/비활성화 상태를 변경 
     }
 
     // 닉네임 유효성 검사 및 중복 체크 함수

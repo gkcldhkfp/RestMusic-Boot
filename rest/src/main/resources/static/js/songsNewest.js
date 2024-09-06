@@ -436,10 +436,18 @@ document.addEventListener("DOMContentLoaded", function() {
                         const playListsContainer = document.getElementById('playLists'); // 플레이리스트를 표시할 컨테이너
                         playListsContainer.innerHTML = ''; // 기존 플레이리스트 목록을 초기화
                         
+                        const btnAddSong = document.getElementById('btnAddSong'); // "곡 추가" 버튼
+        
                         if (playLists.length === 0) {
                             // 플레이리스트가 없는 경우 메시지 표시
                             playListsContainer.innerHTML = '<p class="text-center text-muted">플레이리스트가 없습니다.</p>';
+                            
+                            // "곡 추가" 버튼 숨기기
+                            btnAddSong.style.display = 'none';
                         } else {
+                            // 플레이리스트가 있을 경우 "곡 추가" 버튼 보이기
+                            btnAddSong.style.display = 'block';
+        
                             // 각 플레이리스트를 화면에 표시
                             playLists.forEach(list => {
                                 const defaultImage = '/images/icon/default.png'; // 기본 앨범 이미지 경로
@@ -712,7 +720,7 @@ document.addEventListener("DOMContentLoaded", function() {
                       <img alt="앨범표지" src="/images/albumcover/${song.albumImage}" class="img-fluid" />
                     </a>
                     <div>
-                        <a href="/song/details?songId=${song.songId}" style="font: inherit; color: inherit; text-decoration: none;">
+                        <a href="/song/detail?songId=${song.songId}" style="font: inherit; color: inherit; text-decoration: none;">
                             <span>${song.title}</span><br>
                         </a>
                         ${song.groupNames && song.groupNames.length > 0 ? 
