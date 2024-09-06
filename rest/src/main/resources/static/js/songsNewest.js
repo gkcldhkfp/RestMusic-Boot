@@ -3,6 +3,7 @@
  */
 
 document.addEventListener("DOMContentLoaded", function() {
+    // 로그인한 사용자 ID 로그 출력
     console.log('loginUserId= ' + loginUserId);
     
     // DOM 요소 선택
