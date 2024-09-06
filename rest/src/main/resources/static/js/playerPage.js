@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 			// 링크 생성 함수
 			function createLink(name, id, type) {
-				return `<a href="/${type}/songs?id=${id}" style="cursor: pointer; font-weight: normal; text-decoration: none; color: black;" onmouseover="this.style.fontWeight='bold'; this.style.textDecoration='underline';" onmouseout="this.style.fontWeight='normal'; this.style.textDecoration='none'; this.style.color='black';">${name}</a>`;
+				return `<a href="/${type}/songs?${type}Id=${id}" target="mainFrame" style="cursor: pointer; font-weight: normal; text-decoration: none; color: black;" onmouseover="this.style.fontWeight='bold'; this.style.textDecoration='underline';" onmouseout="this.style.fontWeight='normal'; this.style.textDecoration='none'; this.style.color='black';">${name}</a>`;
 			}
 
 			// 그룹과 아티스트 텍스트를 추가할 배열
