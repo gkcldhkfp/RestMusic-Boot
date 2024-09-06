@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 	<head>
-		<th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+		<th:block th:replace="~{layout/fragments :: documentHeader}"></th:block>
 	</head>
 	<body>
-        <th:block th:replace="~{/layout/fragments :: header}"></th:block>
+        <th:block th:replace="~{layout/fragments :: header}"></th:block>
     
 		<main>
             <div class="container">
@@ -24,10 +24,8 @@
                             <h3 id="userId" class="d-none" th:text=${user.userId}></h3>
                             <h3 style="font-weight: bold; font-size: 1.2rem;" th:text="'닉네임: ' + ${user.nickname}"></h3>
                             <!-- 비밀번호 확인 모달을 여는 버튼 -->
-                            <c:url var="userUpdate" value="/user/update">
-                                <c:param name="userId" value="${user.userId}" />
-                            </c:url>
-                            <a class="btn btn-outline-primary mb-2" id="updateInfoBtn" href="${userUpdate}">ID/PW 변경 (내정보 관리)
+                            <a class="btn btn-outline-primary mb-2" id="updateInfoBtn" 
+                            th:href="@{/member/update(userId=${user.userId})}">ID/PW 변경 (내정보 관리)
                             </a><br>
                             <!-- 이용권 구매(결제창) 페이지 이동 버튼 -->
                             <a class="btn btn-outline-primary" th:href="@{/purchase}">이용권 구매</a>
@@ -114,7 +112,7 @@
                                 <div class="mb-3">
                                     <label for="password" class="form-label">비밀번호를 입력하세요</label>
                                     <input type="password" class="form-control" id="password" required>
-                                    <input type="hidden" id="userPassword" value="${user.password}">
+                                    <input type="hidden" id="userPassword" th:value="${user.password}">
                                 </div>
                             </form>
                         </div>
@@ -127,7 +125,7 @@
             </div>
         </main>
         
-        <th:block th:replace="~{/layout/fragments :: footer}"></th:block>
+        <th:block th:replace="~{layout/fragments :: footer}"></th:block>
         
         <script th:inline="javascript">
             const refresh = /*[[${refresh}]]*/ '';

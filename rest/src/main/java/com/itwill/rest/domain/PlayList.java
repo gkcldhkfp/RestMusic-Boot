@@ -32,4 +32,9 @@ public class PlayList {
 	@JoinColumn(name = "ID")
 	private User user;
 	
+	public PlayList update(String pListName) {
+		this.pListName = pListName;
+		
+		return this;
+	}
 }

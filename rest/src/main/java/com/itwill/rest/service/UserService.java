@@ -1,5 +1,6 @@
 package com.itwill.rest.service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.io.File;
 import java.io.IOException;
@@ -133,9 +134,14 @@ public class UserService implements UserDetailsService {
 	            })
 	            .filter(song -> song != null) // Null 값 필터링
 	            .collect(Collectors.toList());
+	    
+	    // 3. Song 객체를 title 기준으로 정렬
+	    List<Song> sortedSongs = songs.stream()
+	            .sorted(Comparator.comparing(Song::getTitle))
+	            .collect(Collectors.toList());
 
-	    // 3. Song 객체를 UserLikeDto로 변환
-	    return songs.stream()
+	    // 4. Song 객체를 UserLikeDto로 변환
+	    return sortedSongs.stream()
 	            .map(song -> {
 	                // 3.1. Song 객체에서 Album 정보 추출
 	                Album album = song.getAlbum();
@@ -270,7 +276,7 @@ public class UserService implements UserDetailsService {
         if (user == null) {
             return false;
         }
-        user.updateProfile(""); // Clear profile
+        user.updateProfile(null); // Clear profile
         userRepo.save(user);
         return true;
     }
@@ -321,6 +327,15 @@ public class UserService implements UserDetailsService {
     @Transactional
     public User getUserById(Integer id) {
         return userRepo.findById(id).orElse(null);
+    }
+    
+    // 비밀번호 일치 확인(정보수정 페이지에서 사용)
+    public boolean checkPassword(Integer id, String checkPassword) {
+        User user = userRepo.findById(id).orElseThrow(() ->
+                new IllegalArgumentException("해당 회원이 존재하지 않습니다."));
+        String realPassword = user.getPassword();
+        boolean matches = passwordEncoder.matches(checkPassword, realPassword);
+        return matches;
     }
     
 }

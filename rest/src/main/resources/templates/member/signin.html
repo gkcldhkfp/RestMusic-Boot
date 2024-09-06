@@ -3,7 +3,7 @@
 
 <head>
     <link th:href="@{/css/common.css}" rel="stylesheet">
-    <th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+    <th:block th:replace="~{layout/fragments :: documentHeader}"></th:block>
     <style>
         .login-container {
             max-width: 400px;
@@ -59,7 +59,7 @@
 </head>
 
 <body>
-    <th:block th:replace="~{/layout/fragments :: header}"></th:block>
+    <th:block th:replace="~{layout/fragments :: header}"></th:block>
 
     <div class="container">
         <div class="login-container">
@@ -102,7 +102,7 @@
         </div>
     </div>
 
-    <th:block th:replace="~{/layout/fragments :: footer}"></th:block>
+    <th:block th:replace="~{layout/fragments :: footer}"></th:block>
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script th:src="@{/js/signin.js}"></script>

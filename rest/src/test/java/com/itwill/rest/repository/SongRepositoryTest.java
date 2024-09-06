@@ -9,8 +9,6 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.itwill.rest.domain.Like;
@@ -27,6 +25,10 @@ public class SongRepositoryTest {
 
 	@Autowired
 	private LikeRepository likeRepo;
+	@Autowired
+	private GroupRepository grRepo;
+	@Autowired
+	private ArtistRepository arRepo;
 	
 	// @Test
 	@Transactional
@@ -59,11 +61,13 @@ public class SongRepositoryTest {
 		}
 	}
 	
-	@Test
+//	@Test
 	@Transactional
 	public void searchTest() {
-		 List<Object[]> results = songRepo.findSongsByKeywordOrderByAccuracy("dum", 40, 0);
+//		 List<Object[]> results = songRepo.findSongsByKeywordOrderByRecency("dum", 10, 0);
 		 
+		List<Object[]> results = songRepo.searchAllSongs("앨범");
+		
 	     List<SongSearchResultDto> dtos = new ArrayList<>();
 
 
@@ -83,7 +87,7 @@ public class SongRepositoryTest {
 	        }
 	       
 		
-	        dtos.forEach(System.out :: println);
-		
+		 dtos.forEach(System.out :: println);
 	}
+	
 }

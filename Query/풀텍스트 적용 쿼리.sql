@@ -11,7 +11,7 @@ SELECT
     COUNT(al.album_id) AS like_count -- 좋아요 개수 COUNT로 계산
 FROM albums a
 LEFT JOIN album_likes al ON a.album_id = al.album_id -- 좋아요 테이블을 LEFT JOIN
-WHERE MATCH(a.album_name) AGAINST('20' IN BOOLEAN MODE)
+WHERE MATCH(a.album_name) AGAINST('밤양갱' IN BOOLEAN MODE)
 GROUP BY a.album_id, a.album_name, a.album_release_date
 
 UNION ALL
@@ -24,7 +24,7 @@ SELECT
     COUNT(sl.song_id) AS like_count -- 곡 좋아요 개수 COUNT로 계산
 FROM songs s
 LEFT JOIN likes sl ON s.song_id = sl.song_id -- 좋아요 테이블을 LEFT JOIN
-WHERE MATCH(s.title) AGAINST('20' IN BOOLEAN MODE)
+WHERE MATCH(s.title) AGAINST('밤양갱' IN BOOLEAN MODE)
 GROUP BY s.song_id, s.title
 
 UNION ALL
@@ -37,7 +37,7 @@ SELECT
     COUNT(gl.group_id) AS like_count -- 그룹 좋아요 개수 COUNT로 계산
 FROM `groups` g
 LEFT JOIN group_likes gl ON g.group_id = gl.group_id -- 좋아요 테이블을 LEFT JOIN
-WHERE MATCH(g.group_name) AGAINST('20' IN BOOLEAN MODE)
+WHERE MATCH(g.group_name) AGAINST('밤양갱' IN BOOLEAN MODE)
 GROUP BY g.group_id, g.group_name
 
 UNION ALL
@@ -50,7 +50,7 @@ SELECT
     COUNT(artl.artist_id) AS like_count -- 아티스트 좋아요 개수 COUNT로 계산
 FROM artists art
 LEFT JOIN artist_likes artl ON art.artist_id = artl.artist_id -- 좋아요 테이블을 LEFT JOIN
-WHERE MATCH(art.artist_name) AGAINST('20' IN BOOLEAN MODE)
+WHERE MATCH(art.artist_name) AGAINST('밤양갱' IN BOOLEAN MODE)
 GROUP BY art.artist_id, art.artist_name
 
 ORDER BY

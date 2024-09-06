@@ -186,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function getUserLike() {
-        const uri = `../user/getUserLike/${id}`;
+        const uri = `../member/getUserLike/${id}`;
         console.log(uri);
         axios
             .get(uri)
@@ -379,14 +379,28 @@ document.addEventListener('DOMContentLoaded', () => {
     // 확인 버튼 클릭 시 비밀번호 검증을 수행합니다.
     confirmPasswordBtn.addEventListener('click', function() {
         const password = passwordInput.value;
-
-        // 클라이언트 측에서 비밀번호 비교
-        if (password === userPassword) {
-            passwordConfirmModal.hide();
-            location.href = '../user/update?userId=' + userId;
-        } else {
-            alert('비밀번호가 올바르지 않습니다.');
+        
+        if (password === '') {
+            alert('비밀번호를 입력하세요.');
+            return;
         }
+
+        // 서버 측 비밀번호 검증 API 호출
+        axios.get(`/member/checkPwd?checkPassword=${encodeURIComponent(password)}`)
+            .then(response => {
+                const isValid = response.data; // 서버에서 반환된 결과 (true 또는 false)
+                
+                if (isValid) {
+                    passwordConfirmModal.hide();
+                    location.href = `../member/update?userId=${userId}`;
+                } else {
+                    alert('비밀번호가 올바르지 않습니다.');
+                }
+            })
+            .catch(error => {
+                console.error('서버 오류:', error);
+                alert('비밀번호 검증 중 오류가 발생했습니다.');
+            });
     });
 
 });

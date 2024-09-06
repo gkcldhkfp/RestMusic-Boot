@@ -145,55 +145,49 @@ document.addEventListener('DOMContentLoaded', () => {
 			// 삽입할 요소 가져오기
 			const artistElement = document.querySelector("#artist");
 
-			// TODO: 가수가 여러명이어도 각각 링크로 작동하도록 수정
-			// 그룹 및 아티스트 설정
-			// 그룹의 아이디와 이름을 저장하는 배열 생성
-			const albumGroup = [];
-			cPList.forEach((item, index) => {
-				albumGroup.push({
-					groupName: item.groupName,
-					id: item.groupId
-				});
-			});
-			console.log(albumGroup);
-			// 아티스트의 아이디와 이름을 저장하는 배열 생성
-			const filteredArtists = []
-			cPList.forEach((item, index) => {
-				filteredArtists.push({
-					artistName: item.artistName,
-					id: item.artistId
-				});
-			});
-			console.log(filteredArtists);
-			// 그룹과 아티스트 텍스트를 추가할 배열
+			// 링크 생성 함수
+			function createLink(name, id, type) {
+				return `<a href="/${type}/songs?${type}Id=${id}" target="mainFrame" style="cursor: pointer; font-weight: normal; text-decoration: none; color: black;" onmouseover="this.style.fontWeight='bold'; this.style.textDecoration='underline';" onmouseout="this.style.fontWeight='normal'; this.style.textDecoration='none'; this.style.color='black';">${name}</a>`;
+			}
 
 			// 그룹과 아티스트 텍스트를 추가할 배열
 			let elements = [];
 
-			// albumGroup이 있을 때 처리
-			if (albumGroup && albumGroup.length > 0) {
-				albumGroup.forEach((group, index) => {
-					const groupLink = `<a href="/group/songs?id=${group.id}" style="cursor: pointer; font-weight: normal; text-decoration: none; color: black;" onmouseover="this.style.fontWeight='bold'; this.style.textDecoration='underline';" onmouseout="this.style.fontWeight='normal'; this.style.textDecoration='none'; this.style.color='black';">${group.groupName}</a>`;
-					elements.push(groupLink);
-				});
+			const item = cPList[index];
 
-				// albumGroup이 있고, filteredArtists도 있으면 구분 기호 추가
-				if (filteredArtists.some(artist => artist.artistName && artist.artistName.length > 0)) {
-					elements.push(", ");
+			if (item) { // 해당 인덱스에 항목이 존재하는지 확인
+				// 그룹 처리
+				if (item.groupName && item.groupName.length > 0) {
+					item.groupName.forEach((name, idx) => {
+						const groupLink = createLink(name, item.groupId[idx], 'group');
+						elements.push(groupLink);
+					});
 				}
+
+				// 아티스트 처리
+				if (item.artistName && item.artistName.length > 0) {
+					// 그룹이 있었다면 구분자 추가
+					if (elements.length > 0) {
+						elements.push(", ");
+					}
+
+					item.artistName.forEach((name, idx) => {
+						const artistLink = createLink(name, item.artistId[idx], 'artist');
+						elements.push(artistLink);
+
+						// 마지막 요소가 아니면 쉼표 추가
+						if (idx < item.artistName.length - 1) {
+							elements.push(", ");
+						}
+					});
+				}
+			} else {
+				console.log("지정된 인덱스에 항목이 없습니다.");
 			}
 
-			// filteredArtists가 있을 때 처리
-			if (filteredArtists && filteredArtists.length > 0) {
-				filteredArtists.forEach((artist, index) => {
-					const artistLink = `<a href="/artist/songs?id=${artist.id}" style="cursor: pointer; font-weight: normal; text-decoration: none; color: black;" onmouseover="this.style.fontWeight='bold'; this.style.textDecoration='underline';" onmouseout="this.style.fontWeight='normal'; this.style.textDecoration='none'; this.style.color='black';">${artist.artistName}</a>`;
-					elements.push(artistLink);
-				});
-			}
-
-
-			// elements 배열의 내용을 ', '로 연결하여 artistElement에 삽입
+			// elements 배열의 내용을 연결하여 artistElement에 삽입
 			artistElement.innerHTML = elements.join("");
+
 
 
 

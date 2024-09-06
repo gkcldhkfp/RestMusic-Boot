@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<th:block th:replace="~{layout/fragments :: documentHeader}"></th:block>
+
+<!-- <link href="./css/common.css" rel="stylesheet" /> -->
+<!-- 공통 CSS 파일 포함 -->
+<title>Rest</title>
+<style>
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+a:hover {
+    color: blue;
+}
+</style>
+</head>
+<body>
+    <header>
+        <th:block th:replace="~{layout/fragments :: header}"></th:block>
+    </header>
+    <main class="container">
+        <div>
+            <div class="mt-5">
+                '<span class="fw-bold" th:text="${param.keyword}"></span>'
+                검색 결과
+            </div>
+            <div class="tab">
+                <div class="swiper-container tab-swiper-wrap">
+                    <ul class="list-unstyled d-flex mt-3">
+                        <li><a
+                            th:href="@{/search/all(keyword=${param.keyword}, sortType='accuracy')}"
+                            type="button"
+                            class="btn btn-outline-primary btn-sm me-3">
+                                전체</a></li>
+                        <li><a
+                            th:href="@{/search/songs(keyword=${param.keyword}, sortType='accuracy')}"
+                            type="button"
+                            class="btn btn-outline-primary btn-sm me-3 ">
+                                곡</a></li>
+                        <li><a
+                            th:href="@{/search/albums(keyword=${param.keyword}, sortType='accuracy')}"
+                            type="button"
+                            class="btn btn-outline-primary btn-sm me-3">
+                                앨범</a></li>
+                        <li><a
+                            th:href="@{/search/artists(keyword=${param.keyword}, sortType='accuracy')}"
+                            type="button"
+                            class="btn btn-outline-primary btn-sm me-3 active">
+                                아티스트</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="d-flex">
+            <div class="p-2 flex-grow-1"></div>
+                <div class="p-2" >
+                  <a th:href="@{/search/artists(keyword=${param.keyword}, sortType='accuracy')}" 
+                  id="accuracy" type="button" 
+                    th:class="${param.sortType[0] eq 'accuracy'} ? 'btn text-primary' : 'btn'"> 정확도순 </a>
+                  <a th:href="@{/search/artists(keyword=${param.keyword}, sortType='alphabet')}" 
+                  id="alphabet" type="button" 
+                    th:class="${param.sortType[0] eq 'alphabet'} ? 'btn text-primary' : 'btn'"> 가나다순 </a>
+                </div>
+            </div>
+            
+            <th:block th:if="${#lists.size(artists) > 0}">
+                <h4 class="mt-3">아티스트</h4>
+                <div class="container">
+                    <ul id="searchResult" style="display: flex; flex-wrap: wrap; padding: 0; list-style: none; gap: 20px;">
+                        <li th:each="a : ${artists}" style="display: flex; flex-direction: column; align-items: center; width: 150px; box-sizing: border-box;">
+                                <th:block th:if="${a.type eq 'artist'}">
+                                    <a th:href="@{/artist/songs(artistId=${a.id})}"
+                                        class="mt-2">
+                                        <img th:with="profileImg=@{/images/profileimage/profile.jpg}"
+                                        th:src="@{${a.image} != null ? '/artist/image/' + ${a.image} : ${profileImg}}"
+                                        alt="이미지" style="width: 150px; height: 150px; object-fit: cover;" class="rounded-circle">
+                                        </a>
+                                </th:block>
+                                <th:block th:if="${a.type eq 'group'}">
+                                    <a th:href="@{/group/songs(groupId=${a.id})}"
+                                        class="mt-2">
+                                        <img th:with="profileImg=@{/images/profileimage/profile.jpg}"
+                                        th:src="@{${a.image} != null ? '/artist/image/' + ${a.image} : ${profileImg}}"
+                                        alt="이미지" style="width: 150px; height: 150px; object-fit: cover;" class="rounded-circle">
+                                        </a>
+                                </th:block>
+                                
+                            <div style="text-align: center; margin-top: 10px;">
+                                <th:block th:if="${a.type eq 'artist'}">
+                                    <small><a
+                                        th:href="@{/artist/songs(artistId=${a.id})}"
+                                        class="mt-2" style="font-weight: bold;"
+                                        th:text="${a.name}"></a></small>
+                                </th:block>
+                                <th:block th:if="${a.type eq 'group'}">
+                                    <small><a
+                                        th:href="@{/group/songs(groupId=${a.id})}"
+                                        class="mt-2" style="font-weight: bold;"
+                                        th:text="${a.name}"></a></small>
+                                </th:block>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </th:block>
+            
+            
+            
+            
+            
+        </div>
+    </main>
+
+
+
+    <footer>
+        <!-- 모달 요소들을 footer로 사용. 모든 페이지에 사용되기 때문 -->
+        <th:block th:replace="~{layout/fragments :: footer}"></th:block>
+    </footer>
+
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script
+        src="https://unpkg.com/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    
+    <script th:inline="javascript">
+        const artists = /*[[${artists}]]*/'';
+        let refresh = /*[[${refresh}]]*/'';
+        let authUser = /*[[${loginUserId}]]*/'';
+        let keyword = /*[[${param.keyword}]]*/'';
+        let sortType = /*[[${param.sortType}]]*/'';
+    </script>
+    <script th:src="@{/js/addCurrentPlayList.js}"></script>
+    <script th:src="@{/js/searchArtists.js}"></script>
+    
+    <th:block th:replace="~{layout/fragments :: footer}"></th:block>
+</body>
+</html>

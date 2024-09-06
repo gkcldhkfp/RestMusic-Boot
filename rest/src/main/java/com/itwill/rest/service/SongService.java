@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.itwill.rest.domain.Album;
 import com.itwill.rest.domain.ArtistRole;
 import com.itwill.rest.domain.Group;
@@ -25,6 +26,7 @@ import com.itwill.rest.domain.Song;
 import com.itwill.rest.dto.SongChartDto;
 import com.itwill.rest.dto.SongDetailsDto;
 import com.itwill.rest.dto.SongLikeDto;
+import com.itwill.rest.dto.SongSearchResultDto;
 import com.itwill.rest.repository.AlbumRepository;
 import com.itwill.rest.repository.ArtistRoleRepository;
 import com.itwill.rest.repository.GroupMemberRepository;
@@ -182,14 +184,14 @@ public class SongService {
 		
 		
 		boolean exists = likeRepo.existsById(likeId);
-		
+		Song song = songRepo.findById(likeId.getSongId()).orElse(null);
 		log.info("like={}",exists);
 		
 		if(exists) {
 			likeRepo.deleteById(likeId);
 			return false;
 		} else {
-			Like like = Like.builder().likeId(likeId).build(); 
+			Like like = Like.builder().song(song).likeId(likeId).build(); 
 			likeRepo.save(like);
 			return true;
 			
@@ -251,6 +253,99 @@ public class SongService {
         log.info("cancelSongLike(dto = {})", dto);
         LikeId likeId = new LikeId(dto.getSongId(), dto.getLoginUserId());
         songLikeRepo.deleteById(likeId);
+    }
+    
+    public List<SongSearchResultDto> searchSongs(String keyword, String sortType, int limit, int offset) {
+    	log.info("search songs");
+    	List<Object[]> results = new ArrayList<Object[]>();
+    	List<SongSearchResultDto> dtos = new ArrayList<SongSearchResultDto>();
+    	
+    	if(sortType.equals("accuracy")) {
+    		results = songRepo.findSongsByKeywordOrderByAccuracy(keyword, limit, offset);
+    		
+    		for (Object[] result : results) {
+                SongSearchResultDto dto = new SongSearchResultDto();
+                dto.setSongId(((Number) result[0]).intValue());
+                dto.setTitle((String) result[1]);
+                dto.setAlbumId(((Number) result[2]).intValue());
+                dto.setAlbumName((String) result[3]);
+                dto.setAlbumImage((String) result[4]);
+                dto.setArtistName((String) result[5]);
+                dto.setGroupName((String) result[6]);
+                dto.setArtistId((String) result[7]);
+                dto.setGroupId((String) result[8]);
+                dto.setLikeCount(((Number) result[9]).intValue());
+                dtos.add(dto);
+            }
+    		
+    		return dtos;
+    		
+    	} else if(sortType.equals("recency")) {
+    		results = songRepo.findSongsByKeywordOrderByRecency(keyword, limit, offset);
+    		
+    		for (Object[] result : results) {
+                SongSearchResultDto dto = new SongSearchResultDto();
+                dto.setSongId(((Number) result[0]).intValue());
+                dto.setTitle((String) result[1]);
+                dto.setAlbumId(((Number) result[2]).intValue());
+                dto.setAlbumName((String) result[3]);
+                dto.setAlbumImage((String) result[4]);
+                dto.setArtistName((String) result[6]);
+                dto.setGroupName((String) result[7]);
+                dto.setArtistId((String) result[8]);
+                dto.setGroupId((String) result[9]);
+                dto.setLikeCount(((Number) result[10]).intValue());
+                dtos.add(dto);
+            }
+    		
+    		return dtos;
+    		
+    	} else if(sortType.equals("alphabet")) {
+    		results = songRepo.findSongsByKeywordOrderByAlphabet(keyword, limit, offset);
+    	}
+    	
+    	for (Object[] result : results) {
+            SongSearchResultDto dto = new SongSearchResultDto();
+            dto.setSongId(((Number) result[0]).intValue());
+            dto.setTitle((String) result[1]);
+            dto.setAlbumId(((Number) result[2]).intValue());
+            dto.setAlbumName((String) result[3]);
+            dto.setAlbumImage((String) result[4]);
+            dto.setArtistName((String) result[5]);
+            dto.setGroupName((String) result[6]);
+            dto.setArtistId((String) result[7]);
+            dto.setGroupId((String) result[8]);
+            dto.setLikeCount(((Number) result[9]).intValue());
+            dtos.add(dto);
+        }
+    	
+    	
+    	return dtos;
+    }
+    
+    public List<SongSearchResultDto> searchAllSongs(String keyword) {
+    	List<SongSearchResultDto> dtos = new ArrayList<SongSearchResultDto>();
+    	
+    	
+    	List<Object[]> results = songRepo.searchAllSongs(keyword);
+    	
+    	for (Object[] result : results) {
+            SongSearchResultDto dto = new SongSearchResultDto();
+            dto.setSongId(((Number) result[0]).intValue());
+            dto.setTitle((String) result[1]);
+            dto.setAlbumId(((Number) result[2]).intValue());
+            dto.setAlbumName((String) result[3]);
+            dto.setAlbumImage((String) result[4]);
+            dto.setArtistName((String) result[5]);
+            dto.setGroupName((String) result[6]);
+            dto.setArtistId((String) result[7]);
+            dto.setGroupId((String) result[8]);
+            dto.setLikeCount(((Number) result[9]).intValue());
+            dtos.add(dto);
+        }
+    	
+    	
+    	return dtos;
     }
     
     

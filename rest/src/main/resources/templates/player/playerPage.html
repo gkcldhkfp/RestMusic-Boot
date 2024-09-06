@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
 	<meta charset="UTF-8">
@@ -167,13 +167,12 @@
 				<a id="refresh" href="${refresh}" target="songFrame" style="display: none;">새로고침</a>
 			</div> -->
 
-	<th:block th:replace="~{/layout/fragments :: footer}"></th:block>
-
+	<th:block th:replace="~{layout/fragments :: footer}"></th:block>
 
 	<script th:inline="javascript">
 		// 로그인한 아이디 정보 전달 (예시, 실제 값으로 대체)
-		const id = /*[[${session.loginUserId}]]*/ '';
-
+		const id = /*[[${loginUserId}]]*/ '';
+		console.log('id: ' + id);
 		// 모델에서 전달받은 JSON 데이터
 		var cPListJson = /*[[${session.cPListJson}]]*/ '[]'; // JSON 문자열을 변수에 할당
 
@@ -195,7 +194,7 @@
 		// 여기에 추가적인 자바스크립트 코드 작성
 		// 예를 들어, cPList를 이용하여 원하는 동적 처리를 할 수 있음
 
-		let refresh = /*[[${session.refresh}]]*/ '';
+		let refresh = /*[[${refresh}]]*/'';
 	</script>
 	<script th:src="@{/js/addCurrentPlayList.js}"></script>
 	<script th:src="@{/js/playerPage.js}"></script>

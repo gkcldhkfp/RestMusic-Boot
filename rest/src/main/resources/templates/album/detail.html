@@ -1,164 +1,145 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-<th:block th:replace="~{layout/fragments :: documentHeader}"></th:block>
-<style>
-.intro {
-    position: relative;
-    /* left: 20px; */
-    margin-left: 20px;
-}
+	<th:block th:replace="~{layout/fragments :: documentHeader}"></th:block>
+	<style>
+		.intro {
+			position: relative;
+			/* left: 20px; */
+			margin-left: 20px;
+		}
 
-a, p {
-    text-decoration-line: none;
-    color: black;
-}
+		a,
+		p {
+			text-decoration-line: none;
+			color: black;
+		}
 
-a:hover {
-    text-decoration: underline;
-    font-weight: bold;
-}
+		a:hover {
+			text-decoration: underline;
+			font-weight: bold;
+		}
 
-table {
-    border-collapse: separate;
-    border-spacing: 0 5px;
-    width: 100%;
-}
+		table {
+			border-collapse: separate;
+			border-spacing: 0 5px;
+			width: 100%;
+		}
 
-#like {
-    position: relative;
-    /* top: 20px; */
-    /* left: 30px; */
-}
+		#like {
+			position: relative;
+			/* top: 20px; */
+			/* left: 30px; */
+		}
 
-.submenu {
-    width: 8%;
-}
+		.submenu {
+			width: 8%;
+		}
 
-#content {
-    padding: 20px;
-}
+		#content {
+			padding: 20px;
+		}
 
-/* 너는 챗지피티를	 믿어?  */
-#songPlayerContainer {
-    display: none;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    background: #f1f1f1;
-    padding: 10px;
-    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
-}
+		/* 너는 챗지피티를	 믿어?  */
+		#songPlayerContainer {
+			display: none;
+			position: fixed;
+			bottom: 0;
+			width: 100%;
+			background: #f1f1f1;
+			padding: 10px;
+			box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+			z-index: 1000;
+		}
 
-#songPlayerContainer iframe {
-    width: 100%;
-    height: 60px;
-    border: none;
-}
+		#songPlayerContainer iframe {
+			width: 100%;
+			height: 60px;
+			border: none;
+		}
 
-/* 너는 챗지피티를 믿어?  */
-</style>
+		/* 너는 챗지피티를 믿어?  */
+	</style>
 </head>
 
 <body>
-    <header>
-        <th:block th:replace="~{layout/fragments :: header}"></th:block>
-    </header>
-    <main>
-        <div class="container mt-2 card">
-            <div class="card-header">
-                <section>
-                    <div class="fw-bold">
-                        "<span th:text="${album.albumName}"></span>"
-                        앨범정보
-                    </div>
-                    <hr />
-                    <div style="float: left" class="mouseScale-up">
-                        <a
-                            th:href="@{/album/detail(albumId=${album.albumId})}">
-                            <img
-                            th:src="@{/images/albumcover/{albumImage}(albumImage=${album.albumImage})}"
-                            alt="앨범 커버" width="250" height="250" />
-                        </a>
-                    </div>
-                    <div style="float: left">
-                        <table class="table-borderless intro">
-                            <tr>
-                                <td class="m-2"><span> [<span
-                                        th:text="${album.albumType}"></span>]
-                                </span></td>
-                            </tr>
-                            <tr>
-                                <td>앨범 명</td>
-                                <td class="intro"><a
-                                    th:href="@{/album/detail(albumId=${album.albumId})}"
-                                    th:text="${album.albumName}"></a></td>
-                            </tr>
-                            <tr>
-                                <td>아티스트</td>
-                                <td id="singerNames" class="intro">
+	<header>
+		<th:block th:replace="~{layout/fragments :: header}"></th:block>
+	</header>
+	<main>
+		<div class="container mt-2 card">
+			<div class="card-header">
+				<section>
+					<div class="fw-bold">
+						"<span th:text="${album.albumName}"></span>"
+						앨범정보
+					</div>
+					<hr />
+					<div style="float: left" class="mouseScale-up">
+						<a th:href="@{/album/detail(albumId=${album.albumId})}">
+							<img th:src="@{/images/albumcover/{albumImage}(albumImage=${album.albumImage})}" alt="앨범 커버" width="250"
+								height="250" />
+						</a>
+					</div>
+					<div style="float: left">
+						<table class="table-borderless intro">
+							<tr>
+								<td class="m-2"><span> [<span th:text="${album.albumType}"></span>]
+									</span></td>
+							</tr>
+							<tr>
+								<td>앨범 명</td>
+								<td class="intro"><a th:href="@{/album/detail(albumId=${album.albumId})}"
+										th:text="${album.albumName}"></a></td>
+							</tr>
+							<tr>
+								<td>아티스트</td>
+								<td id="singerNames" class="intro">
 
-                                    <!-- !아티스트의 리스트 출력 --> <!-- group이 있을 때 (그룹으로 참여한 경우) -->
-                                    <th:block
-                                        th:if="${albumGroup != null}">
-                                        <!-- albumGroup 리스트와 filteredArtists 리스트 출력하기 -->
-                                        <th:block
-                                            th:if="${albumGroup != null or filteredArtists != null}">
-                                            <th:block
-                                                th:if="${albumGroup != null}">
-                                                <th:block
-                                                    th:each="group, iterStat : ${albumGroup}">
-                                                    <a
-                                                        th:text="${group.groupName}"
-                                                        th:href="@{/group/songs(id=${group.id})}"
-                                                        th:style="'cursor: pointer; font-weight: normal; text-decoration: none; color: black;'"
-                                                        onmouseover="this.style.fontWeight='bold'; this.style.textDecoration='underline';"
-                                                        onmouseout="this.style.fontWeight='normal'; this.style.textDecoration='none'; this.style.color='black';"></a>
-                                                    <!-- 마지막 항목이 아닌 경우에만 구분 기호 추가 -->
-                                                    <span
-                                                        th:if="!${iterStat.last}">,
-                                                    </span>
-                                                </th:block>
-                                                <!-- albumGroup 리스트가 존재하고 filteredArtists가 존재하면 구분 기호 추가 -->
-                                                <th:block
-                                                    th:if="${filteredArtists != null and filteredArtists.size() > 0}">
+									<!-- !아티스트의 리스트 출력 --> <!-- group이 있을 때 (그룹으로 참여한 경우) -->
+									<th:block th:if="${albumGroup != null}">
+										<!-- albumGroup 리스트와 filteredArtists 리스트 출력하기 -->
+										<th:block th:if="${albumGroup != null or filteredArtists != null}">
+											<th:block th:if="${albumGroup != null}">
+												<th:block th:each="group, iterStat : ${albumGroup}">
+													<a th:text="${group.groupName}" th:href="@{/group/songs(groupId=${group.id})}"
+														th:style="'cursor: pointer; font-weight: normal; text-decoration: none; color: black;'"
+														onmouseover="this.style.fontWeight='bold'; this.style.textDecoration='underline';"
+														onmouseout="this.style.fontWeight='normal'; this.style.textDecoration='none'; this.style.color='black';"></a>
+													<!-- 마지막 항목이 아닌 경우에만 구분 기호 추가 -->
+													<span th:if="!${iterStat.last}">,
+													</span>
+												</th:block>
+												<!-- albumGroup 리스트가 존재하고 filteredArtists가 존재하면 구분 기호 추가 -->
+												<th:block th:if="${filteredArtists != null and filteredArtists.size() > 0}">
 													,
 												</th:block>
-                                            </th:block>
+											</th:block>
 
-                                            <th:block
-                                                th:if="${filteredArtists != null}">
-                                                <th:block
-                                                    th:each="artist, iterStat : ${filteredArtists}">
-                                                    <a
-                                                        th:text="${artist.artistName}"
-                                                        th:href="@{/artist/songs(id=${artist.id})}"
-                                                        th:style="'cursor: pointer; font-weight: normal; text-decoration: none; color: black;'"
-                                                        onmouseover="this.style.fontWeight='bold'; this.style.textDecoration='underline';"
-                                                        onmouseout="this.style.fontWeight='normal'; this.style.textDecoration='none'; this.style.color='black';"></a>
-                                                    <!-- 마지막 항목이 아닌 경우에만 구분 기호 추가 -->
-                                                    <span
-                                                        th:if="!${iterStat.last}">,
-                                                    </span>
-                                                </th:block>
-                                            </th:block>
-                                        </th:block>
-                                    </th:block> <!-- group이 없을 때 --> <th:block
-                                        th:unless="${albumGroup != null}">
-                                        <span
-                                            th:each="artist, iterStat : ${albumArtist}">
-                                            <a
-                                            th:text="${artist.artistName}"
-                                            th:href="@{/artist/songs(id=${artist.id})}"
-                                            th:style="'cursor: pointer; font-weight: normal; text-decoration: none; color: black;'"
-                                            onmouseover="this.style.fontWeight='bold'; this.style.textDecoration='underline';"
-                                            onmouseout="this.style.fontWeight='normal'; this.style.textDecoration='none'; this.style.color='black';">
-                                        </a> <span th:if="!${iterStat.last}">,
-                                        </span>
-                                        </span>
-                                    </th:block>
+											<th:block th:if="${filteredArtists != null}">
+												<th:block th:each="artist, iterStat : ${filteredArtists}">
+													<a th:text="${artist.artistName}" th:href="@{/artist/songs(artistId=${artist.id})}"
+														th:style="'cursor: pointer; font-weight: normal; text-decoration: none; color: black;'"
+														onmouseover="this.style.fontWeight='bold'; this.style.textDecoration='underline';"
+														onmouseout="this.style.fontWeight='normal'; this.style.textDecoration='none'; this.style.color='black';"></a>
+													<!-- 마지막 항목이 아닌 경우에만 구분 기호 추가 -->
+													<span th:if="!${iterStat.last}">,
+													</span>
+												</th:block>
+											</th:block>
+										</th:block>
+									</th:block> <!-- group이 없을 때 -->
+									<th:block th:unless="${albumGroup != null}">
+										<span th:each="artist, iterStat : ${albumArtist}">
+											<a th:text="${artist.artistName}" th:href="@{/artist/songs(artistId=${artist.id})}"
+												th:style="'cursor: pointer; font-weight: normal; text-decoration: none; color: black;'"
+												onmouseover="this.style.fontWeight='bold'; this.style.textDecoration='underline';"
+												onmouseout="this.style.fontWeight='normal'; this.style.textDecoration='none'; this.style.color='black';">
+											</a> <span th:if="!${iterStat.last}">,
+											</span>
+										</span>
+									</th:block>
 
 								</td>
 							</tr>
@@ -171,7 +152,7 @@ table {
 								<td id="genre" class="intro">
 									<span th:each="genre, iterStat : ${genres}">
 										<!-- TODO: 장르 차트 페이지로 링크 변경 -->
-										<a th:href="@{/artist/songs(artistId=${genre.genreId})}" th:text="${genre.genreName}"
+										<a th:href="@{/song/genreChart(genreName=${genre.genreName})}" th:text="${genre.genreName}"
 											th:style="'cursor: pointer;'"
 											onmouseover="this.style.fontWeight='bold'; this.style.textDecoration='underline';"
 											onmouseout="this.style.fontWeight='normal'; this.style.textDecoration='none'; this.style.color='black';"></a>
@@ -195,6 +176,7 @@ table {
 							</tr>
 						</table>
 						<div id="like">
+							<sapn id="albumLikeCount"></sapn>
 							<button id="btnLike" title="앨범 좋아요" class="btn fs-3">♡</button>
 							<button id="btnListenAlbum" title="앨범 재생" class="btn intro ms-1" style="background-image: url('../images/icon/play.png'); 
                                 width: 45px; height: 45px; background-size: cover; background-repeat: no-repeat;"
@@ -244,9 +226,9 @@ table {
 									<span th:each="singer, iterStat : ${s.value}">
 										<span th:if="${singer.type == 'group'}">
 											<a th:href="@{/group/songs(groupId=${singer.data.id})}" th:text="${singer.data.groupName}"
-											th:style="'cursor: pointer;'"
-											onmouseover="this.style.fontWeight='bold'; this.style.textDecoration='underline';"
-											onmouseout="this.style.fontWeight='normal'; this.style.textDecoration='none'; this.style.color='black';">
+												th:style="'cursor: pointer;'"
+												onmouseover="this.style.fontWeight='bold'; this.style.textDecoration='underline';"
+												onmouseout="this.style.fontWeight='normal'; this.style.textDecoration='none'; this.style.color='black';">
 
 											</a>
 										</span>
@@ -279,59 +261,52 @@ table {
 															data-bs-toggle="modal" data-bs-target="#sessionListModal">
 															재생목록
 											</button> -->
-                            </td>
-                            <td>
-                                <button th:id="'btnAddUPList'"
-                                    class="btn ms-1"
-                                    th:data-id="${s.key.songId != null ? s.key.songId : ''}"
-                                    title="내 리스트에 담기"
-                                    style="background-image: url('../images/icon/myPlayList.png'); width: 50px; height: 50px; background-size: cover; background-repeat: no-repeat;">
-                                </button>
-                            </td>
-                        </tr>
+							</td>
+							<td>
+								<button th:id="'btnAddUPList'" class="btn ms-1" th:data-id="${s.key.songId != null ? s.key.songId : ''}"
+									title="내 리스트에 담기"
+									style="background-image: url('../images/icon/myPlayList.png'); width: 50px; height: 50px; background-size: cover; background-repeat: no-repeat;">
+								</button>
+							</td>
+						</tr>
 
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </main>
-    <!-- 플레이리스트 모달 -->
-    <div class="modal fade" id="staticBackdrop2"
-        data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">추가할 플레이리스트</h5>
-                    <button type="button" class="btn-close"
-                        data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div id="playLists" class="modal-body"
-                    style="height: 393px;"></div>
-                <nav aria-label="Playlist navigation">
-                    <ul id="pagination"
-                        class="pagination pagination-sm justify-content-center">
-                    </ul>
-                </nav>
-                <div class="modal-footer">
-                    <button type="button"
-                        class="btn btn-outline-secondary"
-                        data-bs-dismiss="modal">취소</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <footer>
-        <!-- 모달 요소들을 footer로 사용. 모든 페이지에 사용되기 때문 -->
-        <th:block th:replace="~{layout/fragments :: footer}"></th:block>
-    </footer>
-
-    <script th:inline="javascript">
-					const id = /*[[${loginUserId}]]*/''; // id
-					let refresh = /*[[${refresh}]]*/'';
-					// 리다이렉트 시 재생페이지를 새로고침하기 위한 코드
-				</script>
-    <script th:src="@{/js/addCurrentPlayList.js}"></script>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</main>
+	<!-- 플레이리스트 모달 -->
+	<div class="modal fade" id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+		aria-labelledby="staticBackdropLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">추가할 플레이리스트</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div id="playLists" class="modal-body" style="height: 393px;"></div>
+				<nav aria-label="Playlist navigation">
+					<ul id="pagination" class="pagination pagination-sm justify-content-center">
+					</ul>
+				</nav>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">취소</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<footer>
+		<!-- 모달 요소들을 footer로 사용. 모든 페이지에 사용되기 때문 -->
+		<th:block th:replace="~{layout/fragments :: footer}"></th:block>
+	</footer>
+	<script th:with="user=${#authentication.principal}" th:inline="javascript">
+		const albumId = /*[[${album.albumId}]]*/'';
+		let authUser = /*[[${loginUserId}]]*/ '';
+		let refresh = /*[[${refresh}]]*/'';
+		// 리다이렉트 시 재생페이지를 새로고침하기 위한 코드
+	</script>
+	<script th:src="@{/js/addCurrentPlayList.js}"></script>
+	<script th:src="@{/js/album_detail.js}"></script>
 
 
 </body>

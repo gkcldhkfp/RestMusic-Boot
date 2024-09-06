@@ -3,6 +3,53 @@
  */
 document.addEventListener('DOMContentLoaded', () => {
     console.log('사용자 ID는 ' + (loginUserId !== null ? loginUserId : '로그인되지 않음'));
+    
+    // artist 좋아요 관련 코드
+    const btnLike = document.querySelector('button#btnLike');
+    const data = { artistId, id:loginUserId };
+    
+    if(loginUserId != ''){
+    axios
+        .post('/api/artist/isLiked', data)
+        .then((response) => {
+            if (response.data) {
+                btnLike.textContent = '♥';
+            } else {
+                btnLike.textContent = '♡';
+            }
+        }
+        )
+        .catch((error) => {
+            console.log(error);
+        });
+    } else {
+        btnLike.textContent = '♡';
+    }
+    
+    btnLike.addEventListener('click', () => {
+    if(loginUserId == null) {
+        if(confirm("로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?")){
+            redirectToLogin();
+        }
+        return;
+        }
+        axios
+            .put('/api/artist/like', data)
+            .then((response) => {
+                if (response.data) {
+                    btnLike.textContent = '♥';
+                } else {
+                    btnLike.textContent = '♡';
+                }
+            }
+            )
+            .catch((error) => {
+                console.log(error);
+            });
+
+    });
+    
+    // playlist 작동 관련 코드
     const btnAddPlayLists = document.querySelectorAll('button.addPlayList');
     const playListModal = new bootstrap.Modal(document.querySelector('div#staticBackdrop3'), { backdrop: 'static' });
 
@@ -15,9 +62,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function getPlayLists(event) {
         event.stopPropagation();
-        if (loginUserId == null) { // 유저아이디
-            alert('로그인이 필요합니다');
-            return;
+        if (loginUserId == null) { // 로그인하지 않은 경우
+            if (confirm('로그인이 필요합니다. 로그인 하시겠습니까?')) {
+                // 현재 페이지의 경로를 인코딩하여 로그인 후 다시 돌아오도록 처리
+                const currentPath = encodeURIComponent(location.pathname + location.search);
+                location.href = `/member/signin?targetUrl=${currentPath}`; // 로그인 페이지로 이동
+            }
+            return; // 로그인하지 않으면 함수 종료
         }
         songId = event.target.closest('button').getAttribute('data-songId');
 
@@ -45,6 +96,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // 플리 목록 HTML이 삽입될 div
         const divPlayLists = document.querySelector('div#playLists');
 
+        // 플리 목록을 카운트
+        let playlistCount = 0;
+
         // 플리 목록 HTML 코드
         let htmlStr = '';
         for (let playlist of data) {
@@ -66,10 +120,21 @@ document.addEventListener('DOMContentLoaded', () => {
                   </div>
                 </div>
             </a>`;
+            
+            playlistCount++;
         }
 
         // 작성된 HTML 코드를 div 영역에 삽입.
         divPlayLists.innerHTML = htmlStr;
+        
+        console.log(playlistCount);
+        
+        // 플레이리스트가 존재하지 않을 경우 문구 출력.
+        if (playlistCount == 0) {
+            divPlayLists.innerHTML = `
+                <p class="text-center text-muted">플레이리스트가 없습니다.</p>
+                `;
+        }
 
         const aPlayLists = document.querySelectorAll('a.playList');
         for (let a of aPlayLists) {
