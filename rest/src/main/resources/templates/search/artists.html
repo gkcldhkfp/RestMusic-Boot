@@ -21,9 +21,9 @@ a:hover {
     <header>
         <th:block th:replace="~{layout/fragments :: header}"></th:block>
     </header>
-    <main class="m-4 p-5 container-fluid">
+    <main class="container">
         <div>
-            <div class="">
+            <div class="mt-5">
                 '<span class="fw-bold" th:text="${param.keyword}"></span>'
                 검색 결과
             </div>
@@ -66,12 +66,12 @@ a:hover {
             </div>
             
             <th:block th:if="${#lists.size(artists) > 0}">
-                <div class="mt-5">
-                    <h4 class="mt-3">아티스트</h4>
+                <h4 class="mt-3">아티스트</h4>
+                <div class="container">
                     <ul id="searchResult" style="display: flex; flex-wrap: wrap; padding: 0; list-style: none; gap: 20px;">
                         <li th:each="a : ${artists}" style="display: flex; flex-direction: column; align-items: center; width: 150px; box-sizing: border-box;">
                                 <th:block th:if="${a.type eq 'artist'}">
-                                    <a th:href="@{/artist/detail(artistId=${a.id})}"
+                                    <a th:href="@{/artist/songs(artistId=${a.id})}"
                                         class="mt-2">
                                         <img th:with="profileImg=@{/images/profileimage/profile.jpg}"
                                         th:src="@{${a.image} != null ? '/artist/image/' + ${a.image} : ${profileImg}}"
@@ -79,7 +79,7 @@ a:hover {
                                         </a>
                                 </th:block>
                                 <th:block th:if="${a.type eq 'group'}">
-                                    <a th:href="@{/group/detail(groupId=${a.id})}"
+                                    <a th:href="@{/group/songs(groupId=${a.id})}"
                                         class="mt-2">
                                         <img th:with="profileImg=@{/images/profileimage/profile.jpg}"
                                         th:src="@{${a.image} != null ? '/artist/image/' + ${a.image} : ${profileImg}}"
@@ -90,13 +90,13 @@ a:hover {
                             <div style="text-align: center; margin-top: 10px;">
                                 <th:block th:if="${a.type eq 'artist'}">
                                     <small><a
-                                        th:href="@{/artist/detail(artistId=${a.id})}"
+                                        th:href="@{/artist/songs(artistId=${a.id})}"
                                         class="mt-2" style="font-weight: bold;"
                                         th:text="${a.name}"></a></small>
                                 </th:block>
                                 <th:block th:if="${a.type eq 'group'}">
                                     <small><a
-                                        th:href="@{/group/detail(groupId=${a.id})}"
+                                        th:href="@{/group/songs(groupId=${a.id})}"
                                         class="mt-2" style="font-weight: bold;"
                                         th:text="${a.name}"></a></small>
                                 </th:block>
@@ -139,5 +139,7 @@ a:hover {
     </script>
     <script th:src="@{/js/addCurrentPlayList.js}"></script>
     <script th:src="@{/js/searchArtists.js}"></script>
+    
+    <th:block th:replace="~{layout/fragments :: footer}"></th:block>
 </body>
 </html>

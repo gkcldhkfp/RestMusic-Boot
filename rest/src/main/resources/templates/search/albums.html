@@ -13,8 +13,8 @@
         <th:block th:replace="~{layout/fragments :: header}"></th:block>
     </header>
 
-    <main class="m-4 p-5 container-fluid">
-            <div class="">
+    <main class="container">
+            <div class="mt-5">
                 '<span class="fw-bold" th:text="${param.keyword}"></span>'
                 검색 결과
             </div>
@@ -63,17 +63,17 @@
                     <ul id="searchResult" style="display: flex; flex-wrap: wrap; padding: 0; list-style: none; gap: 20px;">
                         <li th:each="a : ${albums}" style="display: flex; align-items: flex-start; padding: 15px; width: 300px; box-sizing: border-box;">
                             <img th:with="profileImg=@{https://via.placeholder.com/175}"
-                                th:src="@{${a.albumImage} != null ? '/artist/image/' + ${a.albumImage} : ${profileImg}}" 
+                                th:src="@{${a.albumImage} != null ? '/images/albumcover/' + ${a.albumImage} : ${profileImg}}" 
                             alt="이미지" style="width: 175px; height: 175px; object-fit: cover;">
                             <div style="display: flex; flex-direction: column; padding-left: 15px; flex: 1;">
                                 <div style="height:60px">
                                     <a th:href="@{/album/detail(albumId=${a.albumId})}" style="margin: 0;" th:text="${a.albumName}"></a>
                                     
                                     <th:block th:if="${a.artistType eq 'artist'}">
-                                        <small style="margin: 0; font-size: 0.7em;"><a th:href="@{/artist/detail(artistId=${a.artistId})}" th:text="${a.artistName}"></a></small>
+                                        <small style="margin: 0; font-size: 0.7em;"><a th:href="@{/artist/songs(artistId=${a.artistId})}" th:text="${a.artistName}"></a></small>
                                     </th:block>
                                     <th:block th:if="${a.artistType eq 'group'}">
-                                        <small style="margin: 0; font-size: 0.7em;"><a th:href="@{/group/detail(groupId=${a.artistId})}" th:text="${a.artistName}"></a></small>
+                                        <small style="margin: 0; font-size: 0.7em;"><a th:href="@{/group/songs(groupId=${a.artistId})}" th:text="${a.artistName}"></a></small>
                                     </th:block>
                                 </div>
                                 <div>
@@ -133,5 +133,6 @@
    <!--  <script th:src="@{/js/addCurrentPlayList.js}"></script> -->
     <script th:src="@{/js/searchAlbums.js}"></script>
     
+    <th:block th:replace="~{layout/fragments :: footer}"></th:block>
 </body>
 </html>

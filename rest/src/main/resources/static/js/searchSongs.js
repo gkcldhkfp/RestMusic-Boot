@@ -181,14 +181,14 @@
         
          for(let i = 0; i < ids.length; i++){
             inputStr +=`<small>
-                <a href="/artist/detail?artistId=${ids[i]}" 
+                <a href="/artist/songs?artistId=${ids[i]}" 
                                     style="max-width: 200px; max-height: 20px">${names[i]}</a></small>            
             `
         }
         
         for(let i = 0; i < grIds.length; i++) {
                         inputStr +=`<small>
-                            <a href="/group/detail?groupId=${grIds[i]}" 
+                            <a href="/group/songs?groupId=${grIds[i]}" 
                                 style="max-width: 200px; max-height: 20px">${grNames[i]}</a></small>            
                         `;
         }
@@ -255,13 +255,13 @@
                     let inputStr = '';
                     for(let i = 0; i < arIds.length; i++) {
                         inputStr +=`<small>
-                            <a href="/artist/detail?artistId=${arIds[i]}" 
+                            <a href="/artist/songs?artistId=${arIds[i]}" 
                                 style="max-width: 200px; max-height: 20px">${arNames[i]}</a></small>            
                         `;
                     }
                     for(let i = 0; i < grIds.length; i++) {
                         inputStr +=`<small>
-                            <a href="/group/detail?groupId=${grIds[i]}" 
+                            <a href="/group/songs?groupId=${grIds[i]}" 
                                 style="max-width: 200px; max-height: 20px">${grNames[i]}</a></small>            
                         `;
                     }
