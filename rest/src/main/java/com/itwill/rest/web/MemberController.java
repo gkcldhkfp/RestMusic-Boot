@@ -159,7 +159,7 @@ public class MemberController {
 	}
 
 	@PostMapping("/emailConfirm")
-	public String emailConfirm(@RequestParam String email) throws Exception {
+	public String emailConfirm(@RequestParam(name="email") String email) throws Exception {
 		String confirm = emailService.sendSimpleMessage(email);
 		return confirm;
 	}
@@ -205,7 +205,7 @@ public class MemberController {
 	// 프로필 이미지 삭제
 	@DeleteMapping("/deleteProfileImage/{userId}")
 	@ResponseBody
-	public ResponseEntity<Map<String, Object>> deleteProfileImage(@PathVariable String userId) {
+	public ResponseEntity<Map<String, Object>> deleteProfileImage(@PathVariable(name="userId") String userId) {
 		Map<String, Object> response = new HashMap<>();
 		boolean isDeleted = userServ.deleteUserProfile(userId);
 
@@ -310,7 +310,7 @@ public class MemberController {
 		}
 	}
 	
-	@PreAuthorize("hasRole('USER') and #id == authentication.principal.id") // -> 로그인한(USER Role을 가진) 유저만 접속할 수 있게 제한 
+	@PreAuthorize("hasRole('USER')") // -> 로그인한(USER Role을 가진) 유저만 접속할 수 있게 제한 
 	@GetMapping("/mypage")
 	public void myPage(@RequestParam(name = "id") Integer id, Model model) {
 		log.info("myPage(id={})", id);
@@ -322,7 +322,7 @@ public class MemberController {
 
 	@GetMapping("/getUserLike/{id}")
 	@ResponseBody
-	public ResponseEntity<List<UserLikeDto>> getUserLike(@PathVariable Integer id, Model model) {
+	public ResponseEntity<List<UserLikeDto>> getUserLike(@PathVariable(name="id") Integer id, Model model) {
 		log.info("getUserLike={}", id);
 		
 		// UserService를 통해 해당 사용자 ID로 좋아요 리스트 조회
