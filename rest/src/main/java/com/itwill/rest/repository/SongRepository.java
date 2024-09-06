@@ -123,10 +123,14 @@ public interface SongRepository extends JpaRepository<Song, Integer>, SongQueryd
             "    sd.groupName AS groupName, " +
             "    sd.artistId AS artistId, " +
             "    sd.groupId AS groupId, " +
-            "    COALESCE(sl.like_count, 0) AS likeCount " +
+            "    COALESCE(sl.like_count, 0) AS likeCount, " +
+            "    sd.type AS type " +
             "FROM song_data sd " +
             "LEFT JOIN (SELECT song_id, COUNT(*) AS like_count FROM likes GROUP BY song_id) AS sl ON sd.songId = sl.song_id " +
-            "ORDER BY LENGTH(sd.name), likeCount DESC " +
+            "ORDER BY " +
+            "    CASE WHEN sd.type = 'song' THEN 1 ELSE 2 END, " +
+            "    LENGTH(sd.name), " +
+            "    likeCount DESC " +
             "LIMIT :limit OFFSET :offset",
         nativeQuery = true)
 	 List<Object[]> findSongsByKeywordOrderByAccuracy(@Param("keyword") String keyword,  @Param("limit") int limit,
