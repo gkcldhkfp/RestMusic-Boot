@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		// targetNode 감지 시작
 		observer.observe(targetNode, observerConfig);
 	} else {
-		console.error("Target node not found");
+		console.log("Target node not found");
 	}
 
 	function rowAdded() {
@@ -458,8 +458,8 @@ document.addEventListener('DOMContentLoaded', () => {
 		if (id == '') {
 			if (confirm("로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?")) {
 				redirectToLogin();
-				return;
 			}
+			return;
 		}
 		const uri = `../getPlayList/${id}`;
 		axios

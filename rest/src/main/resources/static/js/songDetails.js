@@ -155,9 +155,22 @@ document.addEventListener('DOMContentLoaded', () => {
             .then((response) => {
                 if (response.data) {
                     btnLike.textContent = '♥';
+                    console.log(response.data);
                 } else {
                     btnLike.textContent = '♡';
+
                 }
+
+                axios
+                .post('/api/song/getLikeCount', data)
+                .then((response) => {
+                    console.log(response.data);
+                    songLikeCount.innerHTML = response.data;
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+
             }
             )
             .catch((error) => {
