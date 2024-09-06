@@ -3,6 +3,7 @@ package com.itwill.rest.service;
 import org.springframework.stereotype.Service;
 
 import com.itwill.rest.domain.PurUser;
+import com.itwill.rest.domain.PurUserId;
 import com.itwill.rest.domain.User;
 import com.itwill.rest.repository.PurUserRepository;
 import com.itwill.rest.repository.UserRepository;
@@ -34,9 +35,12 @@ public class PurchaseService {
 		if (user == null) {
 			return result;
 		}
+		PurUserId purUserId = new PurUserId();
+		purUserId.setId(id);
 
-		PurUser purUser = purUserRepo.findById(user).orElseGet(null);
-
+		// TODO: 결제 유저 테이블에 PK추가 후 id로 결제 유저인 지 확인하는 로직 구현 필요.
+		// PurUser purUser = purUserRepo.findById(user).orElseGet(null);
+		PurUser purUser = null;
 		if (purUser != null) {
 			result = true;
 		}
