@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.itwill.rest.Util.KoreanUtils;
 import com.itwill.rest.domain.Album;
 import com.itwill.rest.repository.AlbumRepository;
+import com.itwill.rest.util.KoreanUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
