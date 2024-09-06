@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         // Ajax 요청에서 보낼 데이터
-        const data = { songId, ctext, writer:1 };
+        const data = { songId, ctext, writer };
         
         // Ajax song 방식 요청을 보냄고, 응답/에러 처리 콜백 등록.
         axios.post('/api/comment', data)

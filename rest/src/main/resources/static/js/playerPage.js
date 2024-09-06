@@ -147,18 +147,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
 			// 링크 생성 함수
 			function createLink(name, id, type) {
-				return `<a href="/${type}/songs?id=${id}" style="cursor: pointer; font-weight: normal; text-decoration: none; color: black;" onmouseover="this.style.fontWeight='bold'; this.style.textDecoration='underline';" onmouseout="this.style.fontWeight='normal'; this.style.textDecoration='none'; this.style.color='black';">${name}</a>`;
+				return `<a href="/${type}/songs?${type}Id=${id}" target="mainFrame" style="cursor: pointer; font-weight: normal; text-decoration: none; color: black;" onmouseover="this.style.fontWeight='bold'; this.style.textDecoration='underline';" onmouseout="this.style.fontWeight='normal'; this.style.textDecoration='none'; this.style.color='black';">${name}</a>`;
 			}
 
 			// 그룹과 아티스트 텍스트를 추가할 배열
 			let elements = [];
 
-			// cPList의 각 항목에 대해 처리
-			cPList.forEach((item) => {
+			const item = cPList[index];
+
+			if (item) { // 해당 인덱스에 항목이 존재하는지 확인
 				// 그룹 처리
 				if (item.groupName && item.groupName.length > 0) {
-					item.groupName.forEach((name, index) => {
-						const groupLink = createLink(name, item.groupId[index], 'group');
+					item.groupName.forEach((name, idx) => {
+						const groupLink = createLink(name, item.groupId[idx], 'group');
 						elements.push(groupLink);
 					});
 				}
@@ -170,17 +171,19 @@ document.addEventListener('DOMContentLoaded', () => {
 						elements.push(", ");
 					}
 
-					item.artistName.forEach((name, index) => {
-						const artistLink = createLink(name, item.artistId[index], 'artist');
+					item.artistName.forEach((name, idx) => {
+						const artistLink = createLink(name, item.artistId[idx], 'artist');
 						elements.push(artistLink);
 
 						// 마지막 요소가 아니면 쉼표 추가
-						if (index < item.artistName.length - 1) {
+						if (idx < item.artistName.length - 1) {
 							elements.push(", ");
 						}
 					});
 				}
-			});
+			} else {
+				console.log("지정된 인덱스에 항목이 없습니다.");
+			}
 
 			// elements 배열의 내용을 연결하여 artistElement에 삽입
 			artistElement.innerHTML = elements.join("");

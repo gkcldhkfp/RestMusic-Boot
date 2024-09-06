@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itwill.rest.domain.Album;
 import com.itwill.rest.domain.Song;
+import com.itwill.rest.domain.User;
 import com.itwill.rest.dto.SongPlayerDto;
 import com.itwill.rest.service.AlbumSongsService;
 import com.itwill.rest.service.SongService;
@@ -36,8 +38,14 @@ public class SongPlayerController {
 	@GetMapping("/player/playerPage")
 	public void playerPage(
 			Model model,
-			HttpSession session) throws JsonProcessingException {
+			HttpSession session, Authentication authentication) throws JsonProcessingException {
 
+		Integer loginUserId = null;
+        if (authentication != null && authentication.isAuthenticated()) {
+            User user = (User) authentication.getPrincipal();
+            loginUserId = user.getId();
+        }
+        model.addAttribute("loginUserId", loginUserId);
 		// 세션에서 JSON 문자열을 가져옴
 		String cPListJson = (String) session.getAttribute("cPListJson");
 
@@ -149,11 +157,28 @@ public class SongPlayerController {
 		Song song = songServ.selectBySongId(songId);
 		Album album = song.getAlbum();
 		SongPlayerDto dto = SongPlayerDto.fromEntity(album, song, albumServ);
-		
+
 		boolean containsAlbumSong = cPList.contains(dto);
 
 		return ResponseEntity.ok(containsAlbumSong);
 
+	}
+
+	// 재생목록 비우는 매핑컨트롤러
+	@GetMapping("/song/empty")
+	@ResponseBody
+	public ResponseEntity<List<SongPlayerDto>> empty(HttpSession session) throws JsonProcessingException {
+		session.setAttribute("cPList", null);
+		// 바로듣기 버튼 클릭 시 세션에 저장된 리스트를 지움.
+		List<SongPlayerDto> cPList = new ArrayList<>();
+		// 리스트를 지웠으므로 새 리스트를 생성해줌.
+
+		// jackson objectmapper 객체 생성
+		String cPListJson = objectMapper.writeValueAsString(cPList);
+		session.setAttribute("cPListJson", cPListJson);
+		// 세션에 리스트를 업데이트
+
+		return ResponseEntity.ok(cPList);
 	}
 
 }

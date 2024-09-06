@@ -176,6 +176,7 @@
 							</tr>
 						</table>
 						<div id="like">
+							<sapn id="albumLikeCount"></sapn>
 							<button id="btnLike" title="앨범 좋아요" class="btn fs-3">♡</button>
 							<button id="btnListenAlbum" title="앨범 재생" class="btn intro ms-1" style="background-image: url('../images/icon/play.png'); 
                                 width: 45px; height: 45px; background-size: cover; background-repeat: no-repeat;"
@@ -298,13 +299,14 @@
 		<!-- 모달 요소들을 footer로 사용. 모든 페이지에 사용되기 때문 -->
 		<th:block th:replace="~{layout/fragments :: footer}"></th:block>
 	</footer>
-
-	<script th:inline="javascript">
-		const id = /*[[${loginUserId}]]*/''; // id
+	<script th:with="user=${#authentication.principal}" th:inline="javascript">
+		const albumId = /*[[${album.albumId}]]*/'';
+		let authUser = /*[[${loginUserId}]]*/ '';
 		let refresh = /*[[${refresh}]]*/'';
 		// 리다이렉트 시 재생페이지를 새로고침하기 위한 코드
 	</script>
 	<script th:src="@{/js/addCurrentPlayList.js}"></script>
+	<script th:src="@{/js/album_detail.js}"></script>
 
 
 </body>
