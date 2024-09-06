@@ -500,36 +500,6 @@ public class AlbumRepositoryTest {
 		return contentDtos;
 	}
 	
-	@Test
-	public void tktktest(){
-		
-		
-		List<AlbumSearchResultDto> dtos = new ArrayList<AlbumSearchResultDto>();
-		
-		List<Object[]> results = albumRepo.searchAlbumsAlphabet("dum",0);
-    	
-		for (Object[] result : results) {
-    		AlbumSearchResultDto dto = new AlbumSearchResultDto();
-            dto.setAlbumId(((Number) result[0]).intValue());
-            dto.setAlbumName((String) result[1]);
-            dto.setAlbumImage(((String) result[2]));
-            dto.setAlbumType((String) result[3]);
-            if (result[4] != null) {
-                Date sqlDate = (Date) result[4];
-                dto.setAlbumReleaseDate(sqlDate.toLocalDate());
-            } else {
-                dto.setAlbumReleaseDate(null);
-            }
-            dto.setArtistName((String) result[5]);
-            dto.setArtistId(result[6] != null ? ((Number) result[6]).intValue() : null);
-            dto.setArtistType((String) result[7]);
-            dto.setAlbumId(result[8] != null ? ((Number) result[8]).intValue() : null);
-            dtos.add(dto);
-        }
-		
-    	 dtos.forEach(System.out :: println);
-		
-	}
 
 
 
