@@ -1,18 +1,13 @@
-CREATE FULLTEXT INDEX idx_title ON songs (title) WITH PARSER ngram;
-CREATE FULLTEXT INDEX idx_album_name ON albums (album_name) WITH PARSER ngram;
-CREATE FULLTEXT INDEX idx_artist_name ON artists (artist_name) WITH PARSER ngram;
-CREATE FULLTEXT INDEX idx_group_name ON `groups` (group_name) WITH PARSER ngram;
-
 SELECT 
     'album' AS type,
     a.album_id AS id,
     a.album_name AS name,
     a.album_release_date AS release_date,
-    COUNT(al.album_id) AS like_count -- 좋아요 개수 COUNT로 계산
+    COALESCE(al.like_count, 0) AS like_count -- 앨범 좋아요 개수 가져오기
 FROM albums a
+JOIN albums_first_con afc ON a.album_id = afc.album_id
 LEFT JOIN album_likes al ON a.album_id = al.album_id -- 좋아요 테이블을 LEFT JOIN
-WHERE MATCH(a.album_name) AGAINST('밤양갱' IN BOOLEAN MODE)
-GROUP BY a.album_id, a.album_name, a.album_release_date
+WHERE afc.album_first_con_name LIKE CONCAT('%', 'ㅇㅂ', '%')
 
 UNION ALL
 
@@ -21,11 +16,11 @@ SELECT
     s.song_id AS id,
     s.title AS name,
     NULL AS release_date,
-    COUNT(sl.song_id) AS like_count -- 곡 좋아요 개수 COUNT로 계산
+    COALESCE(sl.like_count, 0) AS like_count -- 곡 좋아요 개수 가져오기
 FROM songs s
+JOIN songs_first_con sfc ON s.song_id = sfc.song_id
 LEFT JOIN likes sl ON s.song_id = sl.song_id -- 좋아요 테이블을 LEFT JOIN
-WHERE MATCH(s.title) AGAINST('밤양갱' IN BOOLEAN MODE)
-GROUP BY s.song_id, s.title
+WHERE sfc.song_first_con_name LIKE CONCAT('%', 'ㅇㅂ', '%')
 
 UNION ALL
 
@@ -34,11 +29,11 @@ SELECT
     g.group_id AS id,
     g.group_name AS name,
     NULL AS release_date,
-    COUNT(gl.group_id) AS like_count -- 그룹 좋아요 개수 COUNT로 계산
+    COALESCE(gl.like_count, 0) AS like_count -- 그룹 좋아요 개수 가져오기
 FROM `groups` g
+JOIN groups_first_con gfc ON g.group_id = gfc.group_id
 LEFT JOIN group_likes gl ON g.group_id = gl.group_id -- 좋아요 테이블을 LEFT JOIN
-WHERE MATCH(g.group_name) AGAINST('밤양갱' IN BOOLEAN MODE)
-GROUP BY g.group_id, g.group_name
+WHERE gfc.group_first_con_name LIKE CONCAT('%', 'ㅇㅂ', '%')
 
 UNION ALL
 
@@ -47,11 +42,11 @@ SELECT
     art.artist_id AS id,
     art.artist_name AS name,
     NULL AS release_date,
-    COUNT(artl.artist_id) AS like_count -- 아티스트 좋아요 개수 COUNT로 계산
+    COALESCE(artl.like_count, 0) AS like_count -- 아티스트 좋아요 개수 가져오기
 FROM artists art
+JOIN artists_first_con afc ON art.artist_id = afc.artist_id
 LEFT JOIN artist_likes artl ON art.artist_id = artl.artist_id -- 좋아요 테이블을 LEFT JOIN
-WHERE MATCH(art.artist_name) AGAINST('밤양갱' IN BOOLEAN MODE)
-GROUP BY art.artist_id, art.artist_name
+WHERE afc.artist_first_con_name LIKE CONCAT('%', 'ㅇㅂ', '%')
 
 ORDER BY
     LENGTH(name),  -- name(또는 title) 컬럼의 데이터 길이로 정렬

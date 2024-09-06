@@ -4,10 +4,14 @@ SELECT
     a.album_id AS id,
     a.album_name AS name,
     a.album_release_date AS release_date,
-    COALESCE(al.like_count, 0) AS like_count -- 앨범 좋아요 개수 가져오기
+    COALESCE(ls.like_count, 0) AS like_count -- 밤양갱 좋아요 개수 가져오기
 FROM albums a
-LEFT JOIN album_likes al ON a.album_id = al.album_id -- 좋아요 테이블을 LEFT JOIN
-WHERE a.album_name LIKE CONCAT('%', '앨범', '%')
+LEFT JOIN likes_statistics ls
+    ON ls.type = 'album'
+    AND ls.item_id = a.album_id
+WHERE MATCH(a.album_name) AGAINST('밤양갱' IN BOOLEAN MODE)
+
+
 
 UNION ALL
 
@@ -16,10 +20,12 @@ SELECT
     s.song_id AS id,
     s.title AS name,
     NULL AS release_date,
-    COALESCE(sl.like_count, 0) AS like_count -- 곡 좋아요 개수 가져오기
+    COALESCE(ls.like_count, 0) AS like_count -- 곡 좋아요 개수 가져오기
 FROM songs s
-LEFT JOIN likes sl ON s.song_id = sl.song_id -- 좋아요 테이블을 LEFT JOIN
-WHERE s.title LIKE CONCAT('%', '앨범', '%')
+LEFT JOIN likes_statistics ls
+    ON ls.type = 'song'
+    AND ls.item_id = s.song_id
+WHERE MATCH(s.title) AGAINST('밤양갱' IN BOOLEAN MODE)
 
 UNION ALL
 
@@ -28,21 +34,27 @@ SELECT
     g.group_id AS id,
     g.group_name AS name,
     NULL AS release_date,
-    COALESCE(gl.like_count, 0) AS like_count -- 그룹 좋아요 개수 가져오기
+    COALESCE(ls.like_count, 0) AS like_count -- 그룹 좋아요 개수 가져오기
 FROM `groups` g
-LEFT JOIN group_likes gl ON g.group_id = gl.group_id -- 좋아요 테이블을 LEFT JOIN
-WHERE g.group_name LIKE CONCAT('%', '앨범', '%')
+LEFT JOIN likes_statistics ls
+    ON ls.type = 'group'
+    AND ls.item_id = g.group_id
+WHERE MATCH(g.group_name) AGAINST('밤양갱' IN BOOLEAN MODE)
 
 UNION ALL
+
 
 SELECT
     'artist' AS type,
     art.artist_id AS id,
     art.artist_name AS name,
     NULL AS release_date,
-    COALESCE(artl.like_count, 0) AS like_count -- 아티스트 좋아요 개수 가져오기
+    COALESCE(ls.like_count, 0) AS like_count -- 아티스트 좋아요 개수 가져오기
 FROM artists art
-WHERE art.artist_name LIKE CONCAT('%', '앨범', '%')
+LEFT JOIN likes_statistics ls
+    ON ls.type = 'artist'
+    AND ls.item_id = art.artist_id
+WHERE MATCH(art.artist_name) AGAINST('밤양갱' IN BOOLEAN MODE)
 
 ORDER BY
     LENGTH(name),  -- name(또는 title) 컬럼의 데이터 길이로 정렬
