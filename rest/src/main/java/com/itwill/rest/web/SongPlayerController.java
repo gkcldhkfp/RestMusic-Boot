@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,6 +17,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itwill.rest.domain.Album;
 import com.itwill.rest.domain.Song;
+import com.itwill.rest.domain.User;
 import com.itwill.rest.dto.SongPlayerDto;
 import com.itwill.rest.service.AlbumSongsService;
 import com.itwill.rest.service.SongService;
@@ -34,10 +37,17 @@ public class SongPlayerController {
 	private final ObjectMapper objectMapper;
 
 	@GetMapping("/player/playerPage")
+	@Transactional
 	public void playerPage(
 			Model model,
-			HttpSession session) throws JsonProcessingException {
+			HttpSession session, Authentication authentication) throws JsonProcessingException {
 
+		Integer loginUserId = null;
+        if (authentication != null && authentication.isAuthenticated()) {
+            User user = (User) authentication.getPrincipal();
+            loginUserId = user.getId();
+        }
+        model.addAttribute("loginUserId", loginUserId);
 		// 세션에서 JSON 문자열을 가져옴
 		String cPListJson = (String) session.getAttribute("cPListJson");
 
@@ -45,11 +55,12 @@ public class SongPlayerController {
 
 		// 모델에 JSON 문자열 추가 (선택 사항, 필요에 따라 조정)
 		model.addAttribute("cPListJson", cPListJson);
-
+		session.setAttribute("cPListJson", cPListJson);
 	}
 
 	@GetMapping("/song/addCurrentPlayList")
 	@ResponseBody
+	@Transactional
 	public ResponseEntity<SongPlayerDto> addCurrentPlayList(
 			@RequestParam(name = "songId") Integer songId,
 			HttpSession session) throws JsonProcessingException {
@@ -81,7 +92,6 @@ public class SongPlayerController {
 		// jackson objectmapper 객체 생성
 		cPListJson = objectMapper.writeValueAsString(cPList);
 		// List -> Json 문자열
-		System.out.println(cPListJson);
 		// Json 문자열 출력
 
 		log.debug("cPList = {}", cPListJson);
@@ -93,6 +103,7 @@ public class SongPlayerController {
 
 	@GetMapping("/song/listen")
 	@ResponseBody
+	@Transactional
 	public ResponseEntity<SongPlayerDto> listen(
 			@RequestParam(value = "songId") Integer songId,
 			HttpSession session) throws JsonProcessingException {
@@ -124,6 +135,7 @@ public class SongPlayerController {
 
 	// 요청받은 songId가 세션에 있는 지 검사하는 매핑 컨트롤러
 	@GetMapping("/song/getCPList")
+	@Transactional
 	public ResponseEntity<Boolean> getCPList(@RequestParam(value = "songId") Integer songId, HttpSession session) {
 
 		// 세션에서 현재 재생목록을 가져옴.
@@ -149,11 +161,40 @@ public class SongPlayerController {
 		Song song = songServ.selectBySongId(songId);
 		Album album = song.getAlbum();
 		SongPlayerDto dto = SongPlayerDto.fromEntity(album, song, albumServ);
-		
+
 		boolean containsAlbumSong = cPList.contains(dto);
 
 		return ResponseEntity.ok(containsAlbumSong);
 
+	}
+
+	// 재생목록 비우는 매핑컨트롤러
+	@GetMapping("/song/empty")
+	@ResponseBody
+	@Transactional
+	public ResponseEntity<List<SongPlayerDto>> empty(HttpSession session) throws JsonProcessingException {
+		session.setAttribute("cPList", null);
+		// 바로듣기 버튼 클릭 시 세션에 저장된 리스트를 지움.
+		List<SongPlayerDto> cPList = new ArrayList<>();
+		// 리스트를 지웠으므로 새 리스트를 생성해줌.
+
+		// jackson objectmapper 객체 생성
+		String cPListJson = objectMapper.writeValueAsString(cPList);
+		session.setAttribute("cPListJson", cPListJson);
+		// 세션에 리스트를 업데이트
+
+		return ResponseEntity.ok(cPList);
+	}
+
+	@GetMapping("/api/album")
+	@ResponseBody
+	@Transactional
+	public ResponseEntity<List<Song>> getAlbum(@RequestParam(value = "albumId") Integer albumId) {
+		log.debug("albumId = {}", albumId);
+		Album album = albumServ.readById(albumId);
+		List<Song> list = album.getSongs();
+		log.debug("list = {}", list);
+		return ResponseEntity.ok(list);
 	}
 
 }

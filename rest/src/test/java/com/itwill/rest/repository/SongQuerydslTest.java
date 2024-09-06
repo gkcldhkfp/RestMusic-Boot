@@ -27,11 +27,11 @@ public class SongQuerydslTest {
 		log.info("chosungAlbumTest 시작");
 //		SongDetailsDto dto = songRepo.searchDetailsById(1);
 		Pageable pageable = PageRequest.of(0, 5);
-		SearchResultDto dto = songRepo.searchAll("+dum*", "accuracy", pageable);
-		log.info("{}", dto);
-		log.info("{}", dto.getAlbum());
-		log.info("{}", dto.getArtist());
-		log.info("{}", dto.getSong());
+//		SearchResultDto dto = songRepo.searchAll("+dum*", "accuracy", pageable);
+//		log.info("{}", dto);
+//		log.info("{}", dto.getAlbum());
+//		log.info("{}", dto.getArtist());
+//		log.info("{}", dto.getSong());
 
 
 

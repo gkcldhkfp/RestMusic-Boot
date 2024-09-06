@@ -51,8 +51,14 @@ public class MemberController {
 	private final MailSendService mailSendService;
 
 	@GetMapping("/signin")
-	public void signIn(@RequestParam(required = false) String targetUrl, HttpServletRequest request) {
+	public void signIn(@RequestParam(name = "targetUrl", required = false) String targetUrl, HttpServletRequest request, Model model, Authentication authentication) {
 		log.info("GET signIn()");
+		Integer loginUserId = null;
+		if (authentication != null && authentication.isAuthenticated()) {
+			User user = (User) authentication.getPrincipal();
+			loginUserId = user.getId();
+		}
+		model.addAttribute("loginUserId", loginUserId);
 		if (targetUrl != null && !targetUrl.isEmpty()) {
 			SavedRequest savedRequest = new DefaultSavedRequest.Builder().setScheme(request.getScheme())
 					.setServerName(request.getServerName()).setServerPort(request.getServerPort())
@@ -62,8 +68,14 @@ public class MemberController {
 	}
 
 	@GetMapping("/signup")
-	public void signUp() {
+	public void signUp(Model model, Authentication authentication) {
 		log.info("GET signUp()");
+		Integer loginUserId = null;
+		if (authentication != null && authentication.isAuthenticated()) {
+			User user = (User) authentication.getPrincipal();
+			loginUserId = user.getId();
+		}
+		model.addAttribute("loginUserId", loginUserId);
 	}
 
 	@PostMapping("/signup")
@@ -81,27 +93,45 @@ public class MemberController {
 
 	// 아이디 찾기 페이지
 	@GetMapping("/finduserid")
-	public void findUserId() {
+	public void findUserId(Model model, Authentication authentication) {
 		log.info("GET findUserId()");
+		Integer loginUserId = null;
+		if (authentication != null && authentication.isAuthenticated()) {
+			User user = (User) authentication.getPrincipal();
+			loginUserId = user.getId();
+		}
+		model.addAttribute("loginUserId", loginUserId);
 	}
 
 	// 아이디 찾기 결과 페이지
 	@GetMapping("/finduserresult")
-	public void findUserResult(@RequestParam(name = "userId") String userId, Model model) {
+	public void findUserResult(@RequestParam(name = "userId") String userId, Model model, Authentication authentication) {
 		model.addAttribute("userId", userId);
 		log.info("GET findUserResult()");
+		Integer loginUserId = null;
+		if (authentication != null && authentication.isAuthenticated()) {
+			User user = (User) authentication.getPrincipal();
+			loginUserId = user.getId();
+		}
+		model.addAttribute("loginUserId", loginUserId);
 	}
 
 	// 비밀번호 찾기 페이지
 	@GetMapping("/finduserpassword")
-	public void findUserPassword() {
+	public void findUserPassword(Model model, Authentication authentication) {
 		log.info("GET findUserPassword()");
 	}
 
 	// 비밀번호 변경 페이지
 	@GetMapping("/setuserpassword")
-	public void setUserPassword() {
+	public void setUserPassword(Model model, Authentication authentication) {
 		log.info("GET setUserPassword()");
+		Integer loginUserId = null;
+		if (authentication != null && authentication.isAuthenticated()) {
+			User user = (User) authentication.getPrincipal();
+			loginUserId = user.getId();
+		}
+		model.addAttribute("loginUserId", loginUserId);
 	}
 
 	// 사용자 아이디 중복체크 REST 컨트롤러

@@ -2,9 +2,9 @@ package com.itwill.rest.repository;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -26,6 +26,7 @@ import com.itwill.rest.domain.SongGenre;
 import com.itwill.rest.domain.SongGenreId;
 import com.itwill.rest.domain.TitleSong;
 import com.itwill.rest.domain.TitleSongId;
+import com.itwill.rest.dto.AlbumSearchResultDto;
 import com.itwill.rest.dto.ContentDto;
 
 import lombok.extern.slf4j.Slf4j;
@@ -498,8 +499,7 @@ public class AlbumRepositoryTest {
 		}
 		return contentDtos;
 	}
-
-
+	
 
 
 

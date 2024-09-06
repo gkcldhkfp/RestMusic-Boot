@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,11 +28,17 @@ public class UserController {
 
 	private final UserService userSvc;
 
-	@PreAuthorize("hasRole('USER')") // -> 로그인한(USER Role을 가진) 유저만 접속할 수 있게 제한 
+	@PreAuthorize("hasRole('USER')") // -> 로그인한(USER Role을 가진) 유저만 접속할 수 있게 제한
 	@GetMapping("/mypage")
-	public void myPage(@RequestParam(name = "id") Integer id, Model model) {
+	public void myPage(@RequestParam(name = "id") Integer id, Model model, Authentication authentication) {
 		log.info("myPage(id={})", id);
 
+		Integer loginUserId = null;
+		if (authentication != null && authentication.isAuthenticated()) {
+			User user = (User) authentication.getPrincipal();
+			loginUserId = user.getId();
+		}
+		model.addAttribute("loginUserId", loginUserId);
 		User user = userSvc.readById(id);
 
 		model.addAttribute("user", user);
@@ -41,12 +48,12 @@ public class UserController {
 	@ResponseBody
 	public ResponseEntity<List<UserLikeDto>> getUserLike(@PathVariable Integer id, Model model) {
 		log.info("getUserLike={}", id);
-		
-		// UserService를 통해 해당 사용자 ID로 좋아요 리스트 조회
-	    List<UserLikeDto> list = userSvc.getLikeSongByUserId(id);
 
-	    log.info("list = {}", list);
-	    return ResponseEntity.ok(list);
+		// UserService를 통해 해당 사용자 ID로 좋아요 리스트 조회
+		List<UserLikeDto> list = userSvc.getLikeSongByUserId(id);
+
+		log.info("list = {}", list);
+		return ResponseEntity.ok(list);
 	}
 
 }
