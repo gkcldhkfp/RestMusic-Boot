@@ -47,15 +47,23 @@ public class GroupController {
 	}
 	
 	@GetMapping("/albums")
-	public void albums(@RequestParam(name = "groupId") Integer groupId, Model model) {
+	public void albums(@RequestParam(name = "groupId") Integer groupId, Model model, Authentication authentication) {
 		log.info("albums(groupId={})", groupId);
 		
 		GroupInfoDto group = groupSvc.getGroupInfoByGroupId(groupId);
 		
 		List<GroupAlbumDto> list = groupSvc.readAlbums(groupId);
 		
+        Integer loginUserId = null;
+        if (authentication != null && authentication.isAuthenticated()) {
+            User user = (User) authentication.getPrincipal();
+            loginUserId = user.getId();
+        }
+        log.info("loginUserId={}", loginUserId);
+		
 		model.addAttribute("group", group);
 		model.addAttribute("albums", list);
+		model.addAttribute("loginUserId", loginUserId);
 	}
 
 }

@@ -9,11 +9,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.itwill.rest.domain.Album;
 import com.itwill.rest.domain.Artist;
 import com.itwill.rest.domain.Group;
+import com.itwill.rest.domain.GroupLike;
+import com.itwill.rest.domain.GroupLikeId;
 import com.itwill.rest.dto.GroupAlbumDto;
 import com.itwill.rest.dto.GroupInfoDto;
 import com.itwill.rest.dto.GroupSongDto;
 import com.itwill.rest.repository.AlbumRepository;
 import com.itwill.rest.repository.ArtistRepository;
+import com.itwill.rest.repository.GroupLikeRepository;
 import com.itwill.rest.repository.GroupMemberRepository;
 import com.itwill.rest.repository.GroupRepository;
 
@@ -29,6 +32,7 @@ public class GroupService {
 	private final GroupMemberRepository groupMemberRepo;
 	private final ArtistRepository artistRepo;
 	private final AlbumRepository albumRepo;
+	private final GroupLikeRepository groupLikeRepo;
 	
 	@Transactional(readOnly = true)
     public GroupInfoDto getGroupInfoByGroupId(Integer groupId) {
@@ -200,6 +204,30 @@ public class GroupService {
 	            .collect(Collectors.toList());
 
 	    return groupAlbumDtos;
+	}
+	
+	public boolean isLiked(GroupLikeId groupLikeId) {
+		
+		return groupLikeRepo.existsById(groupLikeId);
+		
+	}
+	
+	public boolean like(GroupLikeId groupLikeId) {
+		log.info("like(likeId={})", groupLikeId);
+		
+		boolean exists = groupLikeRepo.existsById(groupLikeId);
+		
+		log.info("like={}",exists);
+		
+		if(exists) {
+			groupLikeRepo.deleteById(groupLikeId);
+			return false;
+		} else {
+			GroupLike like = GroupLike.builder().groupLikeId(groupLikeId).build(); 
+			groupLikeRepo.save(like);
+			return true;
+			
+		}
 	}
 
 }
