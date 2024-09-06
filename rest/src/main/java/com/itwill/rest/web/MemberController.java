@@ -3,11 +3,14 @@ package com.itwill.rest.web;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.savedrequest.DefaultSavedRequest;
 import org.springframework.security.web.savedrequest.SavedRequest;
@@ -25,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.itwill.rest.domain.User;
 import com.itwill.rest.dto.UserDeactivateDto;
+import com.itwill.rest.dto.UserLikeDto;
 import com.itwill.rest.dto.UserSignUpDto;
 import com.itwill.rest.dto.UserUpdateDto;
 import com.itwill.rest.service.EmailService;
@@ -305,5 +309,40 @@ public class MemberController {
 			return ResponseEntity.ok("N");
 		}
 	}
+	
+	@PreAuthorize("hasRole('USER') and #id == authentication.principal.id") // -> 로그인한(USER Role을 가진) 유저만 접속할 수 있게 제한 
+	@GetMapping("/mypage")
+	public void myPage(@RequestParam(name = "id") Integer id, Model model) {
+		log.info("myPage(id={})", id);
+
+		User user = userServ.readById(id);
+
+		model.addAttribute("user", user);
+	}
+
+	@GetMapping("/getUserLike/{id}")
+	@ResponseBody
+	public ResponseEntity<List<UserLikeDto>> getUserLike(@PathVariable Integer id, Model model) {
+		log.info("getUserLike={}", id);
+		
+		// UserService를 통해 해당 사용자 ID로 좋아요 리스트 조회
+	    List<UserLikeDto> list = userServ.getLikeSongByUserId(id);
+
+	    log.info("list = {}", list);
+	    return ResponseEntity.ok(list);
+	}
+	
+	// 비밀번호 검증(정보수정 페이지 진입전 사용)
+    @GetMapping("/checkPwd")
+    @ResponseBody
+    public ResponseEntity<Boolean> checkPassword(@AuthenticationPrincipal User user,
+                                @RequestParam(name = "checkPassword") String checkPassword, Model model){
+        log.info("checkPassword(user={}, checkPassword={})", user, checkPassword);
+        Integer id = user.getId();
+
+        boolean result =  userServ.checkPassword(id, checkPassword);
+        
+        return ResponseEntity.ok(result);
+    }
 
 }

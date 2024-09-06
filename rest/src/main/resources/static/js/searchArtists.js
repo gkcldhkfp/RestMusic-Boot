@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                             for (let i = 0; i < arIds.length; i++) {
                                 inputStr += `<small>
-                            <a href="/artist/detail?artistId=${arIds[i]}" 
+                            <a href="/artist/songs?artistId=${arIds[i]}" 
                                 style="max-width: 200px; max-height: 20px">${arNames[i]}</a></small>            
                         `;
                             }
@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                             for (let i = 0; i < arIds.length; i++) {
                                 inputStr += `<small>
-                            <a href="/group/detail?artistId=${arIds[i]}" 
+                            <a href="/group/songs?artistId=${arIds[i]}" 
                                 style="max-width: 200px; max-height: 20px">${arNames[i]}</a></small>            
                         `;
                             }
@@ -74,12 +74,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         htmlStr += `
                         <li style="display: flex; flex-direction: column; align-items: center; width: 150px; box-sizing: border-box;">
                             ${a.type === 'artist' ? `
-                            <a href="/artist/detail?artistId=${a.id}" class="mt-2">
+                            <a href="/artist/songs?artistId=${a.id}" class="mt-2">
                                 <img src="${a.image != null ? '/artist/image/' + a.image : '/images/profileimage/profile.jpg'}" 
                                     alt="이미지" style="width: 150px; height: 150px; object-fit: cover;" class="rounded-circle">
                             </a>
                             ` : `
-                            <a href="/group/detail?groupId=${a.id}" class="mt-2">
+                            <a href="/group/songs?groupId=${a.id}" class="mt-2">
                                 <img src="${a.image != null ? '/artist/image/' + a.image : '/images/profileimage/profile.jpg'}" 
                                     alt="이미지" style="width: 150px; height: 150px; object-fit: cover;" class="rounded-circle">
                             </a>
@@ -88,11 +88,11 @@ document.addEventListener('DOMContentLoaded', () => {
                             <div style="text-align: center; margin-top: 10px;">
                                 ${a.type === 'artist' ? `
                                 <small>
-                                    <a href="/artist/detail?artistId=${a.id}" class="mt-2" style="font-weight: bold;">${a.name}</a>
+                                    <a href="/artist/songs?artistId=${a.id}" class="mt-2" style="font-weight: bold;">${a.name}</a>
                                 </small>
                                 ` : `
                                 <small>
-                                    <a href="/group/detail?groupId=${a.id}" class="mt-2" style="font-weight: bold;">${a.name}</a>
+                                    <a href="/group/songs?groupId=${a.id}" class="mt-2" style="font-weight: bold;">${a.name}</a>
                                 </small>
                                 `}
                             </div>

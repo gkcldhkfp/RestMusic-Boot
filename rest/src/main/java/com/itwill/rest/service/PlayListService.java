@@ -17,6 +17,7 @@ import com.itwill.rest.domain.Song;
 import com.itwill.rest.domain.User;
 import com.itwill.rest.dto.PlayListCreateDto;
 import com.itwill.rest.dto.PlayListFirstAlbumImgDto;
+import com.itwill.rest.dto.PlayListNameUpdateDto;
 import com.itwill.rest.dto.PlayListSongInfoDto;
 import com.itwill.rest.repository.GroupMemberRepository;
 import com.itwill.rest.repository.PlayListRepository;
@@ -194,6 +195,15 @@ public class PlayListService {
 				.build());
 		
 		return 1;
+	}
+	
+	@Transactional
+	public void updatePlayListNameByListId(PlayListNameUpdateDto dto) {
+		log.info("updateByListId(dto={})", dto);
+		
+		PlayList result = playListRepo.findById(dto.getPListId()).orElseThrow();
+		
+		result.update(dto.getPListName());
 	}
 
 }

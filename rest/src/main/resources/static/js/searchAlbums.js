@@ -42,16 +42,32 @@
             if (data.length > 0) {
                 console.log(data);
                 data.forEach(function(s) {
-                    const arIds = (s.artistId || '').toString().split(',').map(part => part.trim()).filter(Boolean);
-                    const arNames = (s.artistName || '').toString().split(',').map(part => part.trim()).filter(Boolean);
                     
                     let inputStr = '';
-                    for(let i = 0; i < arIds.length; i++) {
-                        inputStr +=`<small>
-                            <a href="/artist/detail?artistId=${arIds[i]}" 
+                    
+                    if (s.type == 'artist') {
+                            const arIds = (s.id || '').toString().split(',').map(part => part.trim()).filter(Boolean);
+                            const arNames = (s.name || '').toString().split(',').map(part => part.trim()).filter(Boolean);
+
+                            for (let i = 0; i < arIds.length; i++) {
+                                inputStr += `<small>
+                            <a href="/artist/songs?artistId=${arIds[i]}" 
                                 style="max-width: 200px; max-height: 20px">${arNames[i]}</a></small>            
                         `;
-                    }
+                            }
+                        }
+
+                        if (s.type == 'group') {
+                            const arIds = (s.id || '').toString().split(',').map(part => part.trim()).filter(Boolean);
+                            const arNames = (s.name || '').toString().split(',').map(part => part.trim()).filter(Boolean);
+
+                            for (let i = 0; i < arIds.length; i++) {
+                                inputStr += `<small>
+                            <a href="/group/songs?artistId=${arIds[i]}" 
+                                style="max-width: 200px; max-height: 20px">${arNames[i]}</a></small>            
+                        `;
+                            }
+                        }
 
                     let htmlStr = '';
                     htmlStr += `
@@ -63,11 +79,11 @@
                                     <a href="/album/detail?albumId=${s.albumId}" style="margin: 0;">${s.albumName}</a>
                                     ${s.artistType === 'artist' ? `
                                     <small style="margin: 0; font-size: 0.7em;">
-                                        <a href="/artist/detail?artistId=${s.artistId}">${s.artistName}</a>
+                                        <a href="/artist/songs?artistId=${s.artistId}">${s.artistName}</a>
                                     </small>
                                     ` : `
                                     <small style="margin: 0; font-size: 0.7em;">
-                                        <a href="/group/detail?groupId=${s.artistId}">${s.artistName}</a>
+                                        <a href="/group/songs?groupId=${s.artistId}">${s.artistName}</a>
                                     </small>
                                     `}
                                 </div>

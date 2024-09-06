@@ -56,7 +56,8 @@ document.addEventListener('DOMContentLoaded', () => {
 			const albumImageSrc = playlistSong.albumImage ? `../images/albumcover/${playlistSong.albumImage}` : defaultImage;
 
 			// 가장 최근에 추가된 곡을 설정
-			if (!recentSong || playlistSong.createdTime > recentSong.createdTime) {
+			// 동시에 음원을 추가할 경우 createdTime이 같은 경우도 있어서 createdTime 기준이 아닌 playlistSongId를 기준으로 잡음
+			if (!recentSong || playlistSong.playlistSongId > recentSong.playlistSongId) {
 				recentSong = playlistSong;
 			}
 			

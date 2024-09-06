@@ -9,10 +9,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.itwill.rest.domain.Album;
 import com.itwill.rest.domain.Artist;
+import com.itwill.rest.domain.ArtistLike;
+import com.itwill.rest.domain.ArtistLikeId;
 import com.itwill.rest.domain.Group;
 import com.itwill.rest.dto.ArtistAlbumDto;
 import com.itwill.rest.dto.ArtistSongDto;
 import com.itwill.rest.repository.AlbumRepository;
+import com.itwill.rest.repository.ArtistLikeRepository;
 import com.itwill.rest.repository.ArtistRepository;
 import com.itwill.rest.repository.GroupRepository;
 import com.itwill.rest.repository.GroupMemberRepository;
@@ -30,6 +33,7 @@ public class ArtistService {
 	private final GroupRepository groupRepo;
 	private final GroupMemberRepository groupMemberRepo;
 	private final AlbumRepository albumRepo;
+	private final ArtistLikeRepository artistLikeRepo;
 	
 	@Transactional(readOnly = true)
 	public Artist findById(Integer id) {
@@ -183,6 +187,30 @@ public class ArtistService {
 	            .collect(Collectors.toList());
 
 	    return artistAlbumDtos;
+	}
+	
+	public boolean isLiked(ArtistLikeId artistLikeId) {
+		
+		return artistLikeRepo.existsById(artistLikeId);
+		
+	}
+	
+	public boolean like(ArtistLikeId artistLikeId) {
+		log.info("like(likeId={})", artistLikeId);
+		
+		boolean exists = artistLikeRepo.existsById(artistLikeId);
+		
+		log.info("like={}",exists);
+		
+		if(exists) {
+			artistLikeRepo.deleteById(artistLikeId);
+			return false;
+		} else {
+			ArtistLike like = ArtistLike.builder().artistLikeId(artistLikeId).build(); 
+			artistLikeRepo.save(like);
+			return true;
+			
+		}
 	}
 
 	public List<GroupAndArtistDto> searchAllArtist(String keyword){
