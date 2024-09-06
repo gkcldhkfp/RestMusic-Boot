@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.itwill.rest.domain.Like;
 import com.itwill.rest.domain.LikeId;
+import com.itwill.rest.dto.ArtistSearchResultDto;
+import com.itwill.rest.dto.GroupSearchResultDto;
 import com.itwill.rest.dto.SongSearchResultDto;
 
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +29,10 @@ public class SongRepositoryTest {
 
 	@Autowired
 	private LikeRepository likeRepo;
+	@Autowired
+	private GroupRepository grRepo;
+	@Autowired
+	private ArtistRepository arRepo;
 	
 	// @Test
 	@Transactional
@@ -59,11 +65,13 @@ public class SongRepositoryTest {
 		}
 	}
 	
-	@Test
+//	@Test
 	@Transactional
 	public void searchTest() {
-		 List<Object[]> results = songRepo.findSongsByKeywordOrderByAccuracy("dum", 40, 0);
+//		 List<Object[]> results = songRepo.findSongsByKeywordOrderByRecency("dum", 10, 0);
 		 
+		List<Object[]> results = songRepo.searchAllSongs("앨범");
+		
 	     List<SongSearchResultDto> dtos = new ArrayList<>();
 
 
@@ -83,7 +91,25 @@ public class SongRepositoryTest {
 	        }
 	       
 		
-	        dtos.forEach(System.out :: println);
-		
+		 dtos.forEach(System.out :: println);
 	}
+	
+	@Test
+	public void daowijf() {
+		 List<ArtistSearchResultDto> dtos = new ArrayList<>();
+//		List<Object[]> results = grRepo.searchAllGroup("볼");
+		 List<Object[]> results = arRepo.searchAllArtist("우");
+		
+		for (Object[] result : results) {
+			ArtistSearchResultDto dto = new ArtistSearchResultDto();
+            dto.setArtistId(((Number) result[0]).intValue());
+            dto.setArtistName((String) result[1]);
+            dto.setArtistImage((String) result[2]);
+            dto.setLikeCount(((Number) result[3]).intValue());
+            dtos.add(dto);
+        }
+		
+		dtos.forEach(System.out :: println);
+	}
+	
 }

@@ -2,9 +2,9 @@ package com.itwill.rest.repository;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -26,6 +26,7 @@ import com.itwill.rest.domain.SongGenre;
 import com.itwill.rest.domain.SongGenreId;
 import com.itwill.rest.domain.TitleSong;
 import com.itwill.rest.domain.TitleSongId;
+import com.itwill.rest.dto.AlbumSearchResultDto;
 import com.itwill.rest.dto.ContentDto;
 
 import lombok.extern.slf4j.Slf4j;
@@ -498,8 +499,37 @@ public class AlbumRepositoryTest {
 		}
 		return contentDtos;
 	}
-
-
+	
+	@Test
+	public void tktktest(){
+		
+		
+		List<AlbumSearchResultDto> dtos = new ArrayList<AlbumSearchResultDto>();
+		
+		List<Object[]> results = albumRepo.searchAlbumsAlphabet("dum",0);
+    	
+		for (Object[] result : results) {
+    		AlbumSearchResultDto dto = new AlbumSearchResultDto();
+            dto.setAlbumId(((Number) result[0]).intValue());
+            dto.setAlbumName((String) result[1]);
+            dto.setAlbumImage(((String) result[2]));
+            dto.setAlbumType((String) result[3]);
+            if (result[4] != null) {
+                Date sqlDate = (Date) result[4];
+                dto.setAlbumReleaseDate(sqlDate.toLocalDate());
+            } else {
+                dto.setAlbumReleaseDate(null);
+            }
+            dto.setArtistName((String) result[5]);
+            dto.setArtistId(result[6] != null ? ((Number) result[6]).intValue() : null);
+            dto.setArtistType((String) result[7]);
+            dto.setAlbumId(result[8] != null ? ((Number) result[8]).intValue() : null);
+            dtos.add(dto);
+        }
+		
+    	 dtos.forEach(System.out :: println);
+		
+	}
 
 
 
