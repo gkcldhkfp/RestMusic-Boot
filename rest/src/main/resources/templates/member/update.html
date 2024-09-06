@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <th:block th:replace="~{layout/fragments :: documentHeader}"></th:block>
+        <style>
+            body {
+                background-color: #f8f9fa;
+            }
+            .container {
+                background: #ffffff;
+                padding: 2rem;
+                border-radius: .5rem;
+                box-shadow: 0 0 .5rem rgba(0, 0, 0, .1);
+                max-width: 600px;
+                margin: 2rem auto;
+            }
+            h2 {
+                margin-bottom: 1.5rem;
+                text-align: center;
+            }
+            .form-label {
+                color: #495057;
+            }
+            .btn-primary {
+                background-color: #007bff;
+                border: none;
+            }
+            .btn-secondary {
+                background-color: #6c757d;
+                border: none;
+            }
+            .btn-danger {
+                background-color: #dc3545;
+                border: none;
+            }
+            .modal-content {
+                border-radius: .5rem;
+            }
+            .modal-header {
+                border-bottom: 1px solid #dee2e6;
+            }
+            .modal-footer {
+                border-top: 1px solid #dee2e6;
+            }
+            .btn-close {
+                filter: brightness(0.4);
+            }
+            .text-center {
+                text-align: center;
+            }
+            .w-100 {
+                width: 100%;
+            }
+            .form-group {
+                margin-bottom: 1rem;
+            }
+            .profile-container {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                margin-bottom: 1.5rem;
+            }
+            .profile-img {
+                width: 200px;
+                height: 200px;
+                border-radius: 50%;
+                object-fit: cover;
+                margin-bottom: 1rem;
+            }
+            .btn-group {
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                margin-top: 1rem;
+            }
+            .btn-change-profile, .btn-delete-profile {
+                flex: 1;
+                max-width: 260px;
+            }
+            .btn-delete-profile {
+                margin-left: 0.5rem;
+            }
+            .btn-submit, .btn-deactivate, .btn-cancel {
+                width: 100%;
+            }
+            .btn-submit {
+                margin-top: 1rem;
+            }
+            .btn-deactivate {
+                margin-top: 2rem;
+            }
+            .btn-cancel {
+                margin-top: 1rem;
+            }
+            .input-group-append {
+                margin-left: 0.5rem;
+            }
+            .form-row {
+                display: flex;
+                gap: 0.5rem;
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <div class="container-fluid">
+                <th:block th:replace="~{layout/fragments :: header}"></th:block>
+            </div>
+        </header>
+    
+        <div class="container my-5">
+            <h2>회원 정보</h2>
+    
+            <form method="post" th:action="@{/member/update}" id="updateUserForm" enctype="multipart/form-data">
+                <div class="profile-container">
+                
+                
+                    <img id="profileImagePreview" alt="profileImg"
+                        th:src="${user.userProfile != null ? '/images/profileimage/' + user.userProfile : '/images/profileimage/profile.jpg'}"
+                        class="profile-img" />
+                         
+                        
+                    
+                    <div class="btn-group" role="group" aria-label="Profile image actions">
+                        <button type="button" class="btn btn-secondary btn-change-profile" data-bs-toggle="modal" data-bs-target="#changeProfileModal">프로필 변경</button>
+                        <button type="button" class="btn btn-danger" id="btnDeleteProfile">삭제</button>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="userName" class="form-label">이름</label>
+                    <input type="text" class="form-control" id="userName" name="userName" th:value="${user.username}" readonly autofocus>
+                </div>
+                <div class="mb-3">
+                    <label for="userId" class="form-label">아이디</label>
+                    <input type="text" class="form-control" id="userId" name="userId" th:value="${user.userId}" readonly>
+                </div>
+                <div class="mb-3">
+                    <label for="nickname" class="form-label">닉네임</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="nickname" name="nickname" th:value="${user.nickname}" required>
+                    </div>
+                    <div id="checkNicknameResult" class="form-text"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">이메일</label>
+                    <div class="input-group">
+                        <input type="email" class="form-control" id="email" name="email" th:value="${user.email}" required>
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-primary" id="mailCheckBtn">인증번호 받기</button>
+                        </div>
+                    </div>
+                    <div id="checkEmailResult" class="form-text text-danger"></div>
+                </div>
+                <div class="input-group mb-3">
+                    <input type="text" id="emailVerificationCode" name="emailAuthNumber" class="form-control"
+                           placeholder="인증번호를 입력해주세요" maxlength="6" disabled>
+                    <div class="input-group-append">
+                        <button type="button" class="btn btn-primary" id="verifyCodeBtn">인증번호 확인</button>
+                    </div>
+                </div>
+                <div id="emailVerificationResult" class="form-text text-danger"></div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">비밀번호</label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="새 비밀번호 ">
+                </div>
+                <div class="mb-3">
+                    <label for="confirmPassword" class="form-label">비밀번호 확인</label>
+                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="비밀번호 확인">
+                    <div id="checkPasswordResult"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="hintQuestion" class="form-label">힌트 질문</label>
+                    <select class="form-control" id="hintQuestionSelect" name="hintQuestionSelect">
+                        <option value="" selected>힌트 질문 선택</option>
+                        <option value="좋아하는 색깔은?">좋아하는 색깔은?</option>
+                        <option value="핸드폰번호 뒷자리는?">핸드폰번호 뒷자리는?</option>
+                        <option value="내 성별은?">내 성별은?</option>
+                    </select>
+                    <input type="text" class="form-control mt-2 d-none" id="hintQuestion" name="hintQuestion" th:value="${user.hintQuestion}" readonly>
+                </div>
+                <div class="mb-3">
+                    <label for="hintAnswer" class="form-label">힌트 답변</label>
+                    <input type="text" class="form-control" id="hintAnswer" name="hintAnswer" th:value="${user.hintAnswer}">
+                    <div id="checkHintAnswerResult" class="form-text"></div>
+                </div>
+                <div class="form-row">
+                    <button type="submit" class="btn btn-primary btn-submit" id="btnModify">회원 정보 변경</button>
+                    <button type="button" class="btn btn-secondary btn-cancel" id="cancelButton">취소</button>
+                </div>
+            </form>
+            
+            <hr>
+            <button class="btn btn-danger btn-deactivate" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">회원 탈퇴</button>
+        </div>
+        
+        <!-- 프로필 변경 모달 -->
+        <div class="modal fade" id="changeProfileModal" tabindex="-1" aria-labelledby="changeProfileModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="changeProfileModalLabel">프로필 이미지 변경</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    
+                    <div class="modal-body">
+                        <!-- 프로필 이미지 파일 업로드 폼 -->
+                        <form id="changeProfileForm" enctype="multipart/form-data">
+                            <input type="hidden" id="hiddenUserId" name="userId" th:value="${user.userId}">
+                            <div class="mb-3">
+                                <label for="profileImage" class="form-label">새 프로필 이미지 선택</label>
+                                <input type="file" class="form-control" id="profileImageInput" name="profileImage" accept="image/*" required>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary" id="btnChangeProfile">변경</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 회원 탈퇴 모달 -->
+        <div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteAccountModalLabel">회원 탈퇴</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>정말로 회원 탈퇴 페이지로 이동하시겠습니까?</p>
+                        <p>회원 탈퇴 시 같은 계정으로 30일 동안 재가입이 불가능합니다.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <a th:href="@{/member/deactivateUser}" class="btn btn-danger">회원 탈퇴 페이지로 이동</a>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <th:block th:replace="~{layout/fragments :: footer}"></th:block>
+        
+        <script th:inline="javascript">
+            const refresh = /*[[${refresh}]]*/ '';
+            const id = /*[[${loginUserId}]]*/ '';
+        </script>
+        
+        <!-- JS 파일 지정 -->
+        <script th:src="@{/js/updateUser.js}"></script>
+        <script th:src="@{/js/addCurrentPlayList.js}"></script>
+    
+    </body>
+</html>

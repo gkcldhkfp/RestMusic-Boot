@@ -32,6 +32,8 @@ public class Group {
 	private Integer id;
 
 	private String groupName;
+	
+	private String groupImage;
 
 	private String groupDescription;
 

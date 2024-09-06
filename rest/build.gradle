@@ -28,11 +28,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	// runtimeOnly 'com.oracle.database.jdbc:ojdbc11'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	
 
 
 	// lombok --------------
@@ -48,6 +46,7 @@ dependencies {
 	annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'
 	annotationProcessor 'jakarta.annotation:jakarta.annotation-api' // 얘는 의존성관리자가 관리해줌. 버전번호 안써도 됨
 	annotationProcessor 'jakarta.persistence:jakarta.persistence-api' // 얘도 의존성 관리자가 관리해줌.
+    implementation 'org.springframework.boot:spring-boot-starter-mail' // 이메일 인증 구현을 위해 추가.
 	// ----------------------
 
 	// Spring Security ----------
@@ -58,9 +57,8 @@ dependencies {
 	
 	// mysql ---------------
     implementation 'mysql:mysql-connector-java:8.0.33'
+
 }
-
-
 
 
 tasks.named('test') {

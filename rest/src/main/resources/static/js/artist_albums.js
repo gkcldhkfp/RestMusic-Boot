@@ -19,6 +19,9 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch(function(error) {
             // 오류가 발생하면 오류 메시지를 출력합니다.
             console.error('파일을 읽는 중 오류 발생:', error);
+            
+            // 기본 텍스트를 설정합니다.
+            document.getElementById('artistDescription').innerText = '등록된 정보가 없습니다.';
         });
         
 });

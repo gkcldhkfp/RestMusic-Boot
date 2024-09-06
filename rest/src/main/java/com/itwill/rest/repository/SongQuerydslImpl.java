@@ -148,99 +148,6 @@ public class SongQuerydslImpl extends QuerydslRepositorySupport implements SongQ
 	    return null;
 	}
 	
-
-	public Page<SongSearchResultDto> searchSongs(String keyword, String sortType, Pageable pageable) {
-	    if (pageable.getPageNumber() < 0) {
-	        throw new IllegalArgumentException("Page index must not be negative");
-	    }
-
-	    // Base SQL query
-	    String sql = "SELECT " +
-	                 "    songs.song_id AS songId, " +
-	                 "    songs.title AS songTitle, " +
-	                 "    albums.album_image AS albumImage, " +
-	                 "    albums.album_name AS albumTitle, " +
-	                 "    GROUP_CONCAT(DISTINCT artists.artist_name ORDER BY artists.artist_name ASC SEPARATOR ', ') AS singerNames, " +
-	                 "    GROUP_CONCAT(DISTINCT artists.artist_id ORDER BY artists.artist_name ASC SEPARATOR ', ') AS singerIds, " +
-	                 "    MAX(MATCH(songs.title) AGAINST (?1 IN BOOLEAN MODE)) AS titleRelevance, " +
-	                 "    MAX(MATCH(artists.artist_name) AGAINST (?1 IN BOOLEAN MODE)) AS artistRelevance, " +
-	                 "    MAX(MATCH(albums.album_name) AGAINST (?1 IN BOOLEAN MODE)) AS albumRelevance " +
-	                 "FROM " +
-	                 "    songs " +
-	                 "LEFT JOIN " +
-	                 "    albums ON songs.album_id = albums.album_id " +
-	                 "LEFT JOIN " +
-	                 "    artist_roles ON songs.song_id = artist_roles.song_id AND artist_roles.role_id = 10 " +
-	                 "LEFT JOIN " +
-	                 "    artists ON artist_roles.artist_id = artists.artist_id " +
-	                 "WHERE " +
-	                 "    MATCH(songs.title) AGAINST (?1 IN BOOLEAN MODE) " +
-	                 "    OR MATCH(artists.artist_name) AGAINST (?1 IN BOOLEAN MODE) " +
-	                 "    OR MATCH(albums.album_name) AGAINST (?1 IN BOOLEAN MODE) " +
-	                 "GROUP BY " +
-	                 "    songs.song_id ";
-
-	    // Add sorting based on sortType
-	    switch (sortType) {
-	        case "accuracy":
-	            sql += "ORDER BY " +
-	                   "    CASE WHEN MAX(MATCH(songs.title) AGAINST (?1 IN BOOLEAN MODE)) > 0 THEN 1 ELSE 0 END DESC, " +
-	                   "    LENGTH(songs.title) ASC, " +
-	                   "    CASE WHEN MAX(MATCH(artists.artist_name) AGAINST (?1 IN BOOLEAN MODE)) > 0 THEN 1 ELSE 0 END DESC, " +
-	                   "    LENGTH(GROUP_CONCAT(DISTINCT artists.artist_name ORDER BY artists.artist_name ASC SEPARATOR ', ')) ASC, " +
-	                   "    CASE WHEN MAX(MATCH(albums.album_name) AGAINST (?1 IN BOOLEAN MODE)) > 0 THEN 1 ELSE 0 END DESC, " +
-	                   "    LENGTH(albums.album_name) ASC ";
-	            break;
-	        case "alphabet":
-	            sql += "ORDER BY songs.title ASC ";
-	            break;
-	        case "recency":
-	            sql += "ORDER BY albums.album_release_date DESC ";
-	            break;
-	    }
-
-	    sql += "LIMIT ?2 OFFSET ?3";
-
-	    // Create and configure query
-	    Query query = entityManager.createNativeQuery(sql);
-	    query.setParameter(1, keyword);
-	    query.setParameter(2, pageable.getPageSize());
-	    query.setParameter(3, pageable.getOffset());
-
-	    List<Object[]> results = query.getResultList();
-
-	    List<SongSearchResultDto> songResults = results.stream()
-	        .map(result -> new SongSearchResultDto(
-	            ((Number) result[0]).intValue(),       // songId
-	            (String) result[1],                     // songTitle
-	            (String) result[2],                     // albumImage
-	            (String) result[3],                     // albumTitle
-	            (String) result[4],                     // singerNames
-	            (String) result[5]                      // singerIds
-	        ))
-	        .collect(Collectors.toList());
-
-	    // Get total count for pagination
-	    String countSql = "SELECT COUNT(DISTINCT songs.song_id) " +
-	                      "FROM songs " +
-	                      "LEFT JOIN albums ON songs.album_id = albums.album_id " +
-	                      "LEFT JOIN artist_roles ON songs.song_id = artist_roles.song_id AND artist_roles.role_id = 10 " +
-	                      "LEFT JOIN artists ON artist_roles.artist_id = artists.artist_id " +
-	                      "WHERE MATCH(songs.title) AGAINST (?1 IN BOOLEAN MODE) " +
-	                      "OR MATCH(artists.artist_name) AGAINST (?1 IN BOOLEAN MODE) " +
-	                      "OR MATCH(albums.album_name) AGAINST (?1 IN BOOLEAN MODE)";
-	    
-	    Query countQuery = entityManager.createNativeQuery(countSql);
-	    countQuery.setParameter(1, keyword);
-	    long total = ((Number) countQuery.getSingleResult()).longValue();
-
-	    return new PageImpl<>(songResults, pageable, total);
-	}
-
-
-
-
-
 	public Page<AlbumSearchResultDto> searchAlbums(String keyword, String sortType, Pageable pageable) {
 	    if (pageable.getPageNumber() < 0) {
 	        throw new IllegalArgumentException("Page index must not be negative");
@@ -416,10 +323,17 @@ public class SongQuerydslImpl extends QuerydslRepositorySupport implements SongQ
 
 	public SearchResultDto searchAll(String keyword, String sortType, Pageable pageable) {
 	    SearchResultDto results = new SearchResultDto();
-	    results.setSong(searchSongs(keyword, sortType, pageable).getContent());
 	    results.setAlbum(searchAlbums(keyword, sortType, pageable).getContent());
 	    results.setArtist(searchArtists(keyword, sortType, pageable).getContent());
 	    return results;
+	}
+
+
+
+	@Override
+	public List<Object[]> findSongsByKeyword(String keyword, int limit, int offset, String sort) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

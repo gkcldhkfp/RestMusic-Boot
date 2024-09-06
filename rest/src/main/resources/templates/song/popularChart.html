@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <th:block th:replace="~{layout/fragments :: documentHeader}"></th:block>
+        <link rel="stylesheet" th:href="@{/css/chart.css}">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+    </head>
+    <body>
+        <header>
+            <th:block th:replace="~{layout/fragments :: header}"></th:block>
+        </header>
+        
+        <main>
+            <div class="container my-3">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" id="selectAllCheckbox" /></th>
+                            <th>순위</th>
+                            <th>곡 정보</th>
+                            <th>앨범</th>
+                            <th>좋아요</th>
+                            <th>듣기</th>
+                            <th>재생목록</th>
+                            <th>담기</th>
+                            <th>뮤비</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="top, iterStat : ${topSongs}">
+                            <td><input type="checkbox" class="songCheckbox" th:data-song-id="${top.songId}" /></td>
+                            <td th:text="${iterStat.index + 1}"></td>
+                            <td class="song-info">
+                                <a th:href="@{/album/detail(albumId=${top.albumId})}" class="album-link">
+                                    <img alt="앨범표지" th:src="@{/images/albumcover/{image}(image=${top.albumImage})}" class="img-fluid" />
+                                </a>
+                                <div>
+                                    <a th:href="@{/song/detail(songId=${top.songId})}" style="font: inherit; color: inherit; text-decoration: none;">
+                                        <span th:text="${top.title}"></span><br>
+                                    </a>          
+                                    <!-- 그룹 정보가 있을 때만 표시 -->
+                                    <th:block th:if="${top.groupNames != null and !#lists.isEmpty(top.groupNames)}">
+                                        <th:block th:each="groupName, iterStat : ${top.groupNames}">
+                                            <a th:href="@{/group/songs(groupId=${top.groupIds[iterStat.index]})}"
+                                               th:text="${#strings.trim(groupName)}"
+                                               style="color: gray; text-decoration: none;"
+                                               onmouseover="this.style.color='#007bff';"
+                                               onmouseout="this.style.color='gray';"></a>
+                                            <th:block th:if="${!iterStat.last}">, </th:block>
+                                        </th:block>
+                                    </th:block>         
+                                    <!-- 그룹 정보가 없을 때 아티스트 정보가 있는 경우 표시 -->
+                                    <th:block th:if="${top.groupNames == null or #lists.isEmpty(top.groupNames)}">
+                                        <th:block th:if="${top.artistNames != null and !#lists.isEmpty(top.artistNames)}">
+                                            <th:block th:each="artistName, iterStat : ${top.artistNames}">
+                                                <a th:href="@{/artist/songs(artistId=${top.artistIds[iterStat.index]})}"
+                                                   th:text="${#strings.trim(artistName)}"
+                                                   style="color: gray; text-decoration: none;"
+                                                   onmouseover="this.style.color='#007bff';"
+                                                   onmouseout="this.style.color='gray';"></a>
+                                                <th:block th:if="${!iterStat.last}">, </th:block>
+                                            </th:block>
+                                        </th:block>             
+                                        <!-- 아티스트 정보가 없을 때 "정보 없음" 표시 -->
+                                        <th:block th:if="${top.artistNames == null or #lists.isEmpty(top.artistNames)}">
+                                            <span>정보 없음</span>
+                                        </th:block>
+                                    </th:block>
+                                </div>
+                            </td>
+                            <td>
+                                <a th:href="@{/album/detail(albumId=${top.albumId})}" style="color: gray; text-decoration: none;"
+                                   onmouseover="this.style.color='#007bff';"
+                                   onmouseout="this.style.color='gray';" class="album-link">
+                                    <span class="album-name" th:text="${top.albumName}"></span>
+                                </a>
+                            </td>
+                            <td>
+                                <i class="fas fa-heart heart-icon"
+                                   th:classappend="${top.likes != null && top.likes > 0} ? ' liked' : ''"
+                                   th:data-song-id="${top.songId}"></i>
+                                <span class="likes-count" th:text="${top.likes != null ? top.likes : 0}"></span>
+                            </td>
+                            <td>
+                                <button class="btn btn-primary btn-sm play-btn icon-button" 
+                                    id="listenBtn"
+                                    th:data-song-path="@{/songs/{path}(path=${top.songPath})}" 
+                                    th:data-song-id="${top.songId}" 
+                                    th:data-id="${top.songId}">
+                                    <img alt="듣기" th:src="@{/images/icon/play.png}" />
+                                </button>
+                            </td>
+                            <td>
+                                <button type="button" class="icon-button" id="addCPList"
+                                        th:data-id="${top.songId}">
+                                    <img alt="재생목록" th:src="@{/images/icon/playList.png}" />
+                                </button>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-secondary btn-sm add-to-playlist-btn icon-button" 
+                                        th:data-song-id="${top.songId}">
+                                    <img alt="담기" th:src="@{/images/icon/myPlayList.png}" />
+                                </button>
+                            </td>
+                            <td>
+                                <th:block th:if="${top.videoLink != null}">
+                                    <a th:href="${top.videoLink}" target="_blank" class="icon-button video-link">
+                                        <i class="fas fa-video"></i>
+                                    </a>
+                                </th:block>
+                                <th:block th:if="${top.videoLink == null}">
+                                    <i class="fa-solid fa-video-slash video-link"></i>
+                                </th:block>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+        
+        <!-- 플로팅 버튼 그룹 -->
+        <div id="floatingButtonGroup" class="floating-button-group d-none">
+            <div class="selected-count mb-2">0개 선택됨</div>
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-primary btn-sm play-selected">
+                    <img src="/images/icon/play.png" alt="듣기" class="btn-icon"> 듣기
+                </button>
+                <button type="button" class="btn btn-primary btn-sm add-to-playlist">
+                    <img src="/images/icon/playList.png" alt="재생목록" class="btn-icon"> 재생목록
+                </button>
+                <button type="button" class="btn btn-primary btn-sm add-to-my-list">
+                    <img src="/images/icon/myPlayList.png" alt="담기" class="btn-icon"> 담기
+                </button>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm deselect-all mt-2">선택 해제</button>
+        </div>
+        
+        <!-- 플레이리스트 모달 -->
+        <div class="modal fade" id="selectPlayList" tabindex="-1" aria-labelledby="selectPlayListLabel" aria-hidden="true">
+           <div class="modal-dialog modal-lg">
+               <div class="modal-content">
+                   <div class="modal-header">
+                       <h5 class="modal-title" id="selectPlayListLabel">플레이리스트 선택</h5>
+                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                   </div>
+                   <div class="modal-body">
+                       <div id="playLists" class="playlist-container"></div>
+                   </div>
+                   <div class="modal-footer">
+                       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                       <button type="button" id="btnAddSong" class="btn btn-primary">곡 추가</button>
+                   </div>
+               </div>
+           </div>
+        </div>
+        
+        <th:block th:replace="~{layout/fragments :: footer}"></th:block>
+        
+        <script th:inline="javascript">
+            const refresh = /*[[${refresh}]]*/ '';
+            const loginUserId = /*[[${loginUserId}]]*/ null;
+        </script>
+        
+        <!-- 우리가 만든 JS 파일 -->
+        <script th:src="@{/js/songsPopular.js}"></script>
+        <script th:src="@{/js/addCurrentPlayList.js}"></script>
+        
+    </body>
+</html>

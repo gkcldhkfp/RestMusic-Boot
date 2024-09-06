@@ -1,6 +1,4 @@
 
--- USE restboot; -- 공용 DB 스키마
-USE test; -- 개인 DB 스키마
 
 --- 코드 마스터 테이블 ---------------------------------------------------------------------------
 INSERT INTO code_master (code_id, code_name)
@@ -3205,14 +3203,17 @@ VALUES ('Michael Kosarin');
 
 ------------------------------ Dancing Queen-----------------------------------------------------------------------
 
-INSERT INTO artists (artist_name, artist_image, artist_description)
-VALUES ('ABBA', 'ABBA.jpg', 'ABBA.txt');
+INSERT INTO artists (artist_name, artist_image)
+VALUES ('Bjorn Ulvaeus', 'Bjorn Ulvaeus.jpg');
 
-INSERT INTO artists (artist_name)
-VALUES ('Bjorn Ulvaeus');
+INSERT INTO artists (artist_name, artist_image)
+VALUES ('Benny Andersson', 'Benny Andersson.jpg');
 
-INSERT INTO artists (artist_name)
-VALUES ('Benny Andersson');
+INSERT INTO artists (artist_name, artist_image)
+VALUES ('Agnetha Faltskog', 'Agnetha Faltskog.jpg');
+
+INSERT INTO artists (artist_name, artist_image)
+VALUES ('Frida', 'Frida.jpg');
 
 INSERT INTO artists (artist_name)
 VALUES ('Sven Olof Walldoff');
@@ -3420,6 +3421,32 @@ VALUES ('Henry Walter');
 
 
 
+-------------------------------------- GROUPS 테이블----------------------------------------------------------
+------------------------- Dancing Queen----------------------------------------------------------------------------
+INSERT INTO `groups` (group_name, group_image, group_description)
+VALUES ('ABBA', 'ABBA.jpg', 'ABBA.text');
+
+
+
+-------------------------------------- GROUP_MEMBERS 테이블----------------------------------------------------------
+------------------------- Dancing Queen----------------------------------------------------------------------------
+INSERT INTO group_members(group_id, artist_id)
+VALUES ((SELECT group_id FROM `groups` WHERE group_name = 'ABBA'), (SELECT artist_id FROM artists WHERE artist_name = 'Bjorn Ulvaeus'));
+
+INSERT INTO group_members(group_id, artist_id)
+VALUES ((SELECT group_id FROM `groups` WHERE group_name = 'ABBA'), (SELECT artist_id FROM artists WHERE artist_name = 'Benny Andersson'));
+
+INSERT INTO group_members(group_id, artist_id)
+VALUES ((SELECT group_id FROM `groups` WHERE group_name = 'ABBA'), (SELECT artist_id FROM artists WHERE artist_name = 'Agnetha Faltskog'));
+
+INSERT INTO group_members(group_id, artist_id)
+VALUES ((SELECT group_id FROM `groups` WHERE group_name = 'ABBA'), (SELECT artist_id FROM artists WHERE artist_name = 'Frida'));
+
+INSERT INTO group_members(group_id, artist_id)
+VALUES ((SELECT group_id FROM `groups` WHERE group_name = 'ABBA'), (SELECT artist_id FROM artists WHERE artist_name = 'Sven Olof Walldoff'));
+
+
+
 -------------------------------------- ARTIST_ROLES 테이블----------------------------------------------------------
 ------------------------- That’s What I Like----------------------------------------------------------------------------
 
@@ -3558,29 +3585,39 @@ VALUES ((SELECT artist_id FROM artists WHERE artist_name = 'Michael Kosarin'), (
 
 ------------------------- Dancing Queen----------------------------------------------------------------------------
 
-INSERT INTO artist_roles (artist_id, song_id, role_id)
-VALUES ((SELECT artist_id FROM artists WHERE artist_name = 'ABBA'), (SELECT song_id FROM songs WHERE title = 'Dancing Queen'), 10);
+INSERT INTO artist_roles (artist_id, group_id, song_id, role_id)
+VALUES ((SELECT artist_id FROM artists WHERE artist_name = 'Bjorn Ulvaeus'), (SELECT group_id FROM `groups` WHERE group_name = 'ABBA'), (SELECT song_id FROM songs WHERE title = 'Dancing Queen'), 10);
 
-INSERT INTO artist_roles (artist_id, song_id, role_id)
-VALUES ((SELECT artist_id FROM artists WHERE artist_name = 'Bjorn Ulvaeus'), (SELECT song_id FROM songs WHERE title = 'Dancing Queen'), 20);
+INSERT INTO artist_roles (artist_id, group_id, song_id, role_id)
+VALUES ((SELECT artist_id FROM artists WHERE artist_name = 'Bjorn Ulvaeus'), (SELECT group_id FROM `groups` WHERE group_name = 'ABBA'), (SELECT song_id FROM songs WHERE title = 'Dancing Queen'), 20);
 
-INSERT INTO artist_roles (artist_id, song_id, role_id)
-VALUES ((SELECT artist_id FROM artists WHERE artist_name = 'Bjorn Ulvaeus'), (SELECT song_id FROM songs WHERE title = 'Dancing Queen'), 30);
+INSERT INTO artist_roles (artist_id, group_id, song_id, role_id)
+VALUES ((SELECT artist_id FROM artists WHERE artist_name = 'Bjorn Ulvaeus'), (SELECT group_id FROM `groups` WHERE group_name = 'ABBA'), (SELECT song_id FROM songs WHERE title = 'Dancing Queen'), 30);
 
-INSERT INTO artist_roles (artist_id, song_id, role_id)
-VALUES ((SELECT artist_id FROM artists WHERE artist_name = 'Bjorn Ulvaeus'), (SELECT song_id FROM songs WHERE title = 'Dancing Queen'), 40);
+INSERT INTO artist_roles (artist_id, group_id, song_id, role_id)
+VALUES ((SELECT artist_id FROM artists WHERE artist_name = 'Bjorn Ulvaeus'), (SELECT group_id FROM `groups` WHERE group_name = 'ABBA'), (SELECT song_id FROM songs WHERE title = 'Dancing Queen'), 40);
 
-INSERT INTO artist_roles (artist_id, song_id, role_id)
-VALUES ((SELECT artist_id FROM artists WHERE artist_name = 'Benny Andersson'), (SELECT song_id FROM songs WHERE title = 'Dancing Queen'), 20);
+INSERT INTO artist_roles (artist_id, group_id, song_id, role_id)
+VALUES ((SELECT artist_id FROM artists WHERE artist_name = 'Benny Andersson'), (SELECT group_id FROM `groups` WHERE group_name = 'ABBA'), (SELECT song_id FROM songs WHERE title = 'Dancing Queen'), 10);
 
-INSERT INTO artist_roles (artist_id, song_id, role_id)
-VALUES ((SELECT artist_id FROM artists WHERE artist_name = 'Benny Andersson'), (SELECT song_id FROM songs WHERE title = 'Dancing Queen'), 30);
+INSERT INTO artist_roles (artist_id, group_id, song_id, role_id)
+VALUES ((SELECT artist_id FROM artists WHERE artist_name = 'Benny Andersson'), (SELECT group_id FROM `groups` WHERE group_name = 'ABBA'), (SELECT song_id FROM songs WHERE title = 'Dancing Queen'), 20);
 
-INSERT INTO artist_roles (artist_id, song_id, role_id)
-VALUES ((SELECT artist_id FROM artists WHERE artist_name = 'Benny Andersson'), (SELECT song_id FROM songs WHERE title = 'Dancing Queen'), 40);
+INSERT INTO artist_roles (artist_id, group_id, song_id, role_id)
+VALUES ((SELECT artist_id FROM artists WHERE artist_name = 'Benny Andersson'), (SELECT group_id FROM `groups` WHERE group_name = 'ABBA'), (SELECT song_id FROM songs WHERE title = 'Dancing Queen'), 30);
 
-INSERT INTO artist_roles (artist_id, song_id, role_id)
-VALUES ((SELECT artist_id FROM artists WHERE artist_name = 'Sven Olof Walldoff'), (SELECT song_id FROM songs WHERE title = 'Dancing Queen'), 40);
+INSERT INTO artist_roles (artist_id, group_id, song_id, role_id)
+VALUES ((SELECT artist_id FROM artists WHERE artist_name = 'Benny Andersson'), (SELECT group_id FROM `groups` WHERE group_name = 'ABBA'), (SELECT song_id FROM songs WHERE title = 'Dancing Queen'), 40);
+
+INSERT INTO artist_roles (artist_id, group_id, song_id, role_id)
+VALUES ((SELECT artist_id FROM artists WHERE artist_name = 'Agnetha Faltskog'), (SELECT group_id FROM `groups` WHERE group_name = 'ABBA'), (SELECT song_id FROM songs WHERE title = 'Dancing Queen'), 10);
+
+INSERT INTO artist_roles (artist_id, group_id, song_id, role_id)
+VALUES ((SELECT artist_id FROM artists WHERE artist_name = 'Frida'), (SELECT group_id FROM `groups` WHERE group_name = 'ABBA'), (SELECT song_id FROM songs WHERE title = 'Dancing Queen'), 10);
+
+INSERT INTO artist_roles (artist_id, group_id, song_id, role_id)
+VALUES ((SELECT artist_id FROM artists WHERE artist_name = 'Sven Olof Walldoff'), (SELECT group_id FROM `groups` WHERE group_name = 'ABBA'), (SELECT song_id FROM songs WHERE title = 'Dancing Queen'), 40);
+
 
 ------------------------- Baby One More Time----------------------------------------------------------------------------
 

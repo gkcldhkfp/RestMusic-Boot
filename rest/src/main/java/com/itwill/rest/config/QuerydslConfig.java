@@ -1,23 +1,23 @@
 package com.itwill.rest.config;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
 
 @Configuration
 public class QuerydslConfig {
 
-	 private final EntityManager entityManager;
+    @PersistenceContext
+    private EntityManager entityManager;
 
-	 public QuerydslConfig(EntityManager entityManager) {
-	        this.entityManager = entityManager;
-	 }
-
-	 @Bean
-	 JPAQueryFactory jpaQueryFactory() {
-	        return new JPAQueryFactory(entityManager);
-	 }
+    @Bean
+    public JPAQueryFactory jpaQueryFactory() {
+        return new JPAQueryFactory(entityManager);
+    }
+    
 }

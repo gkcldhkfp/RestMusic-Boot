@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
-        <th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+        <th:block th:replace="~{layout/fragments :: documentHeader}"></th:block>
     </head>
     <body>
-        <th:block th:replace="~{/layout/fragments :: header}"></th:block>
+        <th:block th:replace="~{layout/fragments :: header}"></th:block>
         
         <main>
         <div class="container" style="padding: 30px;">
@@ -38,49 +38,54 @@
                 <!-- Artist가 참여한 앨범 출력 -->
                 <div class="card">
                     <div class="card-body">
-                        <div class="row row-cols-1 row-cols-md-2 g-3"> <!-- 2열 유지 -->
-                            <c:forEach items="${albums}" var="a">
-                                <div class="col">
-                                    <div class="card h-100" style="max-width: 400px;"> <!-- 카드 최대 너비 조정 -->
-                                        <div class="row g-0">
-                                            <div class="col-5"> <!-- 이미지 열 너비 조정 -->
-                                                <c:url var="albumPage" value="/album/detail?albumId=${a.albumId}" />
-                                                <c:url var="albumImage" value="/images/albumcover/${a.albumImage}" />
-                                                <a href="${albumPage}">
-                                                    <img src="${albumImage}" class="img-fluid rounded-start" alt="Album Cover"
-                                                        style="width: 100%; height: 100%; object-fit: cover;">
-                                                </a>
-                                            </div>
-                                            <div class="col-7"> <!-- 텍스트 열 너비 조정 -->
-                                                <div class="card-body"> <!-- 상하 패딩 줄임 -->
-                                                    <h6 class="card-title mb-1">
-                                                        <a href="${albumPage}" style="color: black; text-decoration: none; font-weight: bold; font-size: 0.9rem;"
-                                                            onmouseover="this.style.color='blue';" onmouseout="this.style.color='black';" class="fs-6">${a.albumName}</a>
-                                                    </h6>
-                                                    <p class="card-text mb-1" style="font-size: 0.8rem;">
-                                                        <c:forEach items="${fn:split(a.artistName, ',')}" var="artistName" varStatus="statusName">
-                                                            <c:set var="artistId" value="${fn:split(a.artistId, ',')[statusName.index]}" />
-                                                            <c:url var="artistPage" value="/artist/songs">
-                                                                <c:param name="artistId" value="${fn:trim(artistId)}" />
-                                                            </c:url>
-                                                            <a href="${artistPage}"  class="fs-6"
-                                                                style="color: black; text-decoration: none;"
-                                                                onmouseover="this.style.color='blue';" onmouseout="this.style.color='black';">${fn:trim(artistName)}
-                                                            </a>
-                                                            <c:if test="${!statusName.last}">, </c:if>
-                                                        </c:forEach>
-                                                    </p>
-                                                    <br/>
-                                                    <p class="card-text mb-1 fs-6" style="font-size: 0.75rem;">${a.albumType}</p>
-                                                    <p class="card-text fs-6" style="color:gray; font-size: 0.75rem;">
-                                                        <fmt:formatDate value="${a.albumReleaseDate}" pattern="yyyy-MM-dd" />
-                                                    </p>
-                                                </div>
+                        <div class="row row-cols-1 row-cols-md-2 g-3" > <!-- 2열 유지 -->
+                            <div class="col" th:each="a : ${albums}">
+                                <div class="card h-100" style="max-width: 400px;"> <!-- 카드 최대 너비 조정 -->
+                                    <div class="row g-0">
+                                        <div class="col-5"> <!-- 이미지 열 너비 조정 -->
+                                            <a th:href="@{/album/detail(albumId=${a.albumId})}">
+                                                <img th:src="@{/images/albumcover/{albumImage}(albumImage=${a.albumImage})}" class="img-fluid rounded-start" alt="Album Cover"
+                                                    style="width: 100%; height: 100%; object-fit: cover;">
+                                            </a>
+                                        </div>
+                                        <div class="col-7"> <!-- 텍스트 열 너비 조정 -->
+                                            <div class="card-body"> <!-- 상하 패딩 줄임 -->
+                                                <h6 class="card-title mb-1">
+                                                    <a th:href="@{/album/detail(albumId=${a.albumId})}" style="color: black; text-decoration: none; font-weight: bold; font-size: 0.9rem;"
+                                                        onmouseover="this.style.color='blue';" onmouseout="this.style.color='black';" class="fs-6" th:text=${a.albumName}></a>
+                                                </h6>
+                                                <p class="card-text mb-1" style="font-size: 0.8rem;">
+                                                    <th:block th:with="totalNames = ${#lists.size(a.groupNames) + #lists.size(a.artistNames)}">
+                                                        <th:block th:each="index : ${#numbers.sequence(0, totalNames - 1)}">
+                                                            <th:block th:if="${index < #lists.size(a.groupNames)}">
+                                                                <a th:href="@{/group/songs(groupId=${a.groupIds[index]})}"
+                                                                   th:text="${a.groupNames[index]}"
+                                                                   style="color: gray; text-decoration: none;"
+                                                                   onmouseover="this.style.color='#007bff';"
+                                                                   onmouseout="this.style.color='gray';"></a>
+                                                            </th:block>
+                                                            <th:block th:if="${index >= #lists.size(a.groupNames)}">
+                                                                <a th:href="@{/artist/songs(artistId=${a.artistIds[index - #lists.size(a.groupNames)]})}"
+                                                                   th:text="${a.artistNames[index - #lists.size(a.groupNames)]}"
+                                                                   style="color: gray; text-decoration: none;"
+                                                                   onmouseover="this.style.color='#007bff';"
+                                                                   onmouseout="this.style.color='gray';"></a>
+                                                            </th:block>
+                                                            <th:block th:if="${index < totalNames - 1}">
+                                                                <span>, </span>
+                                                            </th:block>
+                                                        </th:block>
+                                                    </th:block>
+                                                </p>
+                                                <br/>
+                                                <p class="card-text mb-1 fs-6" style="font-size: 0.75rem;" th:text=${a.albumType}></p>
+                                                <p class="card-text fs-6" style="color:gray; font-size: 0.75rem;" th:text="${a.albumReleaseDate}">
+                                                </p>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </c:forEach>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -122,6 +127,6 @@
         
         <script src="/js/artist_albums.js"></script>
         
-        <th:block th:replace="~{/layout/fragments :: footer}"></th:block>
+        <th:block th:replace="~{layout/fragments :: footer}"></th:block>
     </body>
 </html>
