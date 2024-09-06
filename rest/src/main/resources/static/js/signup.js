@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let confirmPasswordChecked = false;  // 비밀번호 확인 상태
     let emailChecked = false;      // 이메일 유효성 검사 상태
     let nicknameChecked = false;   // 닉네임 중복 검사 상태
-    let authNumberChecked = true; // 이메일 인증번호 확인 상태
+    let authNumberChecked = false; // 이메일 인증번호 확인 상태
     let authNumber;                // 이메일 인증번호 저장 변수
     let hintAnswerChecked = true; // 힌트 답변 유효성 검사 상태
 
@@ -70,8 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function changeButtonState() {
         const btnSignUp = document.querySelector('button#btnSignUp');
         // 모든 검사가 완료된 경우 버튼을 활성화
-        /* if (useridChecked && passwordChecked && confirmPasswordChecked && emailChecked && nicknameChecked && authNumberChecked && hintAnswerChecked) */
-        if (useridChecked && passwordChecked && confirmPasswordChecked && emailChecked && nicknameChecked && hintAnswerChecked) {
+        if (userNameChecked && useridChecked && passwordChecked && confirmPasswordChecked && emailChecked && nicknameChecked && authNumberChecked && hintAnswerChecked) {
             btnSignUp.classList.remove('disabled');
             btnSignUp.disabled = false;
         } else {

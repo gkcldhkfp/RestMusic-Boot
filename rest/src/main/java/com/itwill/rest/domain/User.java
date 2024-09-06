@@ -48,13 +48,12 @@ public class User implements UserDetails {
 	@NaturalId
 	private String userName;
 	
-	@Basic(optional = false)
-	@NaturalId
-	private String userId;
-	
-	@Basic(optional = false)
-	@NaturalId
-	private String password;
+    @Basic(optional = false)
+    @NaturalId
+    private String userId;
+    
+    @Basic(optional = false)
+    private String password; // @NaturalId 제거
 	
 	@Basic(optional = false)
 	@NaturalId
@@ -125,6 +124,17 @@ public class User implements UserDetails {
 	public String getUsername() {
 		return this.userName;
 	}
+	
+    // 비밀번호 검증 메서드
+    public boolean checkPassword(String rawPassword) {
+        return this.password.equals(rawPassword); // 실제로는 암호화된 비밀번호와 비교해야 함
+    }
+
+    // 비밀번호 업데이트 메서드
+    public User updatePassword(String newPassword) {
+        this.password = newPassword; // 암호화된 비밀번호로 업데이트해야 함
+        return this;
+    }
 	
 	// 사용자 프로필 업데이트 메서드
     public User updateProfile(String userProfile) {

@@ -5,10 +5,12 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.savedrequest.DefaultSavedRequest;
 import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Controller;
@@ -29,6 +31,7 @@ import com.itwill.rest.dto.UserSignUpDto;
 import com.itwill.rest.dto.UserUpdateDto;
 import com.itwill.rest.service.EmailService;
 import com.itwill.rest.service.MailSendService;
+import com.itwill.rest.service.MemberService;
 import com.itwill.rest.service.UserService;
 
 import jakarta.servlet.http.Cookie;
@@ -49,6 +52,10 @@ public class MemberController {
 	private final EmailService emailService;
 
 	private final MailSendService mailSendService;
+	
+	private final MemberService memberServ;
+	
+	private final BCryptPasswordEncoder encoder;
 
 	@GetMapping("/signin")
 	public void signIn(@RequestParam(required = false) String targetUrl, HttpServletRequest request) {
@@ -86,23 +93,59 @@ public class MemberController {
 	}
 
 	// 아이디 찾기 결과 페이지
-	@GetMapping("/finduserresult")
-	public void findUserResult(@RequestParam(name = "userId") String userId, Model model) {
-		model.addAttribute("userId", userId);
-		log.info("GET findUserResult()");
-	}
+    @PostMapping("/finduserresult")
+    public String findUserResult(@RequestParam("userName") String userName,
+                                 @RequestParam("email") String email,
+                                 Model model) {
+        String userId = memberServ.findUserId(userName, email);
 
-	// 비밀번호 찾기 페이지
-	@GetMapping("/finduserpassword")
-	public void findUserPassword() {
-		log.info("GET findUserPassword()");
-	}
+        if (userId != null) {
+            model.addAttribute("userId", userId);
+            return "/member/finduserresult"; // 결과 페이지로 이동
+        } else {
+            model.addAttribute("result", "f");
+            return "/member/finduserid"; // 다시 아이디 찾기 페이지로 이동
+        }
+    }
+    
+    @GetMapping("/finduserpassword")
+    public String findUserPassword() {
+        log.info("GET findUserPassword()");
+        return "member/finduserpassword";  // 실제 뷰의 경로와 일치해야 함
+    }
+    
+    @GetMapping("/setuserpassword")
+    public String setUserPassword() {
+        log.info("GET setuserpassword()");
+        return "member/setuserpassword"; // 비밀번호 변경 페이지의 뷰 이름
+    }
 
-	// 비밀번호 변경 페이지
-	@GetMapping("/setuserpassword")
-	public void setUserPassword() {
-		log.info("GET setUserPassword()");
-	}
+
+    @PostMapping("/setuserpassword")
+    public String setUserPassword(@RequestParam("userId") String userId,
+                                  @RequestParam("password") String password,
+                                  @RequestParam("confirmPassword") String confirmPassword,
+                                  Model model) {
+        // 비밀번호와 비밀번호 확인 일치 여부 확인
+        if (!password.equals(confirmPassword)) {
+            model.addAttribute("errorMessage", "비밀번호가 일치하지 않습니다.");
+            return "/member/setuserpassword"; // 실패 시 다시 변경 페이지로
+        }
+
+        String rawPassword = encoder.encode(password);
+        // 비밀번호 업데이트 로직 호출
+        boolean isUpdated = memberServ.updatePassword(userId, rawPassword);
+
+        if (isUpdated) {
+            model.addAttribute("", "비밀번호가 성공적으로 변경되었습니다.");
+            return "redirect:/member/signin"; // 성공 시 로그인 페이지로 리다이렉트
+        } else {
+            model.addAttribute("errorMessage", "비밀번호 변경에 실패했습니다.");
+            return "/member/setuserpassword"; // 실패 시 다시 변경 페이지로
+        }
+    }
+
+
 
 	// 사용자 아이디 중복체크 REST 컨트롤러
 	@GetMapping("/checkid")
@@ -146,6 +189,11 @@ public class MemberController {
 		User user = userServ.readInfo(userId); // 유저 정보 불러오기(프로필 사진, 닉네임 출력)
 		model.addAttribute("user", user);
 	}
+	
+	
+	
+	
+	
 
 	// 프로필 이미지 변경
 	@PostMapping("/updateProfileImage")
