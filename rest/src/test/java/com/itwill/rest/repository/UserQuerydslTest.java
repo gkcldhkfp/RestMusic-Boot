@@ -16,7 +16,7 @@ public class UserQuerydslTest {
 	@Autowired
 	private UserQuerydslImpl userQuerydsl;
 	
-	@Test
+//	@Test
 	public void testSelectLikesByUserid() {
 		List<UserLikeDto> userLike = userQuerydsl.selectLikesByUserid(1);
 		

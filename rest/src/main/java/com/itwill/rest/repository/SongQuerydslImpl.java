@@ -24,24 +24,11 @@ import com.itwill.rest.domain.QGenreCode;
 import com.itwill.rest.domain.QSong;
 import com.itwill.rest.domain.QSongGenre;
 import com.itwill.rest.domain.Song;
-import com.itwill.rest.dto.AlbumSearchResultDto;
-import com.itwill.rest.dto.ArtistSearchResultDto;
-import com.itwill.rest.dto.SearchResultDto;
 import com.itwill.rest.dto.SongDetailsDto;
-import com.itwill.rest.dto.SongSearchResultDto;
-import com.itwill.rest.service.DatabaseService;
-import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
-import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.DatePath;
-import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.Query;
 
 
 public class SongQuerydslImpl extends QuerydslRepositorySupport implements SongQuerydsl {
@@ -175,6 +162,8 @@ public class SongQuerydslImpl extends QuerydslRepositorySupport implements SongQ
 
 	    return null;
 	}
+	
+	
 
 	
 	    

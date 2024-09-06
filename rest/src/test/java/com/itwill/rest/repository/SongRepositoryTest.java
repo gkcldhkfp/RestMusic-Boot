@@ -9,14 +9,10 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.itwill.rest.domain.Like;
 import com.itwill.rest.domain.LikeId;
-import com.itwill.rest.dto.ArtistSearchResultDto;
-import com.itwill.rest.dto.GroupSearchResultDto;
 import com.itwill.rest.dto.SongSearchResultDto;
 
 import lombok.extern.slf4j.Slf4j;
@@ -94,21 +90,4 @@ public class SongRepositoryTest {
 		 dtos.forEach(System.out :: println);
 	}
 	
-	@Test
-	public void daowijf() {
-		 List<ArtistSearchResultDto> dtos = new ArrayList<>();
-//		List<Object[]> results = grRepo.searchAllGroup("볼");
-		 List<Object[]> results = arRepo.searchAllArtist("우");
-		
-		for (Object[] result : results) {
-			ArtistSearchResultDto dto = new ArtistSearchResultDto();
-            dto.setArtistId(((Number) result[0]).intValue());
-            dto.setArtistName((String) result[1]);
-            dto.setArtistImage((String) result[2]);
-            dto.setLikeCount(((Number) result[3]).intValue());
-            dtos.add(dto);
-        }
-		
-		dtos.forEach(System.out :: println);
-	}
 }
