@@ -151,6 +151,11 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
     
+    // 선택된 노래 ID 배열 반환 함수
+    function getSelectedSongIds() {
+        return Array.from(document.querySelectorAll('.songCheckbox:checked')).map(checkbox => checkbox.dataset.songId);
+    }
+    
     // 테이블 body 클릭 이벤트 처리 함수
     function handleTableBodyClick(event) {
         const target = event.target;
@@ -201,7 +206,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
     
-    // 선택된 노래를 내 리스트에 추가하는 함수 수정
+    // 선택된 노래를 내 리스트에 추가하는 함수
     function addSelectedToMyList(selectedSongs) {
         if (selectedSongs.length === 0) return;
         
@@ -492,25 +497,21 @@ document.addEventListener("DOMContentLoaded", function() {
         const alreadyAdded = {};
         const promises = [];
         
-        // 각 플레이리스트에 대해 곡이 이미 있는지 확인
         selectedPlaylistIds.forEach(plistId => {
-            alreadyAdded[plistId] = false; // 초기 상태는 추가되지 않은 상태로 설정
-    
+            alreadyAdded[plistId] = false;
             songIds.forEach(songId => {
                 console.log(`플레이리스트 ${plistId}에 곡 ${songId} 확인 중`);
-                // 각 플레이리스트에 곡이 이미 추가되어 있는지 확인
                 const checkPromise = axios.post(`/checkSongInPlayList`, {
                     plistId: parseInt(plistId),
                     songId: parseInt(songId)
                 }).then(response => {
                     console.log(`플레이리스트 ${plistId} 응답:`, response.data);
-                    if (response.data === false) { // 곡이 이미 있는 경우
-                        alreadyAdded[plistId] = true; // 이미 추가된 것으로 표시
+                    if (response.data === false) {
+                        alreadyAdded[plistId] = true;
                     }
-                }).catch(error => {
-                    console.error('플레이리스트에서 곡 확인 중 오류가 발생했습니다:', error);
-                });
-                promises.push(checkPromise); // 비동기 작업을 추적 배열에 추가
+                }).catch(error => console.error('플레이리스트에서 곡 확인 중 오류가 발생했습니다:', error));
+                
+                promises.push(checkPromise);
             });
         });
         
@@ -540,27 +541,29 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         });
         
-        Promise.all(addPromises).then(responses => {
-            const allSuccessful = responses.every(response => response && response.status === 200);
-            if (allSuccessful) {
-                alert('선택한 플레이리스트에 곡이 추가되었습니다.');
-                const selectPlayListModal = bootstrap.Modal.getInstance(document.getElementById('selectPlayList'));
-                selectPlayListModal.hide();
-    
-                document.querySelectorAll('.songCheckbox:checked, #selectAllCheckbox:checked').forEach(checkbox => {
-                    checkbox.checked = false;
-                });
-                floatingButtonGroup.classList.add('d-none');
-    
-                const modalBackdrop = document.querySelector('.modal-backdrop');
-                if (modalBackdrop) {
-                    modalBackdrop.style.opacity = '0';
+        Promise.all(addPromises)
+            .then(responses => {
+                const allSuccessful = responses.every(response => response && response.status === 200);
+                if (allSuccessful) {
+                    alert('선택한 플레이리스트에 곡이 추가되었습니다.');
+                    const selectPlayListModal = bootstrap.Modal.getInstance(document.getElementById('selectPlayList'));
+                    selectPlayListModal.hide();
+
+                    document.querySelectorAll('.songCheckbox:checked, #selectAllCheckbox:checked').forEach(checkbox => {
+                        checkbox.checked = false;
+                    });
+                    floatingButtonGroup.classList.add('d-none');
+
+                    const modalBackdrop = document.querySelector('.modal-backdrop');
+                    if (modalBackdrop) {
+                        modalBackdrop.style.opacity = '0';
+                    }
                 }
-            }
-        }).catch(error => {
-            console.error('Error adding songs to playlist:', error);
-            alert('플레이리스트에 곡을 추가하는 중 오류가 발생했습니다.');
-        });
+            })
+            .catch(error => {
+                console.error('Error adding songs to playlist:', error);
+                alert('플레이리스트에 곡을 추가하는 중 오류가 발생했습니다.');
+            });
     }
     
     // 알림 메시지 표시 함수 수정 (기존 코드 그대로 사용)
@@ -602,7 +605,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }, duration);
     }
     
-    // 재생목록에 곡 추가 함수 수정
+    // 재생목록에 곡 추가 함수
     function checkAndAddToPlaylist(id, skipConfirm, callback) {
         const url1 = `/song/getCPList?songId=${id}`;
         axios.get(url1)
@@ -623,7 +626,7 @@ document.addEventListener("DOMContentLoaded", function() {
             });
     }
     
-    // 현재 재생목록에 곡 추가 함수 수정
+    // 현재 재생목록에 곡 추가 함수
     function addCurrentPlayList(id, skipAlert, callback) {
         const url2 = `/song/addCurrentPlayList?songId=${id}`;
         console.log(url2);
@@ -651,28 +654,35 @@ document.addEventListener("DOMContentLoaded", function() {
         const url = `/song/listen?songId=${songId}`;
         console.log(url);
         axios.get(url)
-            .then((response) => {
+            .then(() => {
                 console.log("성공");
                 sessionStorage.setItem('index', 0);
-                sessionStorage.setItem('index', 0);
                 sessionStorage.setItem('isAdded', 'Y');
-                parent.songFrame.location.reload();
+                if (parent && parent.songFrame) {
+                    parent.songFrame.location.reload();
+                }
             })
-            .catch((error) => console.log(error));
+            .catch((error) => console.error("Error playing song:", error));
     }
     
-    // 모든 선택된 노래를 재생목록에 추가하는 함수 수정
+    // 모든 선택된 노래를 재생목록에 추가하는 함수
     function addAllToPlaylist(songIds, skipAlert = false) {
         let addedCount = 0;
         const totalSongs = songIds.length;
         
-        songIds.forEach((songId, index) => {
-            checkAndAddToPlaylist(songId, true, () => {
-                addedCount++;
-                if (addedCount === totalSongs && !skipAlert) {
-                    showAlert('재생 목록에 추가되었습니다', 2000);
-                }
-            });
+        // Promise.all을 사용하여 모든 노래 추가가 완료될 때까지 기다림
+        Promise.all(songIds.map(songId => 
+            new Promise((resolve) => {
+                checkAndAddToPlaylist(songId, true, () => {
+                    addedCount++;
+                    resolve();
+                });
+            })
+        )).then(() => {
+            // 모든 노래가 추가된 후 알림 표시
+            if (!skipAlert) {
+                showAlert('재생 목록에 추가되었습니다', 2000);
+            }
         });
     }
     
@@ -737,4 +747,5 @@ document.addEventListener("DOMContentLoaded", function() {
     
     // 초기화 함수 호출
     init();
+    
 });
