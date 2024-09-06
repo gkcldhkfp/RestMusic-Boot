@@ -79,6 +79,7 @@
 						</p>
 						<p class="mt-2" id="genre">장르</p>
 						<div class="mt-3">
+							<span id="songLikeCount"></span>
 							<button id="btnLike" class="btn fs-3"></button>
 							<button th:data-id="${data.songId}" id="listenBtn" title="재생" class="btn"
 								style="background-image: url('../images/icon/play.png'); width: 45px; height: 45px; background-size: cover; background-repeat: no-repeat;"></button>
@@ -120,7 +121,7 @@
 					</div>
 					<div class="card-body collapse" id="collapseComments">
 						<!-- 댓글 작성 -->
-						<div class="row">
+						<div id="commnetRegistForm" class="row">
 							<div class="col-10">
 								<textarea class="form-control" id="commentText" rows="3" placeholder="댓글 내용 작성"></textarea>
 
@@ -185,7 +186,7 @@
 	<script th:inline="javascript">
 		const songId = /*[[${data.songId}]]*/'';
 
-		let authUser = /*[[${loginUserId}]]*/ 1;
+		let authUser = /*[[${loginUserId}]]*/ '';
 
 		const writers = /*[[${data.writers}]]*/'[]';
 		const writerIds = /*[[${data.writerIds}]]*/'[]';

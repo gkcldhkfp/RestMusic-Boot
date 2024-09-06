@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +17,7 @@ import com.itwill.rest.domain.GenreCode;
 import com.itwill.rest.domain.Group;
 import com.itwill.rest.domain.Song;
 import com.itwill.rest.domain.TitleSong;
+import com.itwill.rest.domain.User;
 import com.itwill.rest.service.AlbumSongsService;
 
 import lombok.RequiredArgsConstructor;
@@ -31,8 +33,15 @@ public class AlbumSongsController {
 	
 	
 	@GetMapping("detail")
-	public void detail(@RequestParam(name = "albumId") Integer albumId, Model model) {
+	public void detail(@RequestParam(name = "albumId") Integer albumId, Model model, Authentication authentication) {
 		log.info("detail(albumId = {})", albumId);
+
+		Integer loginUserId = null;
+		if (authentication != null && authentication.isAuthenticated()) {
+			User user = (User) authentication.getPrincipal();
+			loginUserId = user.getId();
+		}
+		model.addAttribute("loginUserId", loginUserId);
 
 		Album album = albumServ.readById(albumId);
 		log.info("album = {}", album);

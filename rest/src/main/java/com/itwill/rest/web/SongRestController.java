@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.itwill.rest.domain.LikeId;
+import com.itwill.rest.dto.SongLikeDto;
 import com.itwill.rest.service.SongService;
 
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,7 @@ public class SongRestController {
 	@PostMapping("/isLiked")
 	public ResponseEntity<Boolean> postMethodName(@RequestBody LikeId likeId) {
 		log.info("dto={}",likeId);
-		
+	
 		boolean result = songSvc.isLiked(likeId);
 		
 		return ResponseEntity.ok(result);
@@ -39,5 +40,12 @@ public class SongRestController {
 		return ResponseEntity.ok(result);
 	}
 	
-	
+		// 좋아요 개수 가져오는 컨트롤러
+	@PostMapping("/getLikeCount")
+	public ResponseEntity<Integer> getLikeCount(@RequestBody SongLikeDto dto) {
+		log.info("getLikeCount(songId={})", dto.getSongId());
+
+		int likesCount = songSvc.countSongLikes(dto.getSongId()); // 좋아요 취소 후의 좋아요 수를 계산합니다.
+		return ResponseEntity.ok(likesCount);
+	}
 }
