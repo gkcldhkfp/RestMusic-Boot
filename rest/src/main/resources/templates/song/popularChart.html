@@ -1,17 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>Rest</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-        <link rel="stylesheet" th:href="@{/css/common.css}">
+        <th:block th:replace="~{layout/fragments :: documentHeader}"></th:block>
         <link rel="stylesheet" th:href="@{/css/chart.css}">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
     </head>
     <body>
         <header>
-            <th:block th:replace="~{/layout/fragments :: header}"></th:block>
+            <th:block th:replace="~{layout/fragments :: header}"></th:block>
         </header>
         
         <main>
@@ -39,37 +35,37 @@
                                     <img alt="앨범표지" th:src="@{/images/albumcover/{image}(image=${top.albumImage})}" class="img-fluid" />
                                 </a>
                                 <div>
-                                    <a th:href="@{/song/details(songId=${top.songId})}" style="font: inherit; color: inherit; text-decoration: none;">
+                                    <a th:href="@{/song/detail(songId=${top.songId})}" style="font: inherit; color: inherit; text-decoration: none;">
                                         <span th:text="${top.title}"></span><br>
                                     </a>          
                                     <!-- 그룹 정보가 있을 때만 표시 -->
-									<th:block th:if="${top.groupNames != null and !#lists.isEmpty(top.groupNames)}">
-									    <th:block th:each="groupName, iterStat : ${top.groupNames}">
-									        <a th:href="@{/group/songs(groupId=${top.groupIds[iterStat.index]})}"
-									           th:text="${#strings.trim(groupName)}"
-									           style="color: gray; text-decoration: none;"
-									           onmouseover="this.style.color='#007bff';"
-									           onmouseout="this.style.color='gray';"></a>
-									        <th:block th:if="${!iterStat.last}">, </th:block>
-									    </th:block>
-									</th:block>			
-									<!-- 그룹 정보가 없을 때 아티스트 정보가 있는 경우 표시 -->
-									<th:block th:if="${top.groupNames == null or #lists.isEmpty(top.groupNames)}">
-									    <th:block th:if="${top.artistNames != null and !#lists.isEmpty(top.artistNames)}">
-									        <th:block th:each="artistName, iterStat : ${top.artistNames}">
-									            <a th:href="@{/artist/songs(artistId=${top.artistIds[iterStat.index]})}"
-									               th:text="${#strings.trim(artistName)}"
-									               style="color: gray; text-decoration: none;"
-									               onmouseover="this.style.color='#007bff';"
-									               onmouseout="this.style.color='gray';"></a>
-									            <th:block th:if="${!iterStat.last}">, </th:block>
-									        </th:block>
-									    </th:block>			    
-									    <!-- 아티스트 정보가 없을 때 "정보 없음" 표시 -->
-									    <th:block th:if="${top.artistNames == null or #lists.isEmpty(top.artistNames)}">
-									        <span>정보 없음</span>
-									    </th:block>
-									</th:block>
+                                    <th:block th:if="${top.groupNames != null and !#lists.isEmpty(top.groupNames)}">
+                                        <th:block th:each="groupName, iterStat : ${top.groupNames}">
+                                            <a th:href="@{/group/songs(groupId=${top.groupIds[iterStat.index]})}"
+                                               th:text="${#strings.trim(groupName)}"
+                                               style="color: gray; text-decoration: none;"
+                                               onmouseover="this.style.color='#007bff';"
+                                               onmouseout="this.style.color='gray';"></a>
+                                            <th:block th:if="${!iterStat.last}">, </th:block>
+                                        </th:block>
+                                    </th:block>         
+                                    <!-- 그룹 정보가 없을 때 아티스트 정보가 있는 경우 표시 -->
+                                    <th:block th:if="${top.groupNames == null or #lists.isEmpty(top.groupNames)}">
+                                        <th:block th:if="${top.artistNames != null and !#lists.isEmpty(top.artistNames)}">
+                                            <th:block th:each="artistName, iterStat : ${top.artistNames}">
+                                                <a th:href="@{/artist/songs(artistId=${top.artistIds[iterStat.index]})}"
+                                                   th:text="${#strings.trim(artistName)}"
+                                                   style="color: gray; text-decoration: none;"
+                                                   onmouseover="this.style.color='#007bff';"
+                                                   onmouseout="this.style.color='gray';"></a>
+                                                <th:block th:if="${!iterStat.last}">, </th:block>
+                                            </th:block>
+                                        </th:block>             
+                                        <!-- 아티스트 정보가 없을 때 "정보 없음" 표시 -->
+                                        <th:block th:if="${top.artistNames == null or #lists.isEmpty(top.artistNames)}">
+                                            <span>정보 없음</span>
+                                        </th:block>
+                                    </th:block>
                                 </div>
                             </td>
                             <td>
@@ -86,14 +82,14 @@
                                 <span class="likes-count" th:text="${top.likes != null ? top.likes : 0}"></span>
                             </td>
                             <td>
-							    <button class="btn btn-primary btn-sm play-btn icon-button" 
-							        id="listenBtn"
-							        th:data-song-path="@{/songs/{path}(path=${top.songPath})}" 
-							        th:data-song-id="${top.songId}" 
-							        th:data-id="${top.songId}">
-							        <img alt="듣기" th:src="@{/images/icon/play.png}" />
-							    </button>
-							</td>
+                                <button class="btn btn-primary btn-sm play-btn icon-button" 
+                                    id="listenBtn"
+                                    th:data-song-path="@{/songs/{path}(path=${top.songPath})}" 
+                                    th:data-song-id="${top.songId}" 
+                                    th:data-id="${top.songId}">
+                                    <img alt="듣기" th:src="@{/images/icon/play.png}" />
+                                </button>
+                            </td>
                             <td>
                                 <button type="button" class="icon-button" id="addCPList"
                                         th:data-id="${top.songId}">
@@ -158,7 +154,7 @@
            </div>
         </div>
         
-        <th:block th:replace="~{/layout/fragments :: footer}"></th:block>
+        <th:block th:replace="~{layout/fragments :: footer}"></th:block>
         
         <script th:inline="javascript">
             const refresh = /*[[${refresh}]]*/ '';

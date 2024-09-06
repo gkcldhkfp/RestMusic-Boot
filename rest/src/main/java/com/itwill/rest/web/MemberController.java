@@ -205,7 +205,7 @@ public class MemberController {
 
 		userServ.update(dto);
 
-		return "redirect:/member/mypage?userId=" + dto.getUserId();
+		return "redirect:/member/mypage?id=" + dto.getId();
 	}
 
 	// 사용자 계정 비활성화 페이지

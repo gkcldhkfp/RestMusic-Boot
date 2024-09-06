@@ -1,5 +1,6 @@
 package com.itwill.rest.service;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -19,6 +20,7 @@ import com.itwill.rest.domain.GenreCode;
 import com.itwill.rest.domain.Group;
 import com.itwill.rest.domain.Song;
 import com.itwill.rest.domain.SongGenre;
+import com.itwill.rest.dto.AlbumSearchResultDto;
 import com.itwill.rest.repository.AlbumRepository;
 import com.itwill.rest.repository.ArtistRoleRepository;
 
@@ -271,5 +273,74 @@ public class AlbumSongsService {
 		});
 		return artists;
 	}
+	
+	
+	public List<AlbumSearchResultDto> searchAllAlbums(String keyword){
+		
+		List<AlbumSearchResultDto> dtos = new ArrayList<AlbumSearchResultDto>();
+		
+		List<Object[]> results = albumRepo.searchAllAlbums(keyword);
+    	
+    	for (Object[] result : results) {
+    		AlbumSearchResultDto dto = new AlbumSearchResultDto();
+            dto.setAlbumId(((Number) result[0]).intValue());
+            dto.setAlbumName((String) result[1]);
+            dto.setAlbumImage(((String) result[2]));
+            dto.setAlbumType((String) result[3]);
+            if (result[4] != null) {
+                Date sqlDate = (Date) result[4];
+                dto.setAlbumReleaseDate(sqlDate.toLocalDate());
+            } else {
+                dto.setAlbumReleaseDate(null);
+            }
+            dto.setArtistName((String) result[5]);
+            dto.setArtistId(result[6] != null ? ((Number) result[6]).intValue() : null);
+            dto.setArtistType((String) result[7]);
+            dto.setLikeCount(((Number) result[8]).intValue());
+            dtos.add(dto);
+        }
+		
+		
+		return dtos;
+	}
+	
+	public List<AlbumSearchResultDto> searchAlbums(String keyword, String sortType, int offset){
+		
+		List<AlbumSearchResultDto> dtos = new ArrayList<AlbumSearchResultDto>();
+			List<Object[]> results = new ArrayList<>();
+		if(sortType.equals("accuracy")) {
+			results = albumRepo.searchAlbumsAccuracy(keyword, offset);
+		} else if(sortType.equals("recency")) {
+			results = albumRepo.searchAlbumsRecency(keyword, offset);
+		} else if(sortType.equals("alphabet")) {
+			results = albumRepo.searchAlbumsAlphabet(keyword, offset);
+		}
+		
+		for (Object[] result : results) {
+			AlbumSearchResultDto dto = new AlbumSearchResultDto();
+			dto.setAlbumId(((Number) result[0]).intValue());
+			dto.setAlbumName((String) result[1]);
+			dto.setAlbumImage(((String) result[2]));
+			dto.setAlbumType((String) result[3]);
+			if (result[4] != null) {
+				Date sqlDate = (Date) result[4];
+				dto.setAlbumReleaseDate(sqlDate.toLocalDate());
+			} else {
+				dto.setAlbumReleaseDate(null);
+			}
+			dto.setArtistName((String) result[5]);
+			dto.setArtistId(result[6] != null ? ((Number) result[6]).intValue() : null);
+			dto.setArtistType((String) result[7]);
+			dto.setLikeCount(((Number) result[8]).intValue());
+			dtos.add(dto);
+		}
+		
+		
+		return dtos;
+	}
+	
+	
+	
+	
 
 }

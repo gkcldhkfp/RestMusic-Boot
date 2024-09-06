@@ -18,5 +18,7 @@ public class SearchResultDto {
 	private List<AlbumSearchResultDto> album;
 	
 	private List<ArtistSearchResultDto> artist;
+	
+	private List<GroupSearchResultDto> group;
 
 }
