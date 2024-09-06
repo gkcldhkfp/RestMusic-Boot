@@ -95,6 +95,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // 플리 목록 HTML이 삽입될 div
         const divPlayLists = document.querySelector('div#playLists');
 
+        // 플리 목록을 카운트
+        let playlistCount = 0;
+        
         // 플리 목록 HTML 코드
         let htmlStr = '';
         for (let playlist of data) {
@@ -116,10 +119,19 @@ document.addEventListener('DOMContentLoaded', () => {
                   </div>
                 </div>
             </a>`;
+            
+            playlistCount++;
         }
 
         // 작성된 HTML 코드를 div 영역에 삽입.
         divPlayLists.innerHTML = htmlStr;
+        
+        // 플레이리스트가 존재하지 않을 경우 문구 출력.
+        if (playlistCount == 0) {
+            divPlayLists.innerHTML = `
+                <p class="text-center text-muted">플레이리스트가 없습니다.</p>
+                `;
+        }
 
         const aPlayLists = document.querySelectorAll('a.playList');
         for (let a of aPlayLists) {
