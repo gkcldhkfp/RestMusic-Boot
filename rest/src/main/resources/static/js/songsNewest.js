@@ -1,6 +1,5 @@
 /**
- * /song/newest.html에 포함되는 JavaScript 코드
- * 최신 곡 목록을 표시하고 관리하는 기능을 담당
+ * /song/newest.html에 포함
  */
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -383,8 +382,10 @@ document.addEventListener("DOMContentLoaded", function() {
     // 노래 재생 함수
     function playSong(songId) {
         const url = `/song/listen?songId=${songId}`;
+        console.log(url);
         axios.get(url)
             .then(() => {
+                console.log("성공");
                 sessionStorage.setItem('index', 0);
                 sessionStorage.setItem('isAdded', 'Y');
                 if (parent && parent.songFrame) {
@@ -491,18 +492,25 @@ document.addEventListener("DOMContentLoaded", function() {
         const alreadyAdded = {};
         const promises = [];
         
+        // 각 플레이리스트에 대해 곡이 이미 있는지 확인
         selectedPlaylistIds.forEach(plistId => {
-            alreadyAdded[plistId] = false;
+            alreadyAdded[plistId] = false; // 초기 상태는 추가되지 않은 상태로 설정
+    
             songIds.forEach(songId => {
+                console.log(`플레이리스트 ${plistId}에 곡 ${songId} 확인 중`);
+                // 각 플레이리스트에 곡이 이미 추가되어 있는지 확인
                 const checkPromise = axios.post(`/checkSongInPlayList`, {
                     plistId: parseInt(plistId),
                     songId: parseInt(songId)
                 }).then(response => {
-                    if (response.data === false) {
-                        alreadyAdded[plistId] = true;
+                    console.log(`플레이리스트 ${plistId} 응답:`, response.data);
+                    if (response.data === false) { // 곡이 이미 있는 경우
+                        alreadyAdded[plistId] = true; // 이미 추가된 것으로 표시
                     }
-                }).catch(error => console.error('Error checking song in playlist:', error));
-                promises.push(checkPromise);
+                }).catch(error => {
+                    console.error('플레이리스트에서 곡 확인 중 오류가 발생했습니다:', error);
+                });
+                promises.push(checkPromise); // 비동기 작업을 추적 배열에 추가
             });
         });
         
@@ -681,7 +689,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const button = event.target.closest('.play-btn');
         if (button) {
             const id = button.getAttribute('data-id');
-            const url = `../song/listen?songId=${id}`;
+            const url = `/song/listen?songId=${id}`;
             console.log(url);
             
             axios.get(url)
