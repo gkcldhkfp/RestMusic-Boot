@@ -22,8 +22,8 @@ a:hover {
         <th:block th:replace="~{layout/fragments :: header}"></th:block>
     </header>
 
-    <main class="m-4 p-5 container-fluid">
-        <div class="">
+    <main class="container">
+        <div class="mt-5">
                 '<span class="fw-bold" th:text="${param.keyword}"></span>'
                 검색 결과
         </div>
@@ -85,7 +85,7 @@ a:hover {
                             <tr data-song-id="${s.songId}" th:each="s : ${songs}">
                                 <td style="width: 118px; max-height: 41px; overflow: hidden;">
                                     <a th:href="@{/album/detail(albumId=${s.albumId})}">
-                                        <img alt="albumcover" th:src="@{/images/albumcover/${s.albumImage}}" class="img-thumbnail" width="120px" height="120px" />
+                                        <img alt="albumcover" th:src="@{/images/albumcover/{albumImage}(albumImage=${s.albumImage})}" class="img-thumbnail" width="120px" height="120px" />
                                     </a>
                                 </td>
                                 <td style="width: 60%; max-height: 41px; overflow: hidden;">
@@ -178,5 +178,7 @@ a:hover {
     </script>
     <script th:src="@{/js/addCurrentPlayList.js}"></script>
     <script th:src="@{/js/searchSongs.js}"></script>
+    
+    <th:block th:replace="~{layout/fragments :: footer}"></th:block>
 </body>
 </html>
