@@ -45,11 +45,7 @@
 </head>
 
 <body>
-<header>
-    <div class="container-fluid">
-        <th:block th:replace="fragments/header :: header"></th:block>
-    </div>
-</header>
+    <th:block th:replace="~{/layout/fragments :: header}"></th:block>
 
 <div class="container">
     <div class="result-container">
@@ -61,12 +57,14 @@
                 아이디 : <span th:text="${userId != null ? userId : ''}"></span>
             </div>
             <div class="d-grid mb-3">
-                <input class="form-control btn btn-primary"
-                       type="button" value="로그인" th:onclick="'location.href=' + @{/user/signin}"/>
+                <a class="form-control btn btn-primary text-center" th:href="@{/member/signin}">
+                    로그인
+                </a>
             </div>
             <div class="d-grid mb-3">
-                <input class="form-control btn btn-outline-primary"
-                       type="button" value="비밀번호 찾기" th:onclick="'location.href=' + @{/user/findpassword}"/>
+                <a class="form-control btn btn-outline-primary text-center" th:href="@{/member/finduserpassword}">
+                    비밀번호 찾기
+                </a>
             </div>
         </form>
     </div>

@@ -390,6 +390,9 @@ public interface SongRepository extends JpaRepository<Song, Integer>, SongQueryd
 
 	// 앨범 발매일 기준 내림차순 정렬(페이징)
 	Page<Song> findByOrderByAlbum_AlbumReleaseDateDesc(Pageable pageable);
+	
+	// 앨범 발매일 기준 내림차순 정렬
+	List<Song> findByOrderByAlbum_AlbumReleaseDateDesc();
 
 	// 좋아요 수 기준 내림차순 정렬
 	@Query("SELECT s FROM Song s LEFT JOIN s.likes l GROUP BY s.songId ORDER BY COUNT(l) DESC")
