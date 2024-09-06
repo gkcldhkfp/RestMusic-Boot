@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<th:block th:replace="~{layout/fragments :: documentHeader}"></th:block>
+<title>Rest</title>
+<style>
+a {
+    color: inherit; 
+    text-decoration: none; 
+}
+
+a:hover {
+    color: blue;
+}
+</style>
+</head>
+<body style="min-width: 600px">
+    <header>
+        <th:block th:replace="~{layout/fragments :: header}"></th:block>
+    </header>
+
+    <main class="m-4 p-5 container-fluid">
+        <div>
+            <div class="">
+                '<span class="fw-bold" th:text="${param.keyword}"></span>'
+                검색 결과
+            </div>
+            <div class="tab">
+                <div class="swiper-container tab-swiper-wrap">
+                    <ul class="list-unstyled d-flex mt-3">
+                        <li><a
+                            th:href="@{/search/all(keyword=${param.keyword}, sortType='accuracy')}"
+                            type="button"
+                            class="btn btn-outline-primary btn-sm me-3 active">
+                                전체</a></li>
+                        <li><a
+                            th:href="@{/search/songs(keyword=${param.keyword}, sortType='accuracy')}"
+                            type="button"
+                            class="btn btn-outline-primary btn-sm me-3 ">
+                                곡</a></li>
+                        <li><a
+                            th:href="@{/search/albums(keyword=${param.keyword}, sortType='accuracy')}"
+                            type="button"
+                            class="btn btn-outline-primary btn-sm me-3 ">
+                                앨범</a></li>
+                        <li><a
+                            th:href="@{/search/artists(keyword=${param.keyword}, sortType='accuracy')}"
+                            type="button"
+                            class="btn btn-outline-primary btn-sm me-3 ">
+                                아티스트</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div th:if="${firstObj eq null}"> 검색 결과가 없습니다.</div>
+            <div class="first" th:if="${firstObj ne null}">
+                <!-- song  -->
+                <div th:if="${first eq 'song'}">
+                    <div class="container mt-5">
+                        <div class="row">
+                            <!-- 이미지 -->
+                            <div class="col-auto">
+                                <img
+                                    th:src="@{/images/albumcover/${firstObj.albumImage}}"
+                                    alt="Placeholder Image"
+                                    class="img-fluid img-thumbnail"
+                                    style="height: 175px; width: 175px">
+                            </div>
+                            <!-- 세로로 나열된 버튼들 -->
+                            <div
+                                class="col d-flex flex-column justify-content-start button-container">
+                                <a
+                                    th:href="@{song/detail(songId=${firstObj.songId})}"
+                                    class="mb-2"
+                                    style="max-height: 20px" th:text="${firstObj.title}">노래이름</a>
+                                <a
+                                    th:href="@{album/detail(albumId=${firstObj.albumId})}"
+                                    class="mb-2"
+                                    style="max-width: 70px; max-height: 20px" th:text="${firstObj.albumName}">앨범이름</a>
+
+                                <div id="firstSongArtist" class="mt-4"></div>
+
+
+                                <!-- 버튼 4와 버튼 5를 가로로 나열 -->
+                                <div class="bottom-buttons mt-2">
+                                    <button
+                                        style="background-image: url('../images/icon/play.png'); width: 40px; height: 40px; background-size: cover; background-repeat: no-repeat;"
+                                        th:data-id="${firstObj.songId}"
+                                        class="btnListen btn mt-3"
+                                        id="listenBtn"></button>
+                                        <button
+                                        style="background-image: url('../images/icon/playList.png'); width: 50px; height: 50px; background-size: cover; background-repeat: no-repeat;"
+                                        th:data-id="${firstObj.songId}"
+                                        class="btn addNextPlay mt-3"
+                                        id="addCPList"></button>
+                                        <button
+                                        style="background-image: url('../images/icon/myPlayList.png'); width: 45px; height: 45px; background-size: cover; background-repeat: no-repeat;"
+                                        class="btn addPlayList mt-3"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- album -->
+                <div th:if="${first eq 'album'}">
+                    <div class="container mt-5">
+                        <div class="row">
+                            <!-- 이미지 -->
+                            <div class="col-auto">
+                                <img
+                                    th:src="@{/images/albumcover/${firstObj.albumImage}}"
+                                    alt="Placeholder Image"
+                                    class="img-fluid img-thumbnail"
+                                    style="height: 175px; width: 175px">
+                            </div>
+                            <!-- 세로로 나열된 버튼들 -->
+                            <div
+                                class="col d-flex flex-column justify-content-start button-container">
+                                <a
+                                    th:href="@{/album/detail(albumId=${firstObj.albumId})}"
+                                    class="mb-2"
+                                    style="max-width: 70px; max-height: 20px"
+                                    th:text="${firstObj.albumName}">앨범이름</a>
+
+                                <th:block
+                                    th:if="${firstObj.artistType eq 'artist'}">
+
+                                    <a
+                                        th:href="@{/artist/detail(artistId=${firstObj.artistId})}"
+                                        class="mb-2"
+                                        style="max-width: 70px; max-height: 20px"
+                                        th:text="${firstObj.artistName}">가수이름</a>
+                                </th:block>
+
+                                <th:block
+                                    th:if="${firstObj.artistType eq 'group'}">
+
+                                    <a
+                                        th:href="@{/group/detail(groupId=${firstObj.artistId})}"
+                                        class="mb-2"
+                                        style="max-width: 70px; max-height: 20px"
+                                        th:text="${firstObj.artistName}">가수이름</a>
+                                </th:block>
+
+                                <p class="mb-2 mt-3"
+                                    style="max-width: 200px; max-height: 20px">
+                                    <small
+                                        th:text="${firstObj.albumType}"></small>
+                                    | <small
+                                        th:text="${firstObj.albumReleaseDate}"></small>
+                                </p>
+
+                                <!-- 버튼 가로로 나열 -->
+                                <div class="bottom-buttons mt-5">
+                                    <a href="#"
+                                        class="btn btn-sm btn-danger">재생</a>
+                                    <a href="#"
+                                        class="btn btn-sm btn-warning ml-2">재생목록
+                                        추가</a> <a href="#"
+                                        class="btn btn-sm btn-warning ml-2">내
+                                        리스트 담기</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- artist -->
+                <div th:if="${first eq 'artist'}">
+                   <th:block th:if="${firstObj.type eq 'artist'}">
+                     	<a th:href="@{/artist/detail(artistId=${firstObj.id})}"
+                     	        class="mt-2">
+                     	        <img th:with="profileImg=@{/images/profileimage/profile.jpg}"
+                     	        th:src="@{${firstObj.image} != null ? '/artist/image/' + ${firstObj.image} : ${profileImg}}"
+                     	        alt="이미지" style="width: 150px; height: 150px; object-fit: cover;" class="rounded-circle">
+                     	        </a>
+                     	</th:block>
+                     	<th:block th:if="${firstObj.type eq 'group'}">
+                     	    <a th:href="@{/group/detail(groupId=${firstObj.id})}"
+                     	        class="mt-2">
+                     	        <img th:with="profileImg=@{/images/profileimage/profile.jpg}"
+                     	        th:src="@{${firstObj.image} != null ? '/artist/image/' + ${firstObj.image} : ${profileImg}}"
+                     	        alt="이미지" style="width: 150px; height: 150px; object-fit: cover;" class="rounded-circle">
+                     	        </a>
+                     	</th:block>
+                    <div class="ms-3 mt-3"
+                        style="display: inline-block; vertical-align: top;">
+                        <th:block th:if="${firstObj.type eq 'artist'}">
+                            <a
+                                th:href="@{/artist/detail(artistId=${firstObj.id})}"
+                                class="mt-2" style="font-weight: bold;"
+                                th:text="${firstObj.name}"></a>
+                        </th:block>
+                        <th:block th:if="${firstObj.type eq 'group'}">
+                            <a
+                                th:href="@{/group/detail(groupId=${firstObj.id})}"
+                                class="mt-2" style="font-weight: bold;"
+                                th:text="${firstObj.name}"></a>
+                        </th:block>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- songs -->
+            <th:block th:if="${#lists.size(songs) > 0}">
+                <h4 class="mt-3">곡</h4>
+                <div class="p-3">
+                    <table id="resultTable" class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th style="max-height: 41px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" colspan="2">앨범/곡</th>
+                                <th style="max-height: 41px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">가수</th>
+                                <th style="max-height: 41px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: center;">듣기</th>
+                                <th style="max-height: 41px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: center; min-width: 81px;">재생목록</th>
+                                <th style="max-height: 41px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: center; min-width: 87px;">내 리스트</th>
+                            </tr>
+                        </thead>
+                        <tbody id="searchResult">
+                            <tr data-song-id="${s.songId}" th:each="s : ${songs}">
+                                <td style="width: 118px; max-height: 41px; overflow: hidden;">
+                                    <a th:href="@{/album/detail(albumId=${s.albumId})}">
+                                        <img alt="albumcover" th:src="@{/images/albumcover/${s.albumImage}}" class="img-thumbnail" width="120px" height="120px" />
+                                    </a>
+                                </td>
+                                <td style="width: 60%; max-height: 41px; overflow: hidden;">
+                                    <span class="fs-5" style="cursor: pointer;" onmouseover="this.style.color='blue';" onmouseout="this.style.color='black';" th:onclick="|location.href='/song/detail?songId=' + ${s.songId}|"
+                                        th:text="${s.title}"></span>
+                                    <br />
+                                    <br />
+                                    <span style="color: gray; cursor: pointer;" onmouseover="this.style.color='blue';" onmouseout="this.style.color='gray';" th:onclick="|location.href='/album/detail?albumId=' + ${s.albumId}|"
+                                        th:text="${s.albumName}"></span>
+                                </td>
+                                <td th:id="'singers_' + ${s.songId}" class="songSingers" style="max-height: 41px; overflow: hidden; width:100px;"><br /></td>
+                                <td style="text-align: center; max-height: 41px; overflow: hidden;">
+                                    <button style="background-image: url('../images/icon/play.png'); width: 40px; height: 40px; background-size: cover; background-repeat: no-repeat;" th:data-id="${s.songId}"
+                                        class="btnListen btn mt-3" id="listenBtn"></button>
+                                </td>
+                                <td style="text-align: center; max-height: 41px; overflow: hidden;">
+                                    <button style="background-image: url('../images/icon/playList.png'); width: 50px; height: 50px; background-size: cover; background-repeat: no-repeat;" th:data-id="${s.songId}"
+                                        class="btn addNextPlay mt-3" id="addCPList"></button>
+                                </td>
+                                <td style="text-align: center; max-height: 41px; overflow: hidden;">
+                                    <button style="background-image: url('../images/icon/myPlayList.png'); width: 45px; height: 45px; background-size: cover; background-repeat: no-repeat;" class="btn addPlayList mt-3"></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </th:block>
+            <!-- albums -->
+            <th:block th:if="${#lists.size(albums) > 0}">
+                <div class="container mt-5">
+                    <h4 class="mt-3">앨범</h4>
+                    <ul style="display: flex; flex-wrap: wrap; padding: 0; list-style: none; gap: 20px;">
+                        <li th:each="a : ${albums}" style="display: flex; align-items: flex-start; padding: 15px; width: 300px; box-sizing: border-box;">
+                            <img src="https://via.placeholder.com/175" alt="이미지" style="width: 175px; height: 175px; object-fit: cover;">
+                            <div style="display: flex; flex-direction: column; padding-left: 15px; flex: 1;">
+                                <div style="height:60px">
+                                    <a th:href="@{/album/detail(albumId=${a.albumId})}" style="margin: 0;" th:text="${a.albumName}"></a>
+                                    
+                                    <th:block th:if="${a.artistType eq 'artist'}">
+                                        <small style="margin: 0;"><a th:href="@{/artist/detail(artistId=${a.artistId})}" th:text="${a.artistName}"></a></small>
+                                    </th:block>
+                                    <th:block th:if="${a.artistType eq 'group'}">
+                                        <small style="margin: 0;"><a th:href="@{/group/detail(groupId=${a.artistId})}" th:text="${a.artistName}"></a></small>
+                                    </th:block>
+                                </div>
+                                <div>
+                                    <p class="mb-2 mt-5">
+                                        <small style="font-size: 0.7em;" th:text="${a.albumType}"></small>
+                                        <br/>
+                                        <small style="font-size: 0.7em;" th:text="${a.albumReleaseDate}"></small>
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </th:block>
+            
+            <!-- artists -->
+            <th:block th:if="${#lists.size(artists) > 0}">
+                <div class="mt-5">
+                    <h4 class="mt-3">아티스트</h4>
+                    <ul style="display: flex; flex-wrap: wrap; padding: 0; list-style: none; gap: 20px;">
+                        <li th:each="a : ${artists}" style="display: flex; flex-direction: column; align-items: center; width: 150px; box-sizing: border-box;">
+                                <th:block th:if="${firstObj.type eq 'artist'}">
+                                    <a th:href="@{/artist/detail(artistId=${a.id})}"
+                                        class="mt-2">
+                                        <img th:with="profileImg=@{/images/profileimage/profile.jpg}"
+                                        th:src="@{${a.image} != null ? '/artist/image/' + ${a.image} : ${profileImg}}"
+                                        alt="이미지" style="width: 150px; height: 150px; object-fit: cover;" class="rounded-circle">
+                                        </a>
+                                </th:block>
+                                <th:block th:if="${firstObj.type eq 'group'}">
+                                    <a th:href="@{/group/detail(groupId=${firstObj.id})}"
+                                        class="mt-2">
+                                        <img th:with="profileImg=@{/images/profileimage/profile.jpg}"
+                                        th:src="@{${a.image} != null ? '/artist/image/' + ${a.image} : ${profileImg}}"
+                                        alt="이미지" style="width: 150px; height: 150px; object-fit: cover;" class="rounded-circle">
+                                        </a>
+                                </th:block>
+                                
+                            <div style="text-align: center; margin-top: 10px;">
+                                <th:block th:if="${a.type eq 'artist'}">
+                                    <small><a
+                                        th:href="@{/artist/detail(artistId=${a.id})}"
+                                        class="mt-2" style="font-weight: bold;"
+                                        th:text="${a.name}"></a></small>
+                                </th:block>
+                                <th:block th:if="${a.type eq 'group'}">
+                                    <small><a
+                                        th:href="@{/group/detail(groupId=${a.id})}"
+                                        class="mt-2" style="font-weight: bold;"
+                                        th:text="${a.name}"></a></small>
+                                </th:block>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </th:block>
+        </div>
+        
+        
+        
+        
+        <div class="modal fade" id="staticBackdrop"
+            data-bs-backdrop="static" data-bs-keyboard="false"
+            tabindex="-1" aria-labelledby="staticBackdropLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">추가할 플레이리스트</h5>
+                        <button type="button" class="btn-close"
+                            data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div id="playLists" class="modal-body"
+                        style="height: 393px;">
+                        <!--  플리가 추가 될 부분 -->
+                    </div>
+                    <nav aria-label="Playlist navigation">
+                        <ul id="pagination"
+                            class="pagination pagination-sm justify-content-center">
+                            <!-- 페이징이 추가될 부분 -->
+                        </ul>
+                    </nav>
+                    <div class="modal-footer">
+                        <button type="button"
+                            class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal">취소</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+
+
+    <footer>
+        <!-- 모달 요소들을 footer로 사용. 모든 페이지에 사용되기 때문 -->
+        <th:block th:replace="~{layout/fragments :: footer}"></th:block>
+    </footer>
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script
+        src="https://unpkg.com/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script th:inline="javascript">
+					const firstObj = /*[[${firstObj}]]*/'';
+					const songs = /*[[${songs}]]*/'';
+					const albums = /*[[${albums}]]*/'';
+					const artists = /*[[${artists}]]*/'';
+					const first = /*[[${first}]]*/'';
+					let refresh = /*[[${refresh}]]*/'';
+					let authUser = /*[[${loginUserId}]]*/'';
+	</script>
+    <script th:src="@{/js/searchAll.js}"></script>
+    <script th:src="@{/js/addCurrentPlayList.js}"></script>
+</body>
+</html>

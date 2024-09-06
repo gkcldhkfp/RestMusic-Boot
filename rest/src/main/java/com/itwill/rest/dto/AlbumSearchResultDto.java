@@ -23,8 +23,12 @@ public class AlbumSearchResultDto {
 
 	private LocalDate albumReleaseDate;
 	
-	private String singerNames;
+	private String artistName;
 	
-	private String singerIds;
+	private Integer artistId;
+	
+	private String artistType;
+	
+	private Integer likeCount;
 
 }

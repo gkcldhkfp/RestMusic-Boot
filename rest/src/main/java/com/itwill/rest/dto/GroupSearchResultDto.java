@@ -1,6 +1,6 @@
 package com.itwill.rest.dto;
 
-import java.util.List;
+import java.time.LocalDate;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,14 +11,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class SearchResultDto {
+public class GroupSearchResultDto {
 	
-	private List<SongSearchResultDto> song;
 	
-	private List<AlbumSearchResultDto> album;
-	
-	private List<ArtistSearchResultDto> artist;
-	
-	private List<GroupSearchResultDto> group;
+	private Integer groupId;
+	private String groupName;
+	private String groupImage;
+	private Integer likeCount;
 
 }

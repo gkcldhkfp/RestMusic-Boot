@@ -1,4 +1,4 @@
-package com.itwill.rest.util;
+package com.itwill.rest.Util;
 
 public class KoreanUtils {
 	// 초성 배열
