@@ -22,13 +22,17 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+
 @NoArgsConstructor
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder @ToString @EqualsAndHashCode
-@Entity @Table(name = "SONGS")
+@Builder
+@ToString
+@EqualsAndHashCode
+@Entity
+@Table(name = "SONGS")
 public class Song {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer songId;
@@ -53,75 +57,82 @@ public class Song {
 	@ToString.Exclude
 	@OneToMany(mappedBy = "song", fetch = FetchType.LAZY)
 	@Builder.Default
+	@JsonBackReference // 순환참조를 해결하기 위한 애너테이션
 	private List<ArtistRole> artistRole = new ArrayList<>();
 
- 	@ToString.Exclude
+	@ToString.Exclude
 	@OneToMany(mappedBy = "song", fetch = FetchType.LAZY)
 	@Builder.Default
+	@JsonBackReference // 순환참조를 해결하기 위한 애너테이션
 	private List<SongGenre> genres = new ArrayList<>();
- 	
- 	@ToString.Exclude
-    @OneToMany(mappedBy = "likeId.songId", fetch = FetchType.LAZY)
-    @Builder.Default
-    private List<Like> likes = new ArrayList<>();
 
-//    // 편의 메서드 추가
-//    public int getLikesCount() {
-//        return likes.size();
-//    }
-	
-/*	@ToString.Exclude
-	@OneToMany(mappedBy = "song", fetch = FetchType.LAZY)
+	@ToString.Exclude
+	@OneToMany(mappedBy = "likeId.songId", fetch = FetchType.LAZY)
 	@Builder.Default
-	private Set<ArtistRole> roles = new HashSet<>();
+	@JsonBackReference // 순환참조를 해결하기 위한 애너테이션
+	private List<Like> likes = new ArrayList<>();
 
-	//편의 메서드
-	// 음원의 장르를 등록하는 메서드
-	public Song setGenres (Set<SongGenre> genres){
-		this.genres = genres;
-		return this;
-	}
+	// // 편의 메서드 추가
+	// public int getLikesCount() {
+	// return likes.size();
+	// }
 
-	// 음원의 장르를 추가하는 메서드
-	public Song addGenre (SongGenre genre) {
-		genres.add(genre);
-		return this;
-	}
+	/*
+	 * @ToString.Exclude
+	 * 
+	 * @OneToMany(mappedBy = "song", fetch = FetchType.LAZY)
+	 * 
+	 * @Builder.Default
+	 * private Set<ArtistRole> roles = new HashSet<>();
+	 * 
+	 * //편의 메서드
+	 * // 음원의 장르를 등록하는 메서드
+	 * public Song setGenres (Set<SongGenre> genres){
+	 * this.genres = genres;
+	 * return this;
+	 * }
+	 * 
+	 * // 음원의 장르를 추가하는 메서드
+	 * public Song addGenre (SongGenre genre) {
+	 * genres.add(genre);
+	 * return this;
+	 * }
+	 * 
+	 * // 음원의 특정 장르를 삭제하는 메서드
+	 * public Song removeGenre(SongGenre genre) {
+	 * genres.remove(genre);
+	 * return this;
+	 * }
+	 * 
+	 * // 음원의 장르를 모두 삭제하는 메서드
+	 * public Song clearGenre() {
+	 * genres.clear();
+	 * return this;
+	 * }
+	 * 
+	 * // 음원의 역할을 등록하는 메서드
+	 * public Song setRoles (Set<ArtistRole> roles){
+	 * this.roles = roles;
+	 * return this;
+	 * }
+	 * 
+	 * // 음원의 역할을 추가하는 메서드
+	 * public Song addRole (ArtistRole role) {
+	 * roles.add(role);
+	 * return this;
+	 * }
+	 * 
+	 * // 음원의 특정 역할을 삭제하는 메서드
+	 * public Song removeRole(ArtistRole role) {
+	 * roles.remove(role);
+	 * return this;
+	 * }
+	 * 
+	 * // 음원의 역할을 모두 삭제하는 메서드
+	 * public Song clearRoles() {
+	 * roles.clear();
+	 * return this;
+	 * }
+	 */
 
-	// 음원의 특정 장르를 삭제하는 메서드
-	public Song removeGenre(SongGenre genre) {
-		genres.remove(genre);
-		return this;
-	}
-
-	// 음원의 장르를 모두 삭제하는 메서드
-	public Song clearGenre() {
-		genres.clear();
-		return this;
-	}
-
-	// 음원의 역할을 등록하는 메서드
-	public Song setRoles (Set<ArtistRole> roles){
-		this.roles = roles;
-		return this;
-	}
-
-	// 음원의 역할을 추가하는 메서드
-	public Song addRole (ArtistRole role) {
-		roles.add(role);
-		return this;
-	}
-
-	// 음원의 특정 역할을 삭제하는 메서드
-	public Song removeRole(ArtistRole role) {
-		roles.remove(role);
-		return this;
-	}
-
-	// 음원의 역할을 모두 삭제하는 메서드
-	public Song clearRoles() {
-		roles.clear();
-		return this;
-	} */
-	
 }
