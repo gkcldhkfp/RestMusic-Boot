@@ -10,7 +10,6 @@ import com.querydsl.jpa.impl.JPAQuery;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -28,8 +27,8 @@ public class PlayListQuerydslImpl extends QuerydslRepositorySupport implements P
         QAlbum albums = QAlbum.album;
 
         // 서브쿼리: 가장 최근의 노래 정보를 찾기 위한 서브쿼리
-        JPAQuery<LocalDateTime> subQuery = new JPAQuery<>(getEntityManager())
-            .select(playlistSongs.createdTime.max())
+        JPAQuery<Integer> subQuery = new JPAQuery<>(getEntityManager())
+            .select(playlistSongs.playlistSongId.max())
             .from(playlistSongs)
             .where(playlistSongs.playList.pListId.eq(playlists.pListId));
 
@@ -45,7 +44,7 @@ public class PlayListQuerydslImpl extends QuerydslRepositorySupport implements P
             .from(playlists)
             .leftJoin(playlistSongs)
                 .on(playlists.pListId.eq(playlistSongs.playList.pListId)
-                    .and(playlistSongs.createdTime.eq(subQuery)))  // 서브쿼리에서 가장 최근의 createdTime을 가져오는 조건
+                    .and(playlistSongs.playlistSongId.eq(subQuery)))  // 서브쿼리에서 가장 최근의 createdTime을 가져오는 조건
             .leftJoin(songs).on(playlistSongs.song.songId.eq(songs.songId))
             .leftJoin(albums).on(songs.album.albumId.eq(albums.albumId))
             .where(playlists.user.id.eq(id))  // 사용자 ID로 필터링

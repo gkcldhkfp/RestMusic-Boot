@@ -2,58 +2,69 @@
  *  searchAll
  */
 
- document.addEventListener('DOMContentLoaded', () => {
-    
+document.addEventListener('DOMContentLoaded', () => {
+
     console.log(firstObj);
     console.log(songs);
     console.log(albums);
     console.log(artists);
     console.log(first);
-    
-    if(first == 'song'){
+
+    if (first == 'song') {
         const artistid = firstObj.artistId;
         const artistname = firstObj.artistName;
-        
-        const artistids = artistid.split(',').map(part => part.trim());
-        const artistnames = artistname.split(',').map(part => part.trim());
 
-        
+        const artistids = (artistid || '').toString().split(',').map(part => part.trim()).filter(Boolean);
+        const artistnames = (artistname || '').toString().split(',').map(part => part.trim()).filter(Boolean);
+
+        const grIds = (firstObj.groupId || '').toString().split(',').map(part => part.trim()).filter(Boolean);
+        const grNames = (firstObj.groupName || '').toString().split(',').map(part => part.trim()).filter(Boolean);
+
+
         let htmlStr = ''; // div에 삽입할 html 코드(댓글 목록)
-        for(let i = 0; i < artistids.length; i++){
-            htmlStr +=`<small>
-                <a href="/artist/detail?artistId=${artistids[i]}" 
+        for (let i = 0; i < artistids.length; i++) {
+            htmlStr += `<small>
+                <a href="/artist/songs?artistId=${artistids[i]}" 
                                     style="max-width: 200px; max-height: 20px">${artistnames[i]}</a></small>            
+            `
+        }
+        for (let i = 0; i < grIds.length; i++) {
+            htmlStr += `<small>
+                <a href="/artist/songs?artistId=${grIds[i]}" 
+                                    style="max-width: 200px; max-height: 20px">${grNames[i]}</a></small>            
             `
         }
         const firstArdiv = document.querySelector('div#firstSongArtist');
         firstArdiv.innerHTML += htmlStr;
-        
+
     }
-     
+
     let currentPage = 1;
     const itemsPerPage = 5;
     const btnAddPlayList = document.querySelectorAll('button.addPlayList');
     const playListModal = new bootstrap.Modal(document.querySelector('div#staticBackdrop'), { backdrop: 'static' });
-    btnAddPlayList.forEach( btn =>  btn.addEventListener('click', getPlayLists));
+    btnAddPlayList.forEach(btn => btn.addEventListener('click', getPlayLists));
     console.log(authUser);
-    function getPlayLists() {
-        if(authUser == null) {
-            if(confirm("로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?")){
+    function getPlayLists(event) {
+        if (authUser == null) {
+            if (confirm("로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?")) {
                 redirectToLogin();
             }
             return
         }
+        songId = event.target.closest('button').getAttribute('data-songId');
+        
         const uri = `../getPlayList/${authUser}`;
         axios
             .get(uri)
             .then((response) => {
-                
+
                 playlistsData = response.data;
-                
+
                 displayPlayLists(currentPage);
-                
+
                 setupPagination();
-                
+
                 playListModal.show();
             })
             .catch((error) => {
@@ -136,19 +147,19 @@
         }
 
     }
-    
+
     function displayPlayLists(page) {
         const startIndex = (page - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
         const paginatedPlaylists = playlistsData.slice(startIndex, endIndex);
         makePlayListElements(paginatedPlaylists);
     }
-    
-     function setupPagination() {
+
+    function setupPagination() {
         const totalPages = Math.ceil(playlistsData.length / itemsPerPage);
         const paginationElement = document.getElementById('pagination');
         let paginationHtml = '';
-    
+
         for (let i = 1; i <= totalPages; i++) {
             if (i === currentPage) {
                 paginationHtml += `
@@ -164,16 +175,16 @@
                 `;
             }
         }
-    
+
         paginationElement.innerHTML = paginationHtml;
-    
+
         // 기존 이벤트 리스너 제거
         paginationElement.removeEventListener('click', handlePaginationClick);
-    
+
         // 이벤트 리스너 등록
         paginationElement.addEventListener('click', handlePaginationClick);
     }
-    
+
     function handlePaginationClick(event) {
         event.preventDefault(); // 기본 동작 방지
         if (event.target.tagName === 'A') {
@@ -181,48 +192,52 @@
             changePage(page);
         }
     }
-    
+
     function changePage(page) {
         currentPage = page;
         displayPlayLists(currentPage);
         setupPagination(); // 이 부분에서 이벤트 리스너를 다시 등록하지 않아도 됨
     }
-    
+
     function redirectToLogin() {
         const currentUrl = window.location.href;
         window.location.href = `/member/signin?target=${encodeURIComponent(currentUrl)}`;
     }
     console.log(songs);
-    for(let s of songs){
+    for (let s of songs) {
         const songId = s.songId;
-        const arIds = (s.artistId || '').toString().split(',').map(part => part.trim()).filter(Boolean);
-        const arNames = (s.artistName || '').toString().split(',').map(part => part.trim()).filter(Boolean);
-        const grIds = (s.artistId || '').toString().split(',').map(part => part.trim()).filter(Boolean);
-        const grNames = (s.artistName || '').toString().split(',').map(part => part.trim()).filter(Boolean);
+
         let inputStr = '';
         const input = document.querySelector(`td#singers_${songId}`)
-        
-        for(let i = 0; i < arIds.length; i++){
-            inputStr +=`<small>
-                <a href="/artist/detail?artistId=${arIds[i]}" 
-                                    style="max-width: 200px; max-height: 20px">${arNames[i]}</a></small>            
+
+        const ids = (s.artistId || '').toString().split(',').map(part => part.trim()).filter(Boolean);
+        const names = (s.artistName || '').toString().split(',').map(part => part.trim()).filter(Boolean);
+
+        const grIds = (s.groupId || '').toString().split(',').map(part => part.trim()).filter(Boolean);
+        const grNames = (s.groupName || '').toString().split(',').map(part => part.trim()).filter(Boolean);
+
+        for (let i = 0; i < ids.length; i++) {
+            inputStr += `<small>
+                <a href="/artist/songs?artistId=${ids[i]}" 
+                                    style="max-width: 200px; max-height: 20px">${names[i]}</a></small>            
             `
         }
-        for(let i = 0; i < arIds.length; i++){
-            inputStr +=`<small>
-                <a href="/artist/detail?artistId=${grIds[i]}" 
-                                    style="max-width: 200px; max-height: 20px">${grNames[i]}</a></small>            
-            `
+
+        for (let i = 0; i < grIds.length; i++) {
+            inputStr += `<small>
+                            <a href="/group/songs?groupId=${grIds[i]}" 
+                                style="max-width: 200px; max-height: 20px">${grNames[i]}</a></small>            
+                        `;
         }
+
         input.innerHTML += inputStr;
-        
-        
-        console.log(arIds);
-        console.log(arNames);
+
+
+        console.log(inputStr);
         console.log(input);
     }
-    
-    
-    
-    
- });
+
+
+
+
+});

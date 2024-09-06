@@ -166,50 +166,59 @@ document.addEventListener('DOMContentLoaded', () => {
 		if (btnListenAlbum !== null) {
 			btnListenAlbum.addEventListener('click', listenAlbum);
 			function listenAlbum(event) {
-				const albumId = event.target.getAttribute('data-id');
 				// console.log(id); // 정상작동: 1
 				const url1 = `/api/album?albumId=${albumId}`;
 				axios.
 					get(url1).
 					then((response) => {
-						console.log(response);
+						console.log(response.data);
 						// 앨범의 음원 리스트를 가져옴
 						let listSong = response.data;
-						console.log(listSong);
 						let songId2 = listSong[0].songId;
+						console.log(songId2);
 						let url2 = `/song/listen?songId=${songId2}`
 						console.log(url2);
 						// 첫 곡은 바로듣기 메서드를 호출, 그 이후는 재생목록에 추가 메서드를 호출
-						// 바로듣기 레스트컨트롤러 호출 일단 바로듣기 버튼 복붙해서 씀.s
-						axios
-							.get(url2)
-							.then((response) => {
-								console.log("성공");
-								sessionStorage.setItem('index', 0);
-								sessionStorage.setItem('isAdded', 'Y');
-								parent.songFrame.location.reload();
-								// 두번째 곡 이후부터는 재생목록에 추가.
-								for (let i = 1; i < listSong.length; i++) {
-									let id3 = listSong[i].songId;
-									let url3 = `/song/addCurrentPlayList?songId=${id3}`
-									console.log(url3);
-									axios.
-										get(url3).
-										then((response) => {
+						// 바로듣기 레스트컨트롤러 호출 일단 바로듣기 버튼 복붙해서 씀.
+						setTimeout(function () {
+							// 1초 후에 실행될 코드
+
+							axios
+								.get(url2)
+								.then(async (response) => {
+									console.log("성공");
+									sessionStorage.setItem('index', 0);
+									sessionStorage.setItem('isAdded', 'Y');
+									parent.songFrame.location.reload();
+									// 두번째 곡 이후부터는 재생목록에 추가.
+									for (let i = 1; i < listSong.length; i++) {
+										let id3 = listSong[i].songId;
+										let url3 = `/song/addCurrentPlayList?songId=${id3}`;
+										console.log(url3);
+								
+										try {
+											let response = await axios.get(url3);
 											console.log(response);
+								
 											if (sessionStorage.getItem('isAdded') === 'N') {
 												sessionStorage.setItem('index', 0);
 												sessionStorage.setItem('isAdded', 'Y');
 												parent.songFrame.location.reload();
 											}
-										}).
-										catch((error) => { console.log(error); });
-								}
-								// alert('선택한 앨범을 재생합니다.');
-								showAlert('선택한 앨범을 재생합니다.', 2000);
+										} catch (error) {
+											console.log(error);
+										}
+								
+										console.log('1초 후에 실행됩니다.');
+										await new Promise(resolve => setTimeout(resolve, 50)); // 1초 대기
+									}
+									// alert('선택한 앨범을 재생합니다.');
+									showAlert('선택한 앨범을 재생합니다.', 2000);
 
-							})
-							.catch((error) => console.log(error));
+								})
+								.catch((error) => console.log(error));
+							console.log('1초 후에 실행됩니다.');
+						}, 50);
 					}).
 					catch((error) => console.log(error));
 			}
@@ -224,35 +233,62 @@ document.addEventListener('DOMContentLoaded', () => {
 
 			function addCPListAlbum(event) {
 				const albumId = event.target.getAttribute('data-id');
+				
 				// console.log(id); // 정상작동: 1
 				let url = `/api/album?albumId=${albumId}`;
 				axios.
 					get(url).
 					then((response) => {
+						console.log(response.data);
+						// 앨범의 음원 리스트를 가져옴
+						listSong = response.data;
+						let songId2 = listSong[0].songId;
+						console.log(songId2);
+						let url2 = `/song/listen?songId=${songId2}`
+						console.log(url2);
 						console.log(response);
 						// 앨범의 음원 리스트를 가져옴
-						let listSong = response.data;
-						console.log(listSong);
 
 						// 앨범의 모든 곡을 다음 재생 목록에 추가.
-						for (let i = 0; i < listSong.length; i++) {
-							let id = listSong[i].songId;
-							url = `/song/addCurrentPlayList?songId=${id}`
-							console.log(url);
-							axios.
-								get(url).
-								then((response) => {
-									console.log(response);
-									if (sessionStorage.getItem('isAdded') === 'N') {
-										sessionStorage.setItem('index', 0);
-										sessionStorage.setItem('isAdded', 'Y');
-										parent.songFrame.location.reload();
+						setTimeout(function () {
+							// 1초 후에 실행될 코드
+
+							axios
+								.get(url2)
+								.then(async (response) => {
+									console.log("성공");
+									sessionStorage.setItem('index', 0);
+									sessionStorage.setItem('isAdded', 'Y');
+									parent.songFrame.location.reload();
+									// 두번째 곡 이후부터는 재생목록에 추가.
+									for (let i = 1; i < listSong.length; i++) {
+										let id3 = listSong[i].songId;
+										let url3 = `/song/addCurrentPlayList?songId=${id3}`;
+										console.log(url3);
+								
+										try {
+											let response = await axios.get(url3);
+											console.log(response);
+								
+											if (sessionStorage.getItem('isAdded') === 'N') {
+												sessionStorage.setItem('index', 0);
+												sessionStorage.setItem('isAdded', 'Y');
+												parent.songFrame.location.reload();
+											}
+										} catch (error) {
+											console.log(error);
+										}
+								
+										console.log('1초 후에 실행됩니다.');
+										await new Promise(resolve => setTimeout(resolve, 50)); // 1초 대기
 									}
-								}).
-								catch((error) => { console.log(error); });
-						}
-						// alert('선택한 앨범이 다음 재생목록에 저장되었습니다.');
-						showAlert('선택한 앨범이 다음 재생목록에 저장되었습니다.', 2000);
+									// alert('선택한 앨범을 재생합니다.');
+									showAlert('선택한 앨범을 재생합니다.', 2000);
+
+								})
+								.catch((error) => console.log(error));
+							console.log('1초 후에 실행됩니다.');
+						}, 50);
 					}).
 					catch((error) => console.log(error));
 

@@ -47,15 +47,23 @@ public class ArtistController {
 	}
 	
 	@GetMapping("/albums")
-	public void albums(@RequestParam(name = "artistId") Integer artistId, Model model) {
+	public void albums(@RequestParam(name = "artistId") Integer artistId, Model model, Authentication authentication) {
 		log.info("albums(artistId={})", artistId);
 		
 		Artist artist = artistSvc.findById(artistId);
 		
 		List<ArtistAlbumDto> list = artistSvc.readAlbums(artistId);
 		
+        Integer loginUserId = null;
+        if (authentication != null && authentication.isAuthenticated()) {
+            User user = (User) authentication.getPrincipal();
+            loginUserId = user.getId();
+        }
+        log.info("loginUserId={}", loginUserId);
+		
 		model.addAttribute("artist", artist);
 		model.addAttribute("albums", list);
+		model.addAttribute("loginUserId", loginUserId);
 	}
 
 }

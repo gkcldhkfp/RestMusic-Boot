@@ -46,7 +46,7 @@ public class UserController {
 
 	@GetMapping("/getUserLike/{id}")
 	@ResponseBody
-	public ResponseEntity<List<UserLikeDto>> getUserLike(@PathVariable Integer id, Model model) {
+	public ResponseEntity<List<UserLikeDto>> getUserLike(@PathVariable(name = "id") Integer id, Model model) {
 		log.info("getUserLike={}", id);
 
 		// UserService를 통해 해당 사용자 ID로 좋아요 리스트 조회

@@ -83,17 +83,9 @@
                         </li>
 
                         <li class="nav-item ms-2 me-3">
-                            <form class="d-flex" role="search" method="get" th:action="@{/song/search}">
+                            <form class="d-flex" role="search" method="get" th:action="@{/search/all}">
                                 <div class="row g-1">
-                                    <div class="col-3">
-                                        <select class="form-control" name="category">
-                                            <option value="t">제목</option>
-                                            <option value="s">가수</option>
-                                            <option value="ts">제목+가수</option>
-                                            <option value="a">앨범명</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-7">
+                                    <div class="col-10">
                                         <input class="form-control" type="text" name="keyword" placeholder="검색어"
                                             required />
                                     </div>
@@ -120,7 +112,7 @@
                             <span>님 <br /> 환영합니다🌼 &nbsp;</span>
                         </div>
                         <a style="font-size: 0.8rem" class="me-3 link-style" th:href="@{/logout}">로그아웃</a>
-                        <a style="font-size: 0.8rem" class="me-3 link-style" th:href="@{/user/mypage(id=${#authentication.principal.id})}">마이페이지</a>
+                        <a style="font-size: 0.8rem" class="me-3 link-style" th:href="@{/member/mypage(id=${#authentication.principal.id})}">마이페이지</a>
                     </th:block>
                 </div>
             </div>
