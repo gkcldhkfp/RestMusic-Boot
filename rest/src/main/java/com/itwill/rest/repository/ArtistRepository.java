@@ -25,7 +25,6 @@ public interface ArtistRepository extends JpaRepository<Artist, Integer> {
 			+ "    like_count DESC "
 			+ "limit 5", 
 			nativeQuery = true)
-	
 	public List<Object[]> searchAllArtist(@Param("keyword") String keyword);
 	
 	@Query(value = "SELECT "
