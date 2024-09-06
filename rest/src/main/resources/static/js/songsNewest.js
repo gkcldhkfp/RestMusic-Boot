@@ -178,33 +178,53 @@ document.addEventListener("DOMContentLoaded", function() {
         updateButtonGroup();
     }
     
-    // 선택된 노래 재생 함수 수정
-    function playSelectedSongs(selectedSongs) {
-        if (selectedSongs.length === 0) return;
-        
-        playSelectedSong(selectedSongs[0]);
-        if (selectedSongs.length > 1) {
-            addAllToPlaylist(selectedSongs.slice(1), true);
+    // 선택된 노래 재생 함수 (플로팅 버튼용)
+    async function playSelectedSongs() {
+        const selectedSongs = getSelectedSongIds();
+        if (selectedSongs.length > 0) {
+            // 첫 번째 곡 재생
+            await playSelectedSong(selectedSongs[0]);
+            
+            // 나머지 곡들을 재생목록에 추가 (첫 번째 곡 제외)
+            if (selectedSongs.length > 1) {
+                await addAllToPlaylist(selectedSongs.slice(1), true);
+            }
+            
+            showAlert(selectedSongs.length === 1 ? '선택한 음원을 재생합니다.' : '선택한 곡들을 재생합니다.', 2000);
         }
-        showAlert(selectedSongs.length === 1 ? '선택한 음원을 재생합니다.' : '선택한 곡들을 재생합니다.', 2000);
     }
     
-    // 선택된 노래를 재생목록에 추가하는 함수 수정
-    function addSelectedToPlaylist(selectedSongs) {
+    // 선택된 노래를 재생목록에 추가하는 함수
+    async function addSelectedToPlaylist(selectedSongs) {
         if (selectedSongs.length === 0) return;
         
-        // 선택된 노래 중 하나라도 재생목록에 있는지 확인
-        checkAnyInPlaylist(selectedSongs).then(anyInPlaylist => {
-            if (anyInPlaylist) {
-                // 재생목록에 이미 있는 곡이 하나라도 있으면 사용자에게 추가 여부 확인
-                if (confirm('이미 재생목록에 있는 곡이 포함되어 있습니다. 그래도 추가하시겠습니까?')) {
-                    addAllToPlaylist(selectedSongs, false); // 확인 시 재생목록에 추가
-                }
-            } else {
-                // 재생목록에 없는 곡들만 추가
-                addAllToPlaylist(selectedSongs, false);
+        // 이미 재생목록에 있는 곡들을 확인
+        const songsInPlaylist = await Promise.all(selectedSongs.map(songId => 
+            axios.get(`/song/getCPList?songId=${songId}`)
+                .then(response => ({ songId, inPlaylist: response.data }))
+                .catch(() => ({ songId, inPlaylist: false }))
+        ));
+    
+        // 재생목록에 없는 곡들만 필터링
+        const songsToAdd = songsInPlaylist.filter(song => !song.inPlaylist).map(song => song.songId);
+    
+        // 재생목록에 이미 있는 곡들
+        const alreadyInPlaylist = songsInPlaylist.filter(song => song.inPlaylist).map(song => song.songId);
+    
+        // 사용자에게 이미 재생목록에 있는 곡들에 대해 알림
+        if (alreadyInPlaylist.length > 0) {
+            const confirmAdd = confirm(`이미 재생목록에 있는 곡이 포함되어 있습니다. 그래도 추가하시겠습니까?`);
+            if (confirmAdd) {
+                songsToAdd.push(...alreadyInPlaylist);
             }
-        });
+        }
+    
+        // 선택된 곡들을 재생목록에 추가
+        if (songsToAdd.length > 0) {
+            await addAllToPlaylist(songsToAdd, false);
+            showAlert(`${songsToAdd.length}개의 곡이 재생목록에 추가되었습니다.`, 2000);
+        }
+        
     }
     
     // 선택된 노래를 내 리스트에 추가하는 함수
@@ -622,33 +642,35 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
             })
             .catch((error) => {
-                console.error(`Error checking song ${id} in playlist:`, error);
+                console.error(`재생목록에서 곡 ${id} 확인 중 오류:`, error);
                 if (callback) callback();
             });
     }
     
     // 현재 재생목록에 곡 추가 함수
-    function addCurrentPlayList(id, skipAlert, callback) {
-        const url2 = `/song/addCurrentPlayList?songId=${id}`;
-        console.log(url2);
-        axios.get(url2)
-            .then((response) => {
-                console.log(response);
-                if (sessionStorage.getItem('isAdded') === 'N') {
-                    sessionStorage.setItem('index', 0);
-                    sessionStorage.setItem('isAdded', 'Y');
+function addCurrentPlayList(id, skipAlert, callback) {
+    const url = `/song/addCurrentPlayList?songId=${id}`;
+    console.log(url);
+    axios.get(url)
+        .then((response) => {
+            console.log(response);
+            if (sessionStorage.getItem('isAdded') === 'N') {
+                sessionStorage.setItem('index', 0);
+                sessionStorage.setItem('isAdded', 'Y');
+                if (parent && parent.songFrame) {
                     parent.songFrame.location.reload();
                 }
-                if (!skipAlert) {
-                    showAlert('재생 목록에 추가되었습니다', 2000);
-                }
-                if (callback) callback();
-            })
-            .catch((error) => {
-                console.error(`Error adding song ${id} to playlist:`, error);
-                if (callback) callback();
-            });
-    }
+            }
+            if (!skipAlert) {
+                showAlert('재생 목록에 추가되었습니다', 2000);
+            }
+            if (callback) callback();
+        })
+        .catch((error) => {
+            console.error(`재생목록에 곡 ${id} 추가 중 오류:`, error);
+            if (callback) callback();
+        });
+}
     
     // 선택된 곡을 재생하는 함수
     function playSelectedSong(songId) {
@@ -663,28 +685,26 @@ document.addEventListener("DOMContentLoaded", function() {
                     parent.songFrame.location.reload();
                 }
             })
-            .catch((error) => console.error("Error playing song:", error));
+            .catch((error) => console.error("선택된 곡 재생 중 오류:", error));
     }
     
-    // 모든 선택된 노래를 재생목록에 추가하는 함수
-    function addAllToPlaylist(songIds, skipAlert = false) {
+    // 모든 선택된 노래를 재생목록에 추가하는 함수 (플로팅 버튼용)
+    async function addAllToPlaylist(songIds, skipAlert = false) {
         let addedCount = 0;
         const totalSongs = songIds.length;
         
-        // Promise.all을 사용하여 모든 노래 추가가 완료될 때까지 기다림
-        Promise.all(songIds.map(songId => 
-            new Promise((resolve) => {
+        for (const songId of songIds) {
+            await new Promise((resolve) => {
                 checkAndAddToPlaylist(songId, true, () => {
                     addedCount++;
                     resolve();
                 });
-            })
-        )).then(() => {
-            // 모든 노래가 추가된 후 알림 표시
-            if (!skipAlert) {
-                showAlert('재생 목록에 추가되었습니다', 2000);
-            }
-        });
+            });
+        }
+    
+        if (!skipAlert) {
+            showAlert(`${addedCount}개의 곡이 재생목록에 추가되었습니다`, 2000);
+        }
     }
     
     // 선택된 노래 중 하나라도 재생목록에 있는지 확인하는 함수

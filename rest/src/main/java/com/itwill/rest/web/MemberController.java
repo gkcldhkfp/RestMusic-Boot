@@ -173,14 +173,15 @@ public class MemberController {
 		boolean result = userServ.checkNickname(nickname);
 		return ResponseEntity.ok(result ? "Y" : "N");
 	}
-
+	
+	@PreAuthorize("hasRole('USER') and #userId == authentication.principal.userId")
 	@GetMapping("/update")
 	public void myPage(@RequestParam(name = "userId") String userId, Model model) {
 		log.debug("userId={}", userId);
 		User user = userServ.readInfo(userId); // 유저 정보 불러오기(프로필 사진, 닉네임 출력)
 		model.addAttribute("user", user);
 	}
-
+	
 	// 프로필 이미지 변경
 	@PostMapping("/updateProfileImage")
 	@ResponseBody
