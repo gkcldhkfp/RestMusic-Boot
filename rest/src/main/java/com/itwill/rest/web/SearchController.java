@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.itwill.rest.domain.User;
 import com.itwill.rest.dto.AlbumSearchResultDto;
-import com.itwill.rest.dto.ArtistSearchResultDto;
 import com.itwill.rest.dto.GroupAndArtistDto;
 import com.itwill.rest.dto.LoadMoreDataDto;
 import com.itwill.rest.dto.SongSearchResultDto;
@@ -35,7 +34,7 @@ public class SearchController {
 	private final ArtistService artSvc;
 	
 	@GetMapping("/all")
-	public void searchAll(@RequestParam String keyword, Model model, Authentication authentication) {
+	public String searchAll(@RequestParam String keyword, Model model, Authentication authentication) {
 		log.info("searchAll");
 		
 		List<SongSearchResultDto> songs = songSvc.searchAllSongs(keyword);
@@ -151,6 +150,8 @@ public class SearchController {
             loginUserId = user.getId();
         }
         model.addAttribute("loginUserId", loginUserId);
+        
+        return "search/all";
 	}
 	
 	@GetMapping("/songs")

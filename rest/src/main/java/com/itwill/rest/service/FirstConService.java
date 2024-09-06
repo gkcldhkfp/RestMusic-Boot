@@ -22,7 +22,7 @@ import com.itwill.rest.repository.GroupFirstConRepository;
 import com.itwill.rest.repository.GroupRepository;
 import com.itwill.rest.repository.SongFirstConRepository;
 import com.itwill.rest.repository.SongRepository;
-import com.itwill.rest.Util.KoreanUtils;
+import com.itwill.rest.util.KoreanUtils;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
