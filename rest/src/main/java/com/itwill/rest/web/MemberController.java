@@ -51,7 +51,7 @@ public class MemberController {
 	private final MailSendService mailSendService;
 
 	@GetMapping("/signin")
-	public void signIn(@RequestParam(required = false) String targetUrl, HttpServletRequest request) {
+	public void signIn(@RequestParam(name = "targetUrl", required = false) String targetUrl, HttpServletRequest request) {
 		log.info("GET signIn()");
 		if (targetUrl != null && !targetUrl.isEmpty()) {
 			SavedRequest savedRequest = new DefaultSavedRequest.Builder().setScheme(request.getScheme())

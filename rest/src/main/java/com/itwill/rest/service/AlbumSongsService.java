@@ -13,12 +13,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.itwill.rest.domain.Album;
+import com.itwill.rest.domain.AlbumLike;
+import com.itwill.rest.domain.AlbumLikeId;
 import com.itwill.rest.domain.Artist;
 import com.itwill.rest.domain.ArtistRole;
 import com.itwill.rest.domain.GenreCode;
 import com.itwill.rest.domain.Group;
 import com.itwill.rest.domain.Song;
 import com.itwill.rest.domain.SongGenre;
+import com.itwill.rest.dto.AlbumLikeDto;
+import com.itwill.rest.repository.AlbumLikeRepository;
 import com.itwill.rest.repository.AlbumRepository;
 import com.itwill.rest.repository.ArtistRoleRepository;
 
@@ -32,6 +36,8 @@ public class AlbumSongsService {
 	private final AlbumRepository albumRepo;
 
 	private final ArtistRoleRepository artistRoleRepo;
+
+	private final AlbumLikeRepository albumLikeRepo;
 
 	/**
 	 * 앨범 아이디로 앨범 객체를 리턴하는 메서드
@@ -50,36 +56,36 @@ public class AlbumSongsService {
 	 */
 	@Transactional(readOnly = true)
 	public Map<Song, List<Map<String, Object>>> getArtistsOrGroupsBySongsAndRoleId(List<Song> songs, Integer roleId) {
-			Map<Song, List<Map<String, Object>>> songArtistGroupMap = new HashMap<>();
-	
-			for (Song song : songs) {
-					Set<String> processedGroupNames = new HashSet<>();
-					Set<String> processedArtistNames = new HashSet<>();
-					List<ArtistRole> artistRoles = artistRoleRepo.findBySongAndRoleCode_RoleId(song, roleId);
-					List<Map<String, Object>> artistsOrGroups = new ArrayList<>();
-	
-					for (ArtistRole artistRole : artistRoles) {
-							Group group = artistRole.getGroup();
-							Artist artist = artistRole.getArtist();
-	
-							if (group != null && !processedGroupNames.contains(group.getGroupName())) {
-									Map<String, Object> groupMap = new HashMap<>();
-									groupMap.put("type", "group");
-									groupMap.put("data", group);
-									artistsOrGroups.add(groupMap);
-									processedGroupNames.add(group.getGroupName());
-							} else if (group == null && !processedArtistNames.contains(artist.getArtistName())) {
-									Map<String, Object> artistMap = new HashMap<>();
-									artistMap.put("type", "artist");
-									artistMap.put("data", artist);
-									artistsOrGroups.add(artistMap);
-									processedArtistNames.add(artist.getArtistName());
-							}
-					}
-					songArtistGroupMap.put(song, artistsOrGroups);
+		Map<Song, List<Map<String, Object>>> songArtistGroupMap = new HashMap<>();
+
+		for (Song song : songs) {
+			Set<String> processedGroupNames = new HashSet<>();
+			Set<String> processedArtistNames = new HashSet<>();
+			List<ArtistRole> artistRoles = artistRoleRepo.findBySongAndRoleCode_RoleId(song, roleId);
+			List<Map<String, Object>> artistsOrGroups = new ArrayList<>();
+
+			for (ArtistRole artistRole : artistRoles) {
+				Group group = artistRole.getGroup();
+				Artist artist = artistRole.getArtist();
+
+				if (group != null && !processedGroupNames.contains(group.getGroupName())) {
+					Map<String, Object> groupMap = new HashMap<>();
+					groupMap.put("type", "group");
+					groupMap.put("data", group);
+					artistsOrGroups.add(groupMap);
+					processedGroupNames.add(group.getGroupName());
+				} else if (group == null && !processedArtistNames.contains(artist.getArtistName())) {
+					Map<String, Object> artistMap = new HashMap<>();
+					artistMap.put("type", "artist");
+					artistMap.put("data", artist);
+					artistsOrGroups.add(artistMap);
+					processedArtistNames.add(artist.getArtistName());
+				}
 			}
-	
-			return songArtistGroupMap;
+			songArtistGroupMap.put(song, artistsOrGroups);
+		}
+
+		return songArtistGroupMap;
 	}
 
 	/**
@@ -270,6 +276,43 @@ public class AlbumSongsService {
 			artists.add(ar.getArtist());
 		});
 		return artists;
+	}
+
+	// 특정 사용자가 특정 노래를 좋아요 했는지 여부 확인
+	public boolean isUserLikedAlbum(AlbumLikeDto dto) {
+		log.info("isUserLikedSong(dto = {})", dto);
+		AlbumLikeId albumLikeId = new AlbumLikeId(dto.getAlbumId(), dto.getLoginUserId());
+		return albumLikeRepo.existsByAlbumLikeId(albumLikeId);
+	}
+
+	// 특정 곡의 좋아요 개수 확인
+	public int countAlbumLikes(Integer albumId) {
+		log.info("countAlbumLikes(albumId = {})", albumId);
+		return (int) albumLikeRepo.countByAlbumLikeIdAlbumId(albumId);
+	}
+
+	// 좋아요 추가
+	public void addAlbumLike(AlbumLikeDto dto) {
+		log.info("addAlbumLike(dto = {})", dto);
+		// Song 객체를 불러옴
+		Album album = albumRepo.findById(dto.getAlbumId())
+				.orElseThrow(() -> new IllegalArgumentException("Invalid album ID"));
+
+		// Like 객체를 생성하며 Song 객체를 설정
+		AlbumLikeId albumLikeId = new AlbumLikeId(dto.getAlbumId(), dto.getLoginUserId());
+		AlbumLike albumLike = AlbumLike.builder()
+				.albumLikeId(albumLikeId)
+				.album(album) // 여기에서 Song 설정
+				.build();
+
+		albumLikeRepo.save(albumLike);
+	}
+
+	// 좋아요 취소
+	public void cancelAlbumLike(AlbumLikeDto dto) {
+		log.info("cancelAlbumLike(dto = {})", dto);
+		AlbumLikeId albumLikeId = new AlbumLikeId(dto.getAlbumId(), dto.getLoginUserId());
+		albumLikeRepo.deleteById(albumLikeId);
 	}
 
 }

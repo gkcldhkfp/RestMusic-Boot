@@ -51,6 +51,15 @@ public class Album {
 	@OneToMany(mappedBy = "album", fetch = FetchType.LAZY)
 	@Builder.Default
 	private List<TitleSong> titleSongs = new ArrayList<>();
+
+	@OneToMany(mappedBy = "album")
+	@Builder.Default
+	@ToString.Exclude
+	private List<AlbumLike> albumLikes = new ArrayList<>();
+
+	public Integer getAlbumLikeCount() {
+		return albumLikes.size();
+	}
 	
 	/* //편의 메서드
 	// 앨범의 수록곡을 등록하는 메서드

@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.itwill.rest.domain.Album;
 import com.itwill.rest.domain.ArtistRole;
 import com.itwill.rest.domain.Group;
@@ -182,14 +183,14 @@ public class SongService {
 		
 		
 		boolean exists = likeRepo.existsById(likeId);
-		
+		Song song = songRepo.findById(likeId.getSongId()).orElse(null);
 		log.info("like={}",exists);
 		
 		if(exists) {
 			likeRepo.deleteById(likeId);
 			return false;
 		} else {
-			Like like = Like.builder().likeId(likeId).build(); 
+			Like like = Like.builder().song(song).likeId(likeId).build(); 
 			likeRepo.save(like);
 			return true;
 			

@@ -9,23 +9,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnAddPlayList = document.querySelector('button#btnAddPlayList');
 
     const btnLike = document.querySelector('button#btnLike');
+    const songLikeCount = document.querySelector('#songLikeCount');
 
      const playListModal = new bootstrap.Modal(document.querySelector('div#staticBackdrop'), { backdrop: 'static' });
     btnAddPlayList.addEventListener('click', getPlayLists);
     
-    if(authUser == ''){
+    if(authUser == null){
         const commnetRegistForm = document.querySelector('div#commnetRegistForm')
         commnetRegistForm.classList.add('d-none');
     }
     
     /*console.log(writerIds);
     console.log(writers);*/
+
+
     
     const data = { songId, id:authUser };
     let currentPage = 1;
     const itemsPerPage = 5;
     let playlistsData = [];
-    if(authUser != ''){
+    if(authUser != 'anonymousUser'){
     axios
         .post('/api/song/isLiked', data)
         .then((response) => {
@@ -42,6 +45,16 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         btnLike.textContent = '♡';
     }
+
+    axios
+    .post('/api/song/getLikeCount', data)
+    .then((response) => {
+        console.log(response.data);
+        songLikeCount.innerHTML = response.data;
+    })
+    .catch((error) => {
+        console.log(error);
+    })
     
     // 장르 작성 & 링크
     const splitgenere = genres.split(',');
@@ -154,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function getPlayLists() {
-        if(authUser == '' ) {
+        if(authUser == null ) {
         if(confirm("로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?")){
             redirectToLogin();
         }
