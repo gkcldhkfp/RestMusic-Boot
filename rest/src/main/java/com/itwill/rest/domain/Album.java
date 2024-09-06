@@ -50,11 +50,13 @@ public class Album {
 	@ToString.Exclude
 	@OneToMany(mappedBy = "album", fetch = FetchType.LAZY)
 	@Builder.Default
+	@JsonManagedReference // 순환참조 문제를 해결하기 위한 애너테이션
 	private List<TitleSong> titleSongs = new ArrayList<>();
 
 	@OneToMany(mappedBy = "album")
 	@Builder.Default
 	@ToString.Exclude
+	@JsonManagedReference // 순환참조 문제를 해결하기 위한 애너테이션
 	private List<AlbumLike> albumLikes = new ArrayList<>();
 
 	public Integer getAlbumLikeCount() {
