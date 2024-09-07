@@ -47,32 +47,36 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // 좋아요 아이콘 이벤트 핸들러 설정 함수
-    function setupLikeIconHandlers() {
-        const heartIcons = document.querySelectorAll('.heart-icon'); // 모든 좋아요 아이콘을 선택
-        
-        heartIcons.forEach(icon => {
-            const songId = icon.dataset.songId; // 각 아이콘의 데이터 속성에서 songId를 가져옴
-            let likesCountElement = icon.nextElementSibling; // 좋아요 개수를 표시하는 요소를 가져옴
-            
-            // 특정 사용자가 특정 노래를 좋아요 했는지 여부를 서버에 요청
-            const data = { songId, loginUserId }; // 서버에 보낼 데이터 (songId와 사용자 ID)
-            axios.post('/api/isLiked', data)
-                .then(response => {
-                    // 서버 응답에 따라 좋아요 상태를 설정
-                    updateLikeIconState(icon, response.data);
+function setupLikeIconHandlers() {
+    // 이미 이벤트 리스너가 설정된 아이콘은 건너뛰기 위한 속성 사용
+    const heartIcons = document.querySelectorAll('.heart-icon:not([data-event-attached])');
     
-                    // 아이콘 클릭 이벤트 리스너 추가
-                    icon.addEventListener('click', function() {
-                        handleLikeIconClick(icon, songId, likesCountElement);
-                    });
-                })
-                .catch(error => {
-                    console.error('좋아요 상태 가져오는 중 오류:', error);
-                    // 오류 발생 시 기본 상태 설정
-                    updateLikeIconState(icon, false);
+    heartIcons.forEach(icon => {
+        const songId = icon.dataset.songId;
+        let likesCountElement = icon.nextElementSibling;
+        
+        // 서버에 좋아요 상태 확인 요청
+        const data = { songId, loginUserId };
+        axios.post('/api/isLiked', data)
+            .then(response => {
+                // 서버 응답에 따라 좋아요 상태 설정
+                updateLikeIconState(icon, response.data);
+                
+                // 이벤트 리스너가 이미 설정되었음을 표시
+                icon.setAttribute('data-event-attached', 'true');
+                
+                // 아이콘 클릭 이벤트 리스너 추가 (한 번만 등록됨)
+                icon.addEventListener('click', function() {
+                    handleLikeIconClick(icon, songId, likesCountElement);
                 });
-        });
-    }
+            })
+            .catch(error => {
+                console.error('좋아요 상태 가져오는 중 오류:', error);
+                // 오류 발생 시 기본 상태 설정
+                updateLikeIconState(icon, false);
+            });
+    });
+}
 
     // 좋아요 아이콘 상태 업데이트 함수
     function updateLikeIconState(icon, isLiked) {
@@ -90,38 +94,57 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // 좋아요 아이콘 클릭 처리 함수
-    function handleLikeIconClick(icon, songId, likesCountElement) {
-        if (!loginUserId) {
-            if (confirm('로그인이 필요합니다. 로그인 하시겠습니까?')) {
-                const currentPath = encodeURIComponent(location.pathname + location.search);
-                location.href = `/member/signin?targetUrl=${currentPath}`;
-            }
-            return;
-        }
-
-        const data = { songId, loginUserId };
-        if (icon.classList.contains('liked')) {
-            // 좋아요 취소
-            axios.delete(`/api/song/cancelLike/${songId}/${loginUserId}`)
-                .then(response => {
-                    if (response.status === 200) {
-                        updateLikeIconState(icon, false);
-                        likesCountElement.textContent = response.data;
-                    }
-                })
-                .catch(error => console.error('좋아요 제거 중 오류:', error));
-        } else {
-            // 좋아요 추가
-            axios.post('/api/song/addLike', data)
-                .then(response => {
-                    if (response.status === 200) {
-                        updateLikeIconState(icon, true);
-                        likesCountElement.textContent = response.data;
-                    }
-                })
-                .catch(error => console.error('좋아요 추가 중 오류:', error));
-        }
+function handleLikeIconClick(icon, songId, likesCountElement) {
+    // 더블 클릭 방지를 위한 플래그 확인
+    if (icon.dataset.processing === 'true') {
+        return;
     }
+    
+    // 처리 중 플래그 설정
+    icon.dataset.processing = 'true';
+
+    if (!loginUserId) {
+        if (confirm('로그인이 필요합니다. 로그인 하시겠습니까?')) {
+            const currentPath = encodeURIComponent(location.pathname + location.search);
+            location.href = `/member/signin?targetUrl=${currentPath}`;
+        }
+        icon.dataset.processing = 'false';
+        return;
+    }
+
+    const data = { songId, loginUserId };
+    const currentLikes = parseInt(likesCountElement.textContent);
+
+    if (icon.classList.contains('liked')) {
+        // 좋아요 취소
+        axios.delete(`/api/song/cancelLike/${songId}/${loginUserId}`)
+            .then(response => {
+                if (response.status === 200) {
+                    updateLikeIconState(icon, false);
+                    likesCountElement.textContent = currentLikes - 1;
+                }
+            })
+            .catch(error => console.error('좋아요 제거 중 오류:', error))
+            .finally(() => {
+                // 처리 완료 후 플래그 해제
+                icon.dataset.processing = 'false';
+            });
+    } else {
+        // 좋아요 추가
+        axios.post('/api/song/addLike', data)
+            .then(response => {
+                if (response.status === 200) {
+                    updateLikeIconState(icon, true);
+                    likesCountElement.textContent = currentLikes + 1;
+                }
+            })
+            .catch(error => console.error('좋아요 추가 중 오류:', error))
+            .finally(() => {
+                // 처리 완료 후 플래그 해제
+                icon.dataset.processing = 'false';
+            });
+    }
+}
     
     // 더보기 버튼 클릭 시 실행되는 함수
     function loadMoreSongs() {
@@ -193,7 +216,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 await addAllToPlaylist(selectedSongs.slice(1), true);
             }
             
-            showAlert(selectedSongs.length === 1 ? '선택한 음원을 재생합니다.' : '선택한 곡들을 재생합니다.', 2000);
+            // 선택한 곡의 개수에 따라 알림 메시지 표시
+            showAlert(`${selectedSongs.length}개의 음원을 재생합니다.`, 2000);
         }
     }
     
@@ -710,46 +734,50 @@ document.addEventListener("DOMContentLoaded", function() {
     
     // 장르 버튼 생성 함수
     function populateGenreButtons(genres) {
-        genreButtonsContainer.innerHTML = '';
-        genres.forEach(genre => {
-            const button = document.createElement('button');
-            button.type = 'button';
-            button.className = `btn btn-genre me-2 genre-btn ${genre === selectedGenre ? 'active' : ''}`;
-            button.textContent = genre;
-            button.setAttribute('data-genre-name', genre);
+        genreButtonsContainer.innerHTML = ''; // 장르 버튼을 담는 컨테이너의 기존 내용을 초기화
+        genres.forEach(genre => { // 전달된 장르 배열을 순회하며 각 장르에 대해 버튼을 생성
+            const button = document.createElement('button'); // 새로운 버튼 요소 생성
+            button.type = 'button'; // 버튼 타입을 'button'으로 설정 (submit 방지)
+            button.className = `btn btn-genre me-2 genre-btn ${genre === selectedGenre ? 'active' : ''}`; 
+            // 버튼의 클래스 설정, 선택된 장르라면 'active' 클래스를 추가하여 강조
+            button.textContent = genre; // 버튼의 텍스트를 해당 장르 이름으로 설정
+            button.setAttribute('data-genre-name', genre); // 버튼에 데이터 속성으로 장르 이름을 저장
             
+            // 버튼 클릭 이벤트 리스너 설정
             button.addEventListener('click', function() {
-                selectedGenre = this.getAttribute('data-genre-name');
-                currentPage = 0;
-                songsBody.innerHTML = '';
-                fetchSongs(currentPage, selectedGenre);
-
+                selectedGenre = this.getAttribute('data-genre-name'); // 클릭한 버튼의 장르를 선택된 장르로 설정
+                currentPage = 0; // 페이지를 처음으로 초기화
+                songsBody.innerHTML = ''; // 기존의 노래 목록 초기화
+                fetchSongs(currentPage, selectedGenre); // 선택된 장르에 맞는 노래 목록을 가져오는 함수 호출
+    
+                // 모든 장르 버튼에서 'active' 클래스를 제거하고, 현재 클릭된 버튼에만 추가
                 document.querySelectorAll('.genre-btn').forEach(btn => btn.classList.remove('active'));
                 this.classList.add('active');
-
+    
+                // 선택된 장르에 따라 URL을 업데이트하여 브라우저 히스토리를 변경
                 const newUrl = selectedGenre === '전체' 
-                    ? '/song/genreChart' 
-                    : `/song/genreChart?genreName=${encodeURIComponent(selectedGenre)}`;
-                history.pushState(null, '', newUrl);
-                });
-
-            genreButtonsContainer.appendChild(button);
+                    ? '/song/genreChart' // '전체' 선택 시 기본 URL로 설정
+                    : `/song/genreChart?genreName=${encodeURIComponent(selectedGenre)}`; // 선택된 장르를 포함한 URL 생성
+                history.pushState(null, '', newUrl); // 브라우저 히스토리 업데이트 (페이지 리로드 없이 URL 변경)
+            });
+    
+            genreButtonsContainer.appendChild(button); // 생성된 버튼을 장르 버튼 컨테이너에 추가
         });
     }
-
+    
     // 장르 목록 가져오기 함수
     function fetchGenres() {
-        axios.get('/song/api/genreChart', {
-            params: { page: 0, size: 1, genreName: '전체' }
+        axios.get('/song/api/genreChart', { // 장르 목록을 가져오기 위한 API 요청
+            params: { page: 0, size: 1, genreName: '전체' } // 기본으로 '전체' 장르, 첫 페이지 데이터 요청
         })
         .then(response => {
-            const genres = response.data.genres;
-            populateGenreButtons(genres);
-            fetchSongs(currentPage, selectedGenre);
+            const genres = response.data.genres; // 응답에서 장르 목록을 추출
+            populateGenreButtons(genres); // 장르 목록에 맞춰 버튼을 생성하는 함수 호출
+            fetchSongs(currentPage, selectedGenre); // 현재 페이지와 선택된 장르에 맞는 노래 목록을 가져오는 함수 호출
         })
         .catch(error => {
-            console.error('Error fetching genres:', error);
-            alert('장르 정보를 불러오는 중 오류가 발생했습니다. 다시 시도해 주세요.');
+            console.error('Error fetching genres:', error); // 오류 발생 시 콘솔에 에러 메시지 출력
+            alert('장르 정보를 불러오는 중 오류가 발생했습니다. 다시 시도해 주세요.'); // 사용자에게 오류 알림
         });
     }
 

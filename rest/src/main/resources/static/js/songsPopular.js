@@ -145,16 +145,12 @@ document.addEventListener("DOMContentLoaded", function() {
     function handleTableBodyClick(event) {
         const target = event.target;
         
-        if (target.closest('.play-btn')) {
-            const songId = target.closest('.play-btn').getAttribute('data-id');
-            playSong(songId);
-        } else if (target.closest('#addCPList')) {
-            const songId = target.closest('#addCPList').getAttribute('data-id');
-            addToCurrentPlaylist(songId);
-        } else if (target.closest('.add-to-playlist-btn')) {
+        // 플레이리스트에 곡 추가 버튼 클릭 처리
+        if (target.closest('.add-to-playlist-btn')) {
             const songId = target.closest('.add-to-playlist-btn').getAttribute('data-song-id');
             showPlaylistModal(songId);
         }
+        
     }
     
     // 체크박스 변경 이벤트 처리 함수
@@ -173,7 +169,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 await addAllToPlaylist(selectedSongs.slice(1), true);
             }
             
-            showAlert(selectedSongs.length === 1 ? '선택한 음원을 재생합니다.' : '선택한 곡들을 재생합니다.', 2000);
+            // 선택한 곡의 개수에 따라 알림 메시지 표시
+            showAlert(`${selectedSongs.length}개의 음원을 재생합니다.`, 2000);
         }
     }
     
