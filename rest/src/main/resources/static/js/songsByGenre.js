@@ -47,36 +47,36 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // 좋아요 아이콘 이벤트 핸들러 설정 함수
-function setupLikeIconHandlers() {
-    // 이미 이벤트 리스너가 설정된 아이콘은 건너뛰기 위한 속성 사용
-    const heartIcons = document.querySelectorAll('.heart-icon:not([data-event-attached])');
-    
-    heartIcons.forEach(icon => {
-        const songId = icon.dataset.songId;
-        let likesCountElement = icon.nextElementSibling;
+    function setupLikeIconHandlers() {
+        // 이미 이벤트 리스너가 설정된 아이콘은 건너뛰기 위한 속성 사용
+        const heartIcons = document.querySelectorAll('.heart-icon:not([data-event-attached])');
         
-        // 서버에 좋아요 상태 확인 요청
-        const data = { songId, loginUserId };
-        axios.post('/api/isLiked', data)
-            .then(response => {
-                // 서버 응답에 따라 좋아요 상태 설정
-                updateLikeIconState(icon, response.data);
-                
-                // 이벤트 리스너가 이미 설정되었음을 표시
-                icon.setAttribute('data-event-attached', 'true');
-                
-                // 아이콘 클릭 이벤트 리스너 추가 (한 번만 등록됨)
-                icon.addEventListener('click', function() {
-                    handleLikeIconClick(icon, songId, likesCountElement);
+        heartIcons.forEach(icon => {
+            const songId = icon.dataset.songId;
+            let likesCountElement = icon.nextElementSibling;
+            
+            // 서버에 좋아요 상태 확인 요청
+            const data = { songId, loginUserId };
+            axios.post('/api/isLiked', data)
+                .then(response => {
+                    // 서버 응답에 따라 좋아요 상태 설정
+                    updateLikeIconState(icon, response.data);
+                    
+                    // 이벤트 리스너가 이미 설정되었음을 표시
+                    icon.setAttribute('data-event-attached', 'true');
+                    
+                    // 아이콘 클릭 이벤트 리스너 추가 (한 번만 등록됨)
+                    icon.addEventListener('click', function() {
+                        handleLikeIconClick(icon, songId, likesCountElement);
+                    });
+                })
+                .catch(error => {
+                    console.error('좋아요 상태 가져오는 중 오류:', error);
+                    // 오류 발생 시 기본 상태 설정
+                    updateLikeIconState(icon, false);
                 });
-            })
-            .catch(error => {
-                console.error('좋아요 상태 가져오는 중 오류:', error);
-                // 오류 발생 시 기본 상태 설정
-                updateLikeIconState(icon, false);
-            });
-    });
-}
+        });
+    }
 
     // 좋아요 아이콘 상태 업데이트 함수
     function updateLikeIconState(icon, isLiked) {
@@ -94,57 +94,57 @@ function setupLikeIconHandlers() {
     }
 
     // 좋아요 아이콘 클릭 처리 함수
-function handleLikeIconClick(icon, songId, likesCountElement) {
-    // 더블 클릭 방지를 위한 플래그 확인
-    if (icon.dataset.processing === 'true') {
-        return;
-    }
-    
-    // 처리 중 플래그 설정
-    icon.dataset.processing = 'true';
-
-    if (!loginUserId) {
-        if (confirm('로그인이 필요합니다. 로그인 하시겠습니까?')) {
-            const currentPath = encodeURIComponent(location.pathname + location.search);
-            location.href = `/member/signin?targetUrl=${currentPath}`;
+    function handleLikeIconClick(icon, songId, likesCountElement) {
+        // 더블 클릭 방지를 위한 플래그 확인
+        if (icon.dataset.processing === 'true') {
+            return;
         }
-        icon.dataset.processing = 'false';
-        return;
+        
+        // 처리 중 플래그 설정
+        icon.dataset.processing = 'true';
+    
+        if (!loginUserId) {
+            if (confirm('로그인이 필요합니다. 로그인 하시겠습니까?')) {
+                const currentPath = encodeURIComponent(location.pathname + location.search);
+                location.href = `/member/signin?targetUrl=${currentPath}`;
+            }
+            icon.dataset.processing = 'false';
+            return;
+        }
+    
+        const data = { songId, loginUserId };
+        const currentLikes = parseInt(likesCountElement.textContent);
+    
+        if (icon.classList.contains('liked')) {
+            // 좋아요 취소
+            axios.delete(`/api/song/cancelLike/${songId}/${loginUserId}`)
+                .then(response => {
+                    if (response.status === 200) {
+                        updateLikeIconState(icon, false);
+                        likesCountElement.textContent = currentLikes - 1;
+                    }
+                })
+                .catch(error => console.error('좋아요 제거 중 오류:', error))
+                .finally(() => {
+                    // 처리 완료 후 플래그 해제
+                    icon.dataset.processing = 'false';
+                });
+        } else {
+            // 좋아요 추가
+            axios.post('/api/song/addLike', data)
+                .then(response => {
+                    if (response.status === 200) {
+                        updateLikeIconState(icon, true);
+                        likesCountElement.textContent = currentLikes + 1;
+                    }
+                })
+                .catch(error => console.error('좋아요 추가 중 오류:', error))
+                .finally(() => {
+                    // 처리 완료 후 플래그 해제
+                    icon.dataset.processing = 'false';
+                });
+        }
     }
-
-    const data = { songId, loginUserId };
-    const currentLikes = parseInt(likesCountElement.textContent);
-
-    if (icon.classList.contains('liked')) {
-        // 좋아요 취소
-        axios.delete(`/api/song/cancelLike/${songId}/${loginUserId}`)
-            .then(response => {
-                if (response.status === 200) {
-                    updateLikeIconState(icon, false);
-                    likesCountElement.textContent = currentLikes - 1;
-                }
-            })
-            .catch(error => console.error('좋아요 제거 중 오류:', error))
-            .finally(() => {
-                // 처리 완료 후 플래그 해제
-                icon.dataset.processing = 'false';
-            });
-    } else {
-        // 좋아요 추가
-        axios.post('/api/song/addLike', data)
-            .then(response => {
-                if (response.status === 200) {
-                    updateLikeIconState(icon, true);
-                    likesCountElement.textContent = currentLikes + 1;
-                }
-            })
-            .catch(error => console.error('좋아요 추가 중 오류:', error))
-            .finally(() => {
-                // 처리 완료 후 플래그 해제
-                icon.dataset.processing = 'false';
-            });
-    }
-}
     
     // 더보기 버튼 클릭 시 실행되는 함수
     function loadMoreSongs() {

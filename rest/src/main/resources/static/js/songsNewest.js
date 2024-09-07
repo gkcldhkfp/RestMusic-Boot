@@ -43,31 +43,31 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // 좋아요 아이콘의 이벤트 핸들러 설정 함수
-function setupLikeIconHandlers() {
-    // 이벤트 위임을 사용하여 songsBody에 단일 이벤트 리스너 추가
-    songsBody.removeEventListener('click', handleLikeIconClick);
-    songsBody.addEventListener('click', handleLikeIconClick);
-
-    // 페이지 로드 시 각 아이콘의 초기 상태 설정
-    document.querySelectorAll('.heart-icon').forEach(icon => {
-        const songId = icon.dataset.songId;
-        updateLikeIconInitialState(icon, songId);
-    });
-}
-
-// 좋아요 아이콘 초기 상태 설정 함수
-function updateLikeIconInitialState(icon, songId) {
-    const data = { songId, loginUserId };
+    function setupLikeIconHandlers() {
+        // 이벤트 위임을 사용하여 songsBody에 단일 이벤트 리스너 추가
+        songsBody.removeEventListener('click', handleLikeIconClick);
+        songsBody.addEventListener('click', handleLikeIconClick);
     
-    axios.post('/api/isLiked', data)
-        .then(response => {
-            updateLikeIconState(icon, response.data);
-        })
-        .catch(error => {
-            console.error('좋아요 상태 가져오는 중 오류:', error);
-            updateLikeIconState(icon, false);
+        // 페이지 로드 시 각 아이콘의 초기 상태 설정
+        document.querySelectorAll('.heart-icon').forEach(icon => {
+            const songId = icon.dataset.songId;
+            updateLikeIconInitialState(icon, songId);
         });
-}
+    }
+
+    // 좋아요 아이콘 초기 상태 설정 함수
+    function updateLikeIconInitialState(icon, songId) {
+        const data = { songId, loginUserId };
+        
+        axios.post('/api/isLiked', data)
+            .then(response => {
+                updateLikeIconState(icon, response.data);
+            })
+            .catch(error => {
+                console.error('좋아요 상태 가져오는 중 오류:', error);
+                updateLikeIconState(icon, false);
+            });
+    }
     
     // 좋아요 여부에 따라 아이콘의 상태 및 스타일을 변경
     function updateLikeIconState(icon, isLiked) {
@@ -85,44 +85,44 @@ function updateLikeIconInitialState(icon, songId) {
     }
     
     // 좋아요 아이콘 클릭 이벤트 핸들러
-function handleLikeIconClick(event) {
-    const icon = event.target.closest('.heart-icon');
-    if (!icon) return; // 클릭된 요소가 좋아요 아이콘이 아니면 무시
-
-    const songId = icon.dataset.songId;
-    const likesCountElement = icon.nextElementSibling;
-
-    if (!loginUserId) {
-        if (confirm('로그인이 필요합니다. 로그인 하시겠습니까?')) {
-            const currentPath = encodeURIComponent(location.pathname + location.search);
-            location.href = `/member/signin?targetUrl=${currentPath}`;
+    function handleLikeIconClick(event) {
+        const icon = event.target.closest('.heart-icon');
+        if (!icon) return; // 클릭된 요소가 좋아요 아이콘이 아니면 무시
+    
+        const songId = icon.dataset.songId;
+        const likesCountElement = icon.nextElementSibling;
+    
+        if (!loginUserId) {
+            if (confirm('로그인이 필요합니다. 로그인 하시겠습니까?')) {
+                const currentPath = encodeURIComponent(location.pathname + location.search);
+                location.href = `/member/signin?targetUrl=${currentPath}`;
+            }
+            return;
         }
-        return;
+
+        // 좋아요 상태 토글
+        const isLiked = icon.classList.contains('liked');
+        const url = isLiked ? `/api/song/cancelLike/${songId}/${loginUserId}` : '/api/song/addLike';
+        const method = isLiked ? 'delete' : 'post';
+        const data = isLiked ? null : { songId, loginUserId };
+    
+        // 좋아요 상태 변경 요청
+        axios({
+            method: method,
+            url: url,
+            data: data
+        })
+        .then(response => {
+            if (response.status === 200) {
+                // 서버 응답에 따라 UI 업데이트
+                updateLikeIconState(icon, !isLiked);
+                likesCountElement.textContent = response.data;
+            }
+        })
+        .catch(error => {
+            console.error('좋아요 상태 변경 중 오류:', error);
+        });
     }
-
-    // 좋아요 상태 토글
-    const isLiked = icon.classList.contains('liked');
-    const url = isLiked ? `/api/song/cancelLike/${songId}/${loginUserId}` : '/api/song/addLike';
-    const method = isLiked ? 'delete' : 'post';
-    const data = isLiked ? null : { songId, loginUserId };
-
-    // 좋아요 상태 변경 요청
-    axios({
-        method: method,
-        url: url,
-        data: data
-    })
-    .then(response => {
-        if (response.status === 200) {
-            // 서버 응답에 따라 UI 업데이트
-            updateLikeIconState(icon, !isLiked);
-            likesCountElement.textContent = response.data;
-        }
-    })
-    .catch(error => {
-        console.error('좋아요 상태 변경 중 오류:', error);
-    });
-}
     
     // 더보기 버튼 클릭 시 실행되는 함수
     function loadMoreSongs() {
@@ -305,16 +305,16 @@ function handleLikeIconClick(event) {
     }
     
     // 노래 목록에 노래 추가 함수 수정
-function appendSongs(songs) {
-    songs.forEach((song, index) => {
-        const row = createSongRow(song, currentPage * pageSize + index + 1);
-        songsBody.appendChild(row);
-        
-        // 새로 추가된 행의 좋아요 아이콘 초기 상태 설정
-        const icon = row.querySelector('.heart-icon');
-        updateLikeIconInitialState(icon, song.songId);
-    });
-}
+    function appendSongs(songs) {
+        songs.forEach((song, index) => {
+            const row = createSongRow(song, currentPage * pageSize + index + 1);
+            songsBody.appendChild(row);
+            
+            // 새로 추가된 행의 좋아요 아이콘 초기 상태 설정
+            const icon = row.querySelector('.heart-icon');
+            updateLikeIconInitialState(icon, song.songId);
+        });
+    }
     
     // 노래 행 생성 함수
     function createSongRow(song, index) {
