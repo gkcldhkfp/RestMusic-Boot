@@ -54,7 +54,7 @@ public class PlayListController {
 
 	@GetMapping("/getPlayList/{id}")
 	@ResponseBody
-	public ResponseEntity<List<PlayListFirstAlbumImgDto>> getPlayList(@PathVariable Integer id) {
+	public ResponseEntity<List<PlayListFirstAlbumImgDto>> getPlayList(@PathVariable(name="id") Integer id) {
 		log.info("getPlayList(id={})", id);
 
 		List<PlayListFirstAlbumImgDto> result = playListSvc.getPlayListByUserId(id);
@@ -64,7 +64,7 @@ public class PlayListController {
 
 	@GetMapping("/getPlayListSong/{id}")
 	@ResponseBody
-	public ResponseEntity<List<PlayListSongInfoDto>> getPlayListSong(@PathVariable Integer id) {
+	public ResponseEntity<List<PlayListSongInfoDto>> getPlayListSong(@PathVariable(name="id") Integer id) {
 		log.info("getPlayListSong(id={})", id);
 
 		List<PlayListSongInfoDto> playListSongInfo = playListSvc.getSongByPlayListId(id);
@@ -84,7 +84,7 @@ public class PlayListController {
 
 	@DeleteMapping("/deletePlayList/{pListId}")
 	@ResponseBody
-	public ResponseEntity<Integer> deleteByListId(@PathVariable Integer pListId) {
+	public ResponseEntity<Integer> deleteByListId(@PathVariable(name="id") Integer pListId) {
 		log.info("deleteById(pListId={})", pListId);
 
 		playListSvc.deleteByListId(pListId);
@@ -95,7 +95,7 @@ public class PlayListController {
 	@DeleteMapping("/deletePlayListSong/{pListId}/{songId}/{createdTime}")
 	@ResponseBody
 	public ResponseEntity<Integer> deleteListSongBySongId(
-			@PathVariable Integer pListId, @PathVariable Integer songId, @PathVariable String createdTime) {
+			@PathVariable(name="pListId") Integer pListId, @PathVariable(name="songId") Integer songId, @PathVariable(name="createdTime") String createdTime) {
 		log.info("deleteListSongBySongId(pListId={})", pListId);
 
 		LocalDateTime localDateTime = LocalDateTime.parse(createdTime, DateTimeFormatter.ISO_DATE_TIME);
@@ -127,7 +127,7 @@ public class PlayListController {
 	
 	@PutMapping("/updatePlayListName/{pListId}")
 	@ResponseBody
-	public ResponseEntity<Integer> updatePlayListName(@PathVariable Integer pListId, @RequestBody PlayListNameUpdateDto dto) {
+	public ResponseEntity<Integer> updatePlayListName(@PathVariable(name = "pListId") Integer pListId, @RequestBody PlayListNameUpdateDto dto) {
 		log.info("updatePlayListName(id={}, dto={})", pListId, dto);
 		
 		dto.setPListId(pListId);

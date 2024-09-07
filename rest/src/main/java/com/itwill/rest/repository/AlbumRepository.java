@@ -374,3 +374,5 @@ public interface AlbumRepository extends JpaRepository<Album, Integer> {
 			nativeQuery = true)
 	List<Object[]> findChoSeongBySearchTerm(@Param("searchTerm") String searchTerm);
 }
+
+

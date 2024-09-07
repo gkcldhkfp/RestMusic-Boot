@@ -2,6 +2,12 @@ package com.itwill.rest.service;
 
 import org.springframework.stereotype.Service;
 
+import com.itwill.rest.domain.PurUser;
+import com.itwill.rest.domain.PurUserId;
+import com.itwill.rest.domain.User;
+import com.itwill.rest.repository.PurUserRepository;
+import com.itwill.rest.repository.UserRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -9,6 +15,10 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Service
 public class PurchaseService {
+
+	private final PurUserRepository purUserRepo;
+
+	private final UserRepository userRepo;
 	
 	// 아직 완성 x
 	public int PurchaseSuccess (Integer id) {
@@ -17,15 +27,26 @@ public class PurchaseService {
 		return 0;
 	}
 
-	// 아직 완성 x
 	public boolean isPurchaseUser (Integer id) {
 		log.info("isPurchaseUser()");
-		int result = 0;
-		if (result >= 1) {
-			return true; // 결제한 유저
-		} else {
-			return false; // 결제유저 아님.
+		boolean result = false;
+
+		User user = userRepo.findById(id).orElseGet(null);
+		if (user == null) {
+			return result;
 		}
+		PurUserId purUserId = new PurUserId();
+		purUserId.setId(id);
+
+		// TODO: 결제 유저 테이블에 PK추가 후 id로 결제 유저인 지 확인하는 로직 구현 필요.
+		// PurUser purUser = purUserRepo.findById(user).orElseGet(null);
+		PurUser purUser = null;
+		if (purUser != null) {
+			result = true;
+		}
+		
+		return result; // 결제한 유저
+
 	}
 
 }

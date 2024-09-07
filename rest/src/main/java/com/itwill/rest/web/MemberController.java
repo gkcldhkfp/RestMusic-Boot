@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.savedrequest.DefaultSavedRequest;
 import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Controller;
@@ -33,6 +34,7 @@ import com.itwill.rest.dto.UserSignUpDto;
 import com.itwill.rest.dto.UserUpdateDto;
 import com.itwill.rest.service.EmailService;
 import com.itwill.rest.service.MailSendService;
+import com.itwill.rest.service.MemberService;
 import com.itwill.rest.service.UserService;
 
 import jakarta.servlet.http.Cookie;
@@ -54,8 +56,13 @@ public class MemberController {
 
 	private final MailSendService mailSendService;
 
+	private final MemberService memberServ;
+
+	private final BCryptPasswordEncoder encoder;
+
 	@GetMapping("/signin")
-	public void signIn(@RequestParam(name = "targetUrl", required = false) String targetUrl, HttpServletRequest request, Model model, Authentication authentication) {
+	public void signIn(@RequestParam(name = "targetUrl", required = false) String targetUrl, HttpServletRequest request,
+			Model model, Authentication authentication) {
 		log.info("GET signIn()");
 		Integer loginUserId = null;
 		if (authentication != null && authentication.isAuthenticated()) {
@@ -108,6 +115,63 @@ public class MemberController {
 	}
 
 	// 아이디 찾기 결과 페이지
+	@PostMapping("/finduserresult")
+	public String findUserResult(@RequestParam("userName") String userName,
+			@RequestParam("email") String email,
+			Model model, Authentication authentication) {
+		Integer loginUserId = null;
+		if (authentication != null && authentication.isAuthenticated()) {
+			User user = (User) authentication.getPrincipal();
+			loginUserId = user.getId();
+		}
+		model.addAttribute("loginUserId", loginUserId);
+		String userId = memberServ.findUserId(userName, email);
+
+		if (userId != null) {
+			model.addAttribute("userId", userId);
+			return "/member/finduserresult"; // 결과 페이지로 이동
+		} else {
+			model.addAttribute("result", "f");
+			return "/member/finduserid"; // 다시 아이디 찾기 페이지로 이동
+		}
+	}
+
+	@GetMapping("/finduserpassword")
+	public String findUserPassword() {
+		log.info("GET findUserPassword()");
+		return "member/finduserpassword"; // 실제 뷰의 경로와 일치해야 함
+	}
+
+	@GetMapping("/setuserpassword")
+	public String setUserPassword() {
+		log.info("GET setuserpassword()");
+		return "member/setuserpassword"; // 비밀번호 변경 페이지의 뷰 이름
+	}
+
+	@PostMapping("/setuserpassword")
+	public String setUserPassword(@RequestParam("userId") String userId,
+			@RequestParam("password") String password,
+			@RequestParam("confirmPassword") String confirmPassword,
+			Model model) {
+		// 비밀번호와 비밀번호 확인 일치 여부 확인
+		if (!password.equals(confirmPassword)) {
+			model.addAttribute("errorMessage", "비밀번호가 일치하지 않습니다.");
+			return "/member/setuserpassword"; // 실패 시 다시 변경 페이지로
+		}
+
+		String rawPassword = encoder.encode(password);
+		// 비밀번호 업데이트 로직 호출
+		boolean isUpdated = memberServ.updatePassword(userId, rawPassword);
+
+		if (isUpdated) {
+			model.addAttribute("", "비밀번호가 성공적으로 변경되었습니다.");
+			return "redirect:/member/signin"; // 성공 시 로그인 페이지로 리다이렉트
+		} else {
+			model.addAttribute("errorMessage", "비밀번호 변경에 실패했습니다.");
+			return "/member/setuserpassword"; // 실패 시 다시 변경 페이지로
+		}
+	}
+
 	@GetMapping("/finduserresult")
 	public void findUserResult(@RequestParam(name = "userId") String userId, Model model, Authentication authentication) {
 		model.addAttribute("userId", userId);
@@ -159,7 +223,7 @@ public class MemberController {
 	}
 
 	@PostMapping("/emailConfirm")
-	public String emailConfirm(@RequestParam String email) throws Exception {
+	public String emailConfirm(@RequestParam(name = "email") String email) throws Exception {
 		String confirm = emailService.sendSimpleMessage(email);
 		return confirm;
 	}
@@ -173,15 +237,14 @@ public class MemberController {
 		boolean result = userServ.checkNickname(nickname);
 		return ResponseEntity.ok(result ? "Y" : "N");
 	}
-	
-	@PreAuthorize("hasRole('USER') and #userId == authentication.principal.userId")
+
 	@GetMapping("/update")
 	public void myPage(@RequestParam(name = "userId") String userId, Model model) {
 		log.debug("userId={}", userId);
 		User user = userServ.readInfo(userId); // 유저 정보 불러오기(프로필 사진, 닉네임 출력)
 		model.addAttribute("user", user);
 	}
-	
+
 	// 프로필 이미지 변경
 	@PostMapping("/updateProfileImage")
 	@ResponseBody
@@ -206,7 +269,7 @@ public class MemberController {
 	// 프로필 이미지 삭제
 	@DeleteMapping("/deleteProfileImage/{userId}")
 	@ResponseBody
-	public ResponseEntity<Map<String, Object>> deleteProfileImage(@PathVariable String userId) {
+	public ResponseEntity<Map<String, Object>> deleteProfileImage(@PathVariable(name = "userId") String userId) {
 		Map<String, Object> response = new HashMap<>();
 		boolean isDeleted = userServ.deleteUserProfile(userId);
 
@@ -310,8 +373,8 @@ public class MemberController {
 			return ResponseEntity.ok("N");
 		}
 	}
-	
-	@PreAuthorize("hasRole('USER') and #id == authentication.principal.id") // -> 로그인한(USER Role을 가진) 유저만 접속할 수 있게 제한 
+
+	@PreAuthorize("hasRole('USER')") // -> 로그인한(USER Role을 가진) 유저만 접속할 수 있게 제한
 	@GetMapping("/mypage")
 	public void myPage(@RequestParam(name = "id") Integer id, Model model) {
 		log.info("myPage(id={})", id);
@@ -323,27 +386,27 @@ public class MemberController {
 
 	@GetMapping("/getUserLike/{id}")
 	@ResponseBody
-	public ResponseEntity<List<UserLikeDto>> getUserLike(@PathVariable Integer id, Model model) {
+	public ResponseEntity<List<UserLikeDto>> getUserLike(@PathVariable(name = "id") Integer id, Model model) {
 		log.info("getUserLike={}", id);
-		
+
 		// UserService를 통해 해당 사용자 ID로 좋아요 리스트 조회
-	    List<UserLikeDto> list = userServ.getLikeSongByUserId(id);
+		List<UserLikeDto> list = userServ.getLikeSongByUserId(id);
 
-	    log.info("list = {}", list);
-	    return ResponseEntity.ok(list);
+		log.info("list = {}", list);
+		return ResponseEntity.ok(list);
 	}
-	
-	// 비밀번호 검증(정보수정 페이지 진입전 사용)
-    @GetMapping("/checkPwd")
-    @ResponseBody
-    public ResponseEntity<Boolean> checkPassword(@AuthenticationPrincipal User user,
-                                @RequestParam(name = "checkPassword") String checkPassword, Model model){
-        log.info("checkPassword(user={}, checkPassword={})", user, checkPassword);
-        Integer id = user.getId();
 
-        boolean result =  userServ.checkPassword(id, checkPassword);
-        
-        return ResponseEntity.ok(result);
-    }
+	// 비밀번호 검증(정보수정 페이지 진입전 사용)
+	@GetMapping("/checkPwd")
+	@ResponseBody
+	public ResponseEntity<Boolean> checkPassword(@AuthenticationPrincipal User user,
+			@RequestParam(name = "checkPassword") String checkPassword, Model model) {
+		log.info("checkPassword(user={}, checkPassword={})", user, checkPassword);
+		Integer id = user.getId();
+
+		boolean result = userServ.checkPassword(id, checkPassword);
+
+		return ResponseEntity.ok(result);
+	}
 
 }
