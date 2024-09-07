@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor @AllArgsConstructor
 @Builder @Embeddable
 public class GroupLikeId {
-	private Integer GroupId;
+//	private Integer GroupId;
+    private Integer groupId;
 	
 	private Integer id;
 

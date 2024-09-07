@@ -22,10 +22,11 @@ import lombok.ToString;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode @Builder @ToString
 public class GroupFirstCon {
-	  @Id
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-		@Column(name = "GROUP_FIRST_CON_ID")
-    private Long id;
+	@Column(name = "GROUP_FIRST_CON_ID")
+//	private Long id;
+    private Integer id;
 
     @OneToOne
     @JoinColumn(name = "group_id")

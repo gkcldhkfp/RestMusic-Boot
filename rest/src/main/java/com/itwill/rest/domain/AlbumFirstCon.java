@@ -24,8 +24,9 @@ import lombok.ToString;
 public class AlbumFirstCon {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-		@Column(name = "ALBUM_FIRST_CON_ID")
-    private Long id;
+	@Column(name = "ALBUM_FIRST_CON_ID")
+//    private Long id;
+    private Integer id;
 
     @OneToOne
     @JoinColumn(name = "album_id")
