@@ -1,6 +1,9 @@
 package com.itwill.rest.domain;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -40,4 +43,11 @@ public class Group {
 	@OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
 	@ToString.Exclude
 	private List<GroupMember> groupMembers;
+	
+	@OneToMany(mappedBy = "group")
+	@Builder.Default
+	@ToString.Exclude
+	@JsonManagedReference // 순환참조 문제를 해결하기 위한 애너테이션
+	private List<GroupLike> groupLikes = new ArrayList<>();
+	
 }

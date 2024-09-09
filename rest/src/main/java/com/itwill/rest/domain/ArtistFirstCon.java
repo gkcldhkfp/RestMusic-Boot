@@ -23,10 +23,11 @@ import lombok.ToString;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode @Builder @ToString
 public class ArtistFirstCon {
-	    @Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-		@Column(name = "ARTIST_FIRST_CON_ID")
-    private Long id;
+	@Column(name = "ARTIST_FIRST_CON_ID")
+//    private Long id;
+    private Integer id;
 
     @OneToOne
     @JoinColumn(name = "artist_id")
