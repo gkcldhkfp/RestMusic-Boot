@@ -40,6 +40,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
         // 좋아요 아이콘 클릭 이벤트 핸들러
         setupLikeIconHandlers();
+        
+        // 플로팅 버튼 그룹 이벤트를 약간 지연 후 설정
+        setTimeout(() => {
+            floatingButtonGroup.addEventListener('click', handleFloatingButtonClick);
+        }, 1000); // 1초 지연
     }
 
     // 좋아요 아이콘의 이벤트 핸들러 설정 함수
@@ -145,17 +150,19 @@ document.addEventListener("DOMContentLoaded", function() {
     
         const selectedSongs = getSelectedSongIds(); // 선택된 노래들의 ID 배열을 가져옴
         if (selectedSongs.length === 0) return; // 선택된 노래가 없으면 함수 종료
-    
-        // 버튼에 따라 각각의 기능을 실행
-        if (target.classList.contains('play-selected')) {
-            playSelectedSongs(selectedSongs); // 선택된 노래들을 재생
-        } else if (target.classList.contains('add-to-playlist')) {
-            addSelectedToPlaylist(selectedSongs); // 선택된 노래들을 재생목록에 추가
-        } else if (target.classList.contains('add-to-my-list')) {
-            addSelectedToMyList(selectedSongs); // 선택된 노래들을 내 리스트에 추가
-        } else if (target.classList.contains('deselect-all')) {
-            deselectAll(); // 모든 노래의 선택을 해제
-        }
+            
+        // 약간의 지연 후 작업 실행
+        setTimeout(() => {
+            if (target.classList.contains('play-selected')) {
+                playSelectedSongs(selectedSongs); // 선택된 노래들을 재생
+            } else if (target.classList.contains('add-to-playlist')) {
+                addSelectedToPlaylist(selectedSongs); // 선택된 노래들을 재생목록에 추가
+            } else if (target.classList.contains('add-to-my-list')) {
+                addSelectedToMyList(selectedSongs); // 선택된 노래들을 내 리스트에 추가
+            } else if (target.classList.contains('deselect-all')) {
+                deselectAll(); // 모든 노래의 선택을 해제
+            }
+        }, 100);
     }
     
     // 선택된 노래 ID 배열 반환 함수
@@ -769,9 +776,12 @@ document.addEventListener("DOMContentLoaded", function() {
             parent.songFrame.location.reload(); // 재생 프레임 새로고침
         }
         
-        setupEventListeners(); // 이벤트 리스너 설정 함수 호출
-        fetchSongs(currentPage); // 현재 페이지의 노래 목록을 가져오는 함수 호출
-        setupLikeIconHandlers(); // 좋아요 아이콘 핸들러 설정
+        // 약간의 지연 후 이벤트 리스너 설정 및 초기 데이터 로드
+        setTimeout(() => {
+            setupEventListeners();
+            fetchSongs(currentPage);
+            setupLikeIconHandlers();
+        }, 500); // 500ms 지연
     }
     
     // 초기화 함수 호출

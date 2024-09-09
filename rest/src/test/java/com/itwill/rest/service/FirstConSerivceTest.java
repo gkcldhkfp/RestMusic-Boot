@@ -25,7 +25,7 @@ public class FirstConSerivceTest {
 		// synchAlbumFirstCon.forEach(s -> System.out.println(s));
 	}
 
-	// @Test
+//	 @Test
 	public void songFirstConInsert() {
 		// 기존 앨범 테이블과 신규 초성 테이블을 동기화하는 초기세팅 테스트 메서드
 		// 기존 앨범 테이블의 songName 컬럼을 초성화 한 후에 초성 테이블에 save하는 서비스 계층 메서드 호출
@@ -54,6 +54,5 @@ public class FirstConSerivceTest {
 		List<ChoSeongSearchDto> searchDtos = firstConServ.searchDtos("ㅂㅇㄱ");
 		searchDtos.forEach(x -> System.out.println(x));
 	}
-
-
+	
 }

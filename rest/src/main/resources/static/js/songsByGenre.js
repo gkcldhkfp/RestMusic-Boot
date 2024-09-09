@@ -44,6 +44,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
         // 좋아요 아이콘 클릭 이벤트 핸들러
         setupLikeIconHandlers();
+        
+        // 플로팅 버튼 그룹 이벤트를 약간 지연 후 설정
+        setTimeout(() => {
+            floatingButtonGroup.addEventListener('click', handleFloatingButtonClick);
+        }, 1000); // 1초 지연
     }
 
     // 좋아요 아이콘 이벤트 핸들러 설정 함수
@@ -168,15 +173,18 @@ document.addEventListener("DOMContentLoaded", function() {
         const selectedSongs = getSelectedSongIds();
         if (selectedSongs.length === 0) return;
 
-        if (target.classList.contains('play-selected')) {
-            playSelectedSongs(selectedSongs);
-        } else if (target.classList.contains('add-to-playlist')) {
-            addSelectedToPlaylist(selectedSongs);
-        } else if (target.classList.contains('add-to-my-list')) {
-            addSelectedToMyList(selectedSongs);
-        } else if (target.classList.contains('deselect-all')) {
-            deselectAll();
-        }
+        // 약간의 지연 후 작업 실행
+        setTimeout(() => {
+            if (target.classList.contains('play-selected')) {
+                playSelectedSongs(selectedSongs); // 선택된 노래들을 재생
+            } else if (target.classList.contains('add-to-playlist')) {
+                addSelectedToPlaylist(selectedSongs); // 선택된 노래들을 재생목록에 추가
+            } else if (target.classList.contains('add-to-my-list')) {
+                addSelectedToMyList(selectedSongs); // 선택된 노래들을 내 리스트에 추가
+            } else if (target.classList.contains('deselect-all')) {
+                deselectAll(); // 모든 노래의 선택을 해제
+            }
+        }, 100);
     }
     
     // 선택된 노래 ID 배열 반환 함수
@@ -759,6 +767,12 @@ document.addEventListener("DOMContentLoaded", function() {
                     ? '/song/genreChart' // '전체' 선택 시 기본 URL로 설정
                     : `/song/genreChart?genreName=${encodeURIComponent(selectedGenre)}`; // 선택된 장르를 포함한 URL 생성
                 history.pushState(null, '', newUrl); // 브라우저 히스토리 업데이트 (페이지 리로드 없이 URL 변경)
+                
+                // 체크박스 해제 및 플로팅 버튼 그룹 숨기기
+                document.querySelectorAll('.songCheckbox, #selectAllCheckbox').forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                updateButtonGroup(); // 플로팅 버튼 그룹 상태 업데이트
             });
     
             genreButtonsContainer.appendChild(button); // 생성된 버튼을 장르 버튼 컨테이너에 추가
@@ -829,9 +843,13 @@ document.addEventListener("DOMContentLoaded", function() {
                 parent.songFrame.location.reload();
             }
         }
-
-        setupEventListeners();
-        fetchGenres();
+        
+        // 약간의 지연 후 이벤트 리스너 설정 및 초기 데이터 로드
+        setTimeout(() => {
+            setupEventListeners();
+            fetchGenres();
+            setupLikeIconHandlers();
+        }, 500); // 500ms 지연
     }
 
     // 페이지 로드 시 실행

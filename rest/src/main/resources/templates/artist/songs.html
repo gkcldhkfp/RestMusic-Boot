@@ -50,9 +50,9 @@
                             <thead>
                                 <tr>
                                     <!-- 전체 선택 체크박스 추가 -->
-                                    <!-- <th style="text-align: center; vertical-align: middle;">
+                                    <th style="text-align: center; vertical-align: middle;">
                                         <input type="checkbox" id="selectAllCheckbox">
-                                    </th> -->
+                                    </th>
                                     <th style="text-align: left; vertical-align: middle;">커버</th>
                                     <th style="text-align: left; vertical-align: middle; width: 55%">노래 제목</th>
                                     <th style="text-align: left; vertical-align: middle;">아티스트</th>
@@ -63,9 +63,9 @@
                             </thead>
                             <tbody id="resultTable">
                                 <tr th:each="s : ${songs}">
-                                    <!-- <td style="text-align: center; vertical-align: middle;">
+                                    <td style="text-align: center; vertical-align: middle;">
                                         <input type="checkbox" class="songCheckbox" th:data-song-id="${s.songId}">
-                                    </td> -->
+                                    </td>
                                     <td style="text-align: left; vertical-align: middle; font-size: 14px;">
                                         <a th:href="@{/album/detail(albumId=*{s.albumId})}">
                                         <img th:src="@{/images/albumcover/{albumImage}(albumImage=${s.albumImage})}" width="80px" height="80px">
