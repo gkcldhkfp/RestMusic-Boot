@@ -43,6 +43,5 @@ select
 			       AND ls.item_id = art.artist_id
 			    ) AS like_count 
 			 from artists art 
-			 left join artist_likes artl on artl.artist_id = art.artist_id 
-			 where art.artist_id = :id  
-			 group by art.artist_id, art.artist_name
+			 where art.artist_id = 1
+			 group by art.artist_id, art.artist_name;
