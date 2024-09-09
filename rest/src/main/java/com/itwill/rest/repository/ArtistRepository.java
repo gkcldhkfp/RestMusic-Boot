@@ -17,13 +17,13 @@ public interface ArtistRepository extends JpaRepository<Artist, Integer> {
 			+ "    COUNT(artl.artist_id) AS like_count "
 			+ "FROM artists art "
 			+ "LEFT JOIN artist_likes artl ON art.artist_id = artl.artist_id "
-			+ "WHERE MATCH(art.artist_name) AGAINST(:keyword IN BOOLEAN MODE) "
+			+ "WHERE art.artist_name LIKE CONCAT('%', :keyword, '%') "
 			+ "GROUP BY art.artist_id, art.artist_name "
 			+ " "
 			+ "ORDER BY "
 			+ "    LENGTH(name),  "
 			+ "    like_count DESC "
-			+ "limit 5", 
+			+ "LIMIT 5", 
 			nativeQuery = true)
 	public List<Object[]> searchAllArtist(@Param("keyword") String keyword);
 	
@@ -34,7 +34,7 @@ public interface ArtistRepository extends JpaRepository<Artist, Integer> {
 			+ "    COUNT(artl.artist_id) AS like_count "
 			+ "FROM artists art "
 			+ "LEFT JOIN artist_likes artl ON art.artist_id = artl.artist_id "
-			+ "WHERE MATCH(art.artist_name) AGAINST(:keyword IN BOOLEAN MODE) "
+			+ "WHERE art.artist_name LIKE CONCAT('%', :keyword, '%') "
 			+ "GROUP BY art.artist_id, art.artist_name "
 			+ " "
 			+ "ORDER BY "
@@ -51,7 +51,7 @@ public interface ArtistRepository extends JpaRepository<Artist, Integer> {
 			+ "    COUNT(artl.artist_id) AS like_count "
 			+ "FROM artists art "
 			+ "LEFT JOIN artist_likes artl ON art.artist_id = artl.artist_id "
-			+ "WHERE MATCH(art.artist_name) AGAINST(:keyword IN BOOLEAN MODE) "
+			+ "WHERE art.artist_name LIKE CONCAT('%', :keyword, '%') "
 			+ "GROUP BY art.artist_id, art.artist_name "
 			+ " "
 			+ "ORDER BY "
@@ -60,4 +60,16 @@ public interface ArtistRepository extends JpaRepository<Artist, Integer> {
 			+ "LIMIT 20 OFFSET :offset", 
 			nativeQuery = true)
 	public List<Object[]> searchArtistAlphabet(@Param("keyword") String keyword, @Param("offset") int offset);
+	
+	@Query(value = "select  "
+			+ "art.artist_id, "
+			+ "art.artist_name, "
+			+ "art.artist_image, "
+			+ "count(artl.artist_id) "
+			+ "from artists art "
+			+ "left join artist_likes artl on artl.artist_id = art.artist_id "
+			+ "where art.artist_id = :id  "
+			+ "group by art.artist_id, art.artist_name", nativeQuery = true)
+	public List<Object[]> artistAndLikefindById(@Param("id") int id);
+	
 }
