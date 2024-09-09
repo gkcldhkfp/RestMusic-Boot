@@ -321,12 +321,14 @@ public class MemberController {
 		if (authentication == null || !authentication.isAuthenticated()) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인 필요");
 		}
+		log.info("deactivateAccount(dto={})", dto);
 
 		User user = (User) authentication.getPrincipal();
 		Integer id = user.getId();
 		String password = dto.getPassword();
 
 		boolean result = userServ.deactivateAccount(id, password);
+		log.info("deactivateComplete={}", result);
 
 		if (result) {
 			// 세션 무효화
