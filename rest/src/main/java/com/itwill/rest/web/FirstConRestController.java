@@ -23,7 +23,7 @@ public class FirstConRestController {
 	
 	// 초성 검색을 위한 API 엔드포인트
     @GetMapping("/suggestions")
-    public List<ChoSeongSearchDto> getSuggestions(@RequestParam String keyword) {
+    public List<ChoSeongSearchDto> getSuggestions(@RequestParam(name = "keyword") String keyword) {
     	log.info("getSuggestions(keyword={})", keyword);
     	
         return firstConServ.searchDtos(keyword);

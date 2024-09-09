@@ -156,7 +156,7 @@ public class FirstConService {
 			dto.setType((String) result[0]);
 			dto.setId((Integer) result[1]);
 			dto.setName((String) result[2]);
-			dto.setLikeCount(((Long) result[4]).intValue()); // assuming like_count is a BigInteger
+			dto.setLikeCount(((Integer) (result[4] == null ? 0 : result[4]))); // assuming like_count is a BigInteger
 			choSeongSearchDtos.add(dto);
 		}
 		return choSeongSearchDtos;
