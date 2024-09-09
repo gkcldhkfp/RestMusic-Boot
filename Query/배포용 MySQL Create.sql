@@ -1,18 +1,20 @@
 
 /*
- * 테이블 22개 (컬럼 개수)
+ * 테이블 26개 (컬럼 개수)
  *      albums (5개),		songs (6개),			code_master (2개),		role_code (3개),			genre_code (3개),
  *      song_genre (2개),	title_songs (2개),	artists (4개),			groups (4개),			group_members (2개)
- *		artist_roles (4개),	users (11개),		user_roles(2개),			del_users (2개),			
+ *		artist_roles (4개),	users (11개),		user_roles(2개),			del_users (2개),
  *		likes (2개),			album_likes (2개),	artist_likes (2개) 		group_likes (2개)
- *      comments (6개),		playlists (3개),		playlist_songs (4개), 	pur_users (2개)  
- *                
- * 고유키(PK) 11개
+ *      comments (6개),		playlists (3개),		playlist_songs (4개), 	pur_users (2개)
+ *		albums_first_con (3개), 	songs_first_con (3개),		artists_first_con (3개),		groups_first_con (3개)
+ *
+ * 고유키(PK) 15개
  *      album_id (albums 테이블),		song_id (songs 테이블),        	code_id (code_master 테이블),
  *      role_id (role_code 테이블),	genre_id (genre_code 테이블),		artist_id (artists 테이블),
  *		group_id (groups 테이블),		id (users 테이블), 				c_id (comments 테이블), 	
  *		p_list_id (playlists 테이블), playlist_song_id (playlist_songs 테이블)       
- *                         
+ *      album_first_con_id (albums_first_con 테이블),			song_first_con_id (songs_first_con),
+ *		artist_first_con_id (artists_first_con),			group_first_con_id (groups_first_con)                  
  */
 
 -- ENGINE=InnoDB: MySQL 스토리지 엔진을 InnoDB로 설정 (데이터 무결성 보장, 외래 키 지원)
@@ -251,3 +253,144 @@ CREATE TABLE
 		expiration_date 	DATE, -- 만료일 (날짜 - 시분초 표시 안 함)
 		FOREIGN KEY (id) 	REFERENCES users(id) ON DELETE CASCADE -- 회원 번호 (외래키)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+---------------------------------------- 앨범 초성 테이블 ------------------------------------
+CREATE TABLE
+	albums_first_con ( -- 앨범 초성 (컬럼 3개)
+		album_first_con_id 		INT AUTO_INCREMENT, -- 앨범 초성 번호 (5자리, 자동 생성)
+		album_id 				INT, -- 앨범 번호 (외래 키)
+		album_first_con_name	VARCHAR(200), -- 앨범 초성 이름 (200글자)
+								PRIMARY KEY (album_first_con_id), -- 앨범 초성 번호 (고유키)
+					FOREIGN KEY (album_id) REFERENCES albums(album_id) ON DELETE CASCADE -- 앨범 번호 (외래키)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    
+    ---------------------------------------- 음원 초성 테이블 ------------------------------------
+CREATE TABLE
+	songs_first_con ( -- 음원 초성 (컬럼 3개)
+		song_first_con_id 		INT AUTO_INCREMENT, -- 음원 초성 번호 (5자리, 자동 생성)
+		song_id 				INT, -- 음원 번호 (외래 키)
+		song_first_con_name	VARCHAR(200), -- 음원 초성 이름 (200글자)
+								PRIMARY KEY (song_first_con_id), -- 음원 초성 번호 (고유키)
+					FOREIGN KEY (song_id) REFERENCES songs(song_id) ON DELETE CASCADE -- 음원 번호 (외래키)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    
+    ---------------------------------------- 아티스트 초성 테이블 ------------------------------------
+CREATE TABLE
+	artists_first_con ( -- 아티스트 초성 (컬럼 3개)
+		artist_first_con_id 		INT AUTO_INCREMENT, -- 아티스트 초성 번호 (5자리, 자동 생성)
+		artist_id 				INT, -- 아티스트 번호 (외래 키)
+		artist_first_con_name	VARCHAR(200), -- 아티스트 초성 이름 (200글자)
+								PRIMARY KEY (artist_first_con_id), -- 아티스트 초성 번호 (고유키)
+					FOREIGN KEY (artist_id) REFERENCES artists(artist_id) ON DELETE CASCADE -- 아티스트 번호 (외래키)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    
+    ---------------------------------------- 그룹 초성 테이블 ------------------------------------
+CREATE TABLE
+	groups_first_con ( -- 그룹 초성 (컬럼 3개)
+		group_first_con_id 		INT AUTO_INCREMENT, -- 그룹 초성 번호 (5자리, 자동 생성)
+		group_id 				INT, -- 그룹 번호 (외래 키)
+		group_first_con_name	VARCHAR(200), -- 그룹 초성 이름 (200글자)
+								PRIMARY KEY (group_first_con_id), -- 그룹 초성 번호 (고유키)
+					FOREIGN KEY (group_id) REFERENCES `groups`(group_id) ON DELETE CASCADE -- 그룹 번호 (외래키)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+--------------------------------------------------------------------------------------------------------------------------------
+---------------- 좋아요 통계 테이블 생성 ----------------
+CREATE TABLE 
+	likes_statistics (
+		stats_id INT AUTO_INCREMENT,  -- 통계 테이블의 기본 키
+		type ENUM('album', 'song', 'group', 'artist') NOT NULL,  -- 유형: 앨범, 음원, 그룹, 아티스트
+		item_id INT NOT NULL,  -- 앨범, 음원, 그룹, 아티스트의 식별자
+		like_count INT DEFAULT 0,  -- 좋아요 수 (초기값 0)
+		PRIMARY KEY (stats_id),  -- 기본 키 설정
+		UNIQUE KEY unique_item (type, item_id)  -- 각 유형과 식별자의 조합은 고유해야 함
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    
+
+
+------ 트리거 설정 ------
+DELIMITER $$
+
+-- Album Likes: 좋아요 추가 시
+CREATE TRIGGER increment_album_like_count
+AFTER INSERT ON album_likes
+FOR EACH ROW
+BEGIN
+    INSERT INTO likes_statistics (type, item_id, like_count)
+    VALUES ('album', NEW.album_id, 1)
+    ON DUPLICATE KEY UPDATE like_count = like_count + 1;
+END$$
+
+-- Album Likes: 좋아요 제거 시
+CREATE TRIGGER decrement_album_like_count
+AFTER DELETE ON album_likes
+FOR EACH ROW
+BEGIN
+    UPDATE likes_statistics
+    SET like_count = like_count - 1
+    WHERE type = 'album' AND item_id = OLD.album_id;
+END$$
+
+-- Song Likes: 좋아요 추가 시
+CREATE TRIGGER increment_song_like_count
+AFTER INSERT ON likes
+FOR EACH ROW
+BEGIN
+    INSERT INTO likes_statistics (type, item_id, like_count)
+    VALUES ('song', NEW.song_id, 1)
+    ON DUPLICATE KEY UPDATE like_count = like_count + 1;
+END$$
+
+-- Song Likes: 좋아요 제거 시
+CREATE TRIGGER decrement_song_like_count
+AFTER DELETE ON likes
+FOR EACH ROW
+BEGIN
+    UPDATE likes_statistics
+    SET like_count = like_count - 1
+    WHERE type = 'song' AND item_id = OLD.song_id;
+END$$
+
+-- Group Likes: 좋아요 추가 시
+CREATE TRIGGER increment_group_like_count
+AFTER INSERT ON group_likes
+FOR EACH ROW
+BEGIN
+    INSERT INTO likes_statistics (type, item_id, like_count)
+    VALUES ('group', NEW.group_id, 1)
+    ON DUPLICATE KEY UPDATE like_count = like_count + 1;
+END$$
+
+-- Group Likes: 좋아요 제거 시
+CREATE TRIGGER decrement_group_like_count
+AFTER DELETE ON group_likes
+FOR EACH ROW
+BEGIN
+    UPDATE likes_statistics
+    SET like_count = like_count - 1
+    WHERE type = 'group' AND item_id = OLD.group_id;
+END$$
+
+-- Artist Likes: 좋아요 추가 시
+CREATE TRIGGER increment_artist_like_count
+AFTER INSERT ON artist_likes
+FOR EACH ROW
+BEGIN
+    INSERT INTO likes_statistics (type, item_id, like_count)
+    VALUES ('artist', NEW.artist_id, 1)
+    ON DUPLICATE KEY UPDATE like_count = like_count + 1;
+END$$
+
+-- Artist Likes: 좋아요 제거 시
+CREATE TRIGGER decrement_artist_like_count
+AFTER DELETE ON artist_likes
+FOR EACH ROW
+BEGIN
+    UPDATE likes_statistics
+    SET like_count = like_count - 1
+    WHERE type = 'artist' AND item_id = OLD.artist_id;
+END$$
+
+DELIMITER ;
