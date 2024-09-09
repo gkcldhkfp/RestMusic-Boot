@@ -1,5 +1,6 @@
 package com.itwill.rest.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,9 +12,12 @@ import com.itwill.rest.domain.Artist;
 import com.itwill.rest.domain.Group;
 import com.itwill.rest.domain.GroupLike;
 import com.itwill.rest.domain.GroupLikeId;
+import com.itwill.rest.domain.GroupMember;
 import com.itwill.rest.dto.GroupAlbumDto;
+import com.itwill.rest.dto.GroupAndArtistDto;
 import com.itwill.rest.dto.GroupInfoDto;
 import com.itwill.rest.dto.GroupSongDto;
+import com.itwill.rest.dto.SongSearchResultDto;
 import com.itwill.rest.repository.AlbumRepository;
 import com.itwill.rest.repository.ArtistRepository;
 import com.itwill.rest.repository.GroupLikeRepository;
@@ -228,6 +232,28 @@ public class GroupService {
 			return true;
 			
 		}
+	}
+	
+	public List<GroupAndArtistDto> findGroupAndArtistDtoByGruoupId(int id) {
+		
+		List<GroupMember> result = groupMemberRepo.findByGroupId(id);
+		
+		List<GroupAndArtistDto> dtos = new ArrayList<>();
+		
+		
+		for (GroupMember m : result) {
+			GroupAndArtistDto dto = new GroupAndArtistDto();
+			dto.setType("artists");
+            dto.setId(m.getArtist().getId());
+            dto.setImage(m.getArtist().getArtistImage());
+            dto.setName(m.getArtist().getArtistName());
+            dto.setLikeCount(m.getArtist().getArtistLikes().size());
+            dtos.add(dto);
+        }
+		
+		dtos.forEach(System.out :: println);
+		
+		return dtos;
 	}
 
 }
