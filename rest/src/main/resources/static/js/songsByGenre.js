@@ -843,8 +843,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 parent.songFrame.location.reload();
             }
         }
-
-        
         
         // 약간의 지연 후 이벤트 리스너 설정 및 초기 데이터 로드
         setTimeout(() => {
