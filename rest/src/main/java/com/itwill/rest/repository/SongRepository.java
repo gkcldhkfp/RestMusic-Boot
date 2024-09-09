@@ -36,8 +36,7 @@ public interface SongRepository extends JpaRepository<Song, Integer>, SongQueryd
             "        GROUP_CONCAT(DISTINCT CASE " +
             "            WHEN art.artist_id IS NOT NULL AND g.group_id IS NULL THEN CAST(art.artist_id AS CHAR) " +
             "            ELSE NULL " +
-            "        END ORDER BY art.artist_name SEPARATOR ', ') AS artistId, " +
-            "        'album' AS type " +
+            "        END ORDER BY art.artist_name SEPARATOR ', ') AS artistId " +
             "    FROM albums a " +
             "    LEFT JOIN songs s ON a.album_id = s.album_id " +
             "    LEFT JOIN artist_roles ar ON s.song_id = ar.song_id AND ar.role_id = 10 " +
@@ -55,8 +54,7 @@ public interface SongRepository extends JpaRepository<Song, Integer>, SongQueryd
             "        NULL AS groupName, " +
             "        GROUP_CONCAT(DISTINCT art.artist_name ORDER BY art.artist_name SEPARATOR ', ') AS artistName, " +
             "        NULL AS groupId, " +
-            "        GROUP_CONCAT(DISTINCT CAST(art.artist_id AS CHAR) ORDER BY art.artist_name SEPARATOR ', ') AS artistId, " +
-            "        'artist' AS type " +
+            "        GROUP_CONCAT(DISTINCT CAST(art.artist_id AS CHAR) ORDER BY art.artist_name SEPARATOR ', ') AS artistId " +
             "    FROM artists art " +
             "    LEFT JOIN artist_roles ar ON art.artist_id = ar.artist_id " +
             "    LEFT JOIN songs s ON ar.song_id = s.song_id " +
@@ -73,8 +71,7 @@ public interface SongRepository extends JpaRepository<Song, Integer>, SongQueryd
             "        GROUP_CONCAT(DISTINCT g.group_name ORDER BY g.group_name SEPARATOR ', ') AS groupName, " +
             "        NULL AS artistName, " +
             "        GROUP_CONCAT(DISTINCT CAST(g.group_id AS CHAR) ORDER BY g.group_name SEPARATOR ', ') AS groupId, " +
-            "        NULL AS artistId, " +
-            "        'group' AS type " +
+            "        NULL AS artistId " +
             "    FROM `groups` g " +
             "    LEFT JOIN artist_roles ar ON g.group_id = ar.group_id " +
             "    LEFT JOIN songs s ON ar.song_id = s.song_id " +
@@ -103,8 +100,7 @@ public interface SongRepository extends JpaRepository<Song, Integer>, SongQueryd
             "        GROUP_CONCAT(DISTINCT CASE " +
             "            WHEN art.artist_id IS NOT NULL AND g.group_id IS NULL THEN CAST(art.artist_id AS CHAR) " +
             "            ELSE NULL " +
-            "        END ORDER BY art.artist_name SEPARATOR ', ') AS artistId, " +
-            "        'song' AS type " +
+            "        END ORDER BY art.artist_name SEPARATOR ', ') AS artistId " +
             "    FROM songs s " +
             "    LEFT JOIN albums a ON s.album_id = a.album_id " +
             "    LEFT JOIN artist_roles ar ON s.song_id = ar.song_id AND ar.role_id = 10 " +
@@ -126,7 +122,9 @@ public interface SongRepository extends JpaRepository<Song, Integer>, SongQueryd
             "    COALESCE(sl.like_count, 0) AS likeCount " +
             "FROM song_data sd " +
             "LEFT JOIN (SELECT song_id, COUNT(*) AS like_count FROM likes GROUP BY song_id) AS sl ON sd.songId = sl.song_id " +
-            "ORDER BY LENGTH(sd.name), likeCount DESC " +
+            "ORDER BY " +
+            "    LENGTH(sd.name), " +
+            "    likeCount DESC " +
             "LIMIT :limit OFFSET :offset",
         nativeQuery = true)
 	 List<Object[]> findSongsByKeywordOrderByAccuracy(@Param("keyword") String keyword,  @Param("limit") int limit,
@@ -386,6 +384,9 @@ public interface SongRepository extends JpaRepository<Song, Integer>, SongQueryd
 
 	// 앨범 발매일 기준 내림차순 정렬(페이징)
 	Page<Song> findByOrderByAlbum_AlbumReleaseDateDesc(Pageable pageable);
+	
+	// 앨범 발매일 기준 내림차순 정렬
+	List<Song> findByOrderByAlbum_AlbumReleaseDateDesc();
 
 	// 좋아요 수 기준 내림차순 정렬
 	@Query("SELECT s FROM Song s LEFT JOIN s.likes l GROUP BY s.songId ORDER BY COUNT(l) DESC")

@@ -1,10 +1,8 @@
 package com.itwill.rest.domain;
 
-import java.time.LocalDate;
-
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -21,11 +19,14 @@ import lombok.ToString;
 @AllArgsConstructor(access = AccessLevel.PRIVATE) @Builder
 @ToString @EqualsAndHashCode
 public class PurUser {
-	@Id
+	
+
+	@EmbeddedId
+	private PurUserId purUserId;
+
 	@OneToOne(fetch = FetchType.LAZY)
 	@ToString.Exclude
 	@JoinColumn(name = "USER_ID")
 	private User user;
 
-	private LocalDate expirationDate;
 }

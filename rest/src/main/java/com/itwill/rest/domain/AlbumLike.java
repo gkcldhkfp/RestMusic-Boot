@@ -24,7 +24,7 @@ public class AlbumLike {
 	@EmbeddedId
 	private AlbumLikeId albumLikeId;
 
-		@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
     @MapsId("albumId")
     @JoinColumn(name = "ALBUM_ID")
     private Album album;

@@ -2,7 +2,7 @@ SET profiling = 1;
 SHOW profile;
 set profiling = 0;
 
-explain
+
 select
     'album' AS type,
     a.album_id AS id,
@@ -53,11 +53,12 @@ SELECT
 s.song_id AS id,
 s.title AS name,
 NULL AS release_date,
-COALESCE(ls.like_count, 0) AS like_count
+    (SELECT COALESCE(ls.like_count, 0)
+     FROM likes_statistics ls
+     WHERE ls.type = 'song'
+       AND ls.item_id = s.song_id
+    ) AS like_count
 FROM songs s
-LEFT JOIN likes_statistics ls
-ON ls.type = 'song'
-AND ls.item_id = s.song_id
 WHERE s.title LIKE CONCAT('밤양갱', '%')
 ORDER BY
 LENGTH(name),  -- name(또는 title) 컬럼의 데이터 길이로 정렬

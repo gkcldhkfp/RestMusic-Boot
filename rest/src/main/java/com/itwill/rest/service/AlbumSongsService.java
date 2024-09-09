@@ -302,7 +302,7 @@ public class AlbumSongsService {
             dto.setArtistName((String) result[5]);
             dto.setArtistId(result[6] != null ? ((Number) result[6]).intValue() : null);
             dto.setArtistType((String) result[7]);
-            dto.setLikeCount(((Number) result[8]).intValue());
+						dto.setLikeCount(((Integer) (result[8] == null ? 0 : result[8])));
             dtos.add(dto);
         }
 		
@@ -337,7 +337,7 @@ public class AlbumSongsService {
 			dto.setArtistName((String) result[5]);
 			dto.setArtistId(result[6] != null ? ((Number) result[6]).intValue() : null);
 			dto.setArtistType((String) result[7]);
-			dto.setLikeCount(((Number) result[8]).intValue());
+			dto.setLikeCount(((Integer) (result[8] == null ? 0 : result[8])));
 			dtos.add(dto);
 		}
 		

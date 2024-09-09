@@ -25,11 +25,12 @@ public class SongFirstCon {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "SONG_FIRST_CON_ID")
-	private Long id;
+//	private Long id;
+	private Integer id;
 
-	  @OneToOne
+	@OneToOne
     @JoinColumn(name = "song_id")
-		@ToString.Exclude
+	@ToString.Exclude
     private Song song;
 
     private String songFirstConName;

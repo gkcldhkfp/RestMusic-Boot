@@ -30,7 +30,8 @@ import lombok.extern.slf4j.Slf4j;
 public class AlbumSongsController {
 
 	private final AlbumSongsService albumServ;
-
+	
+	
 	@GetMapping("detail")
 	public void detail(@RequestParam(name = "albumId") Integer albumId, Model model, Authentication authentication) {
 		log.info("detail(albumId = {})", albumId);

@@ -2,6 +2,10 @@ package com.itwill.rest.domain;
 
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -19,5 +23,9 @@ public class GroupLike {
 	
 	@EmbeddedId
 	private GroupLikeId groupLikeId;
-
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("groupId")
+    @JoinColumn(name = "GROUP_ID")
+    private Group group;
 }

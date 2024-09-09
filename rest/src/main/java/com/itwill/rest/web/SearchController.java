@@ -34,7 +34,7 @@ public class SearchController {
 	private final ArtistService artSvc;
 	
 	@GetMapping("/all")
-	public String searchAll(@RequestParam String keyword, Model model, Authentication authentication) {
+	public String searchAll(@RequestParam(name="keyword") String keyword, Model model, Authentication authentication) {
 		log.info("searchAll");
 		
 		List<SongSearchResultDto> songs = songSvc.searchAllSongs(keyword);
@@ -155,7 +155,7 @@ public class SearchController {
 	}
 	
 	@GetMapping("/songs")
-	public void searchSongs(@RequestParam String keyword, @RequestParam(defaultValue = "accuracy") String sortType, Model model, Authentication authentication) {
+	public void searchSongs(@RequestParam(name="keyword") String keyword, @RequestParam(name = "sortType", defaultValue = "accuracy") String sortType, Model model, Authentication authentication) {
 		
 		Integer loginUserId = null;
         if (authentication != null && authentication.isAuthenticated()) {
@@ -179,8 +179,8 @@ public class SearchController {
 	}
 	
 	@GetMapping("/albums")
-	public void searchAlbums(@RequestParam String keyword, 
-			@RequestParam(defaultValue = "accuracy") String sortType, Model model, Authentication authentication) {
+	public void searchAlbums(@RequestParam(name="keyword") String keyword, 
+			@RequestParam(name = "sortType", defaultValue = "accuracy") String sortType, Model model, Authentication authentication) {
 		
 		Integer loginUserId = null;
 		if (authentication != null && authentication.isAuthenticated()) {
@@ -203,8 +203,8 @@ public class SearchController {
 	}
 	
 	@GetMapping("/artists")
-	public void searchArtists(@RequestParam String keyword, 
-			@RequestParam(defaultValue = "accuracy") String sortType, Model model, Authentication authentication) {
+	public void searchArtists(@RequestParam(name="keyword") String keyword, 
+			@RequestParam(name = "sortType", defaultValue = "accuracy") String sortType, Model model, Authentication authentication) {
 		
 		Integer loginUserId = null;
 		if (authentication != null && authentication.isAuthenticated()) {
