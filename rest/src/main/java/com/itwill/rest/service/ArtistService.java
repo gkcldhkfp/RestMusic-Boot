@@ -1,7 +1,6 @@
 package com.itwill.rest.service;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,12 +15,12 @@ import com.itwill.rest.domain.Group;
 import com.itwill.rest.domain.GroupMember;
 import com.itwill.rest.dto.ArtistAlbumDto;
 import com.itwill.rest.dto.ArtistSongDto;
+import com.itwill.rest.dto.GroupAndArtistDto;
 import com.itwill.rest.repository.AlbumRepository;
 import com.itwill.rest.repository.ArtistLikeRepository;
 import com.itwill.rest.repository.ArtistRepository;
-import com.itwill.rest.repository.GroupRepository;
 import com.itwill.rest.repository.GroupMemberRepository;
-import com.itwill.rest.dto.GroupAndArtistDto;
+import com.itwill.rest.repository.GroupRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -184,7 +183,7 @@ public class ArtistService {
 			dto.setId(((Number) result[0]).intValue());
 			dto.setName((String) result[1]);
 			dto.setImage(((String) result[2]));
-			dto.setLikeCount(((Number) result[3]).intValue());
+			dto.setLikeCount(((Integer) (result[3] == null ? 0 : result[3])));
 			dtos.add(dto);
 		}
 
@@ -204,7 +203,7 @@ public class ArtistService {
 			dto.setId(((Number) result[0]).intValue());
 			dto.setName((String) result[1]);
 			dto.setImage(((String) result[2]));
-			dto.setLikeCount(((Number) result[3]).intValue());
+			dto.setLikeCount(((Integer) (result[3] == null ? 0 : result[3])));
 			dtos.add(dto);
 		}
 
@@ -241,7 +240,7 @@ public class ArtistService {
 			dto.setId(((Number) result[0]).intValue());
 			dto.setName((String) result[1]);
 			dto.setImage(((String) result[2]));
-			dto.setLikeCount(((Number) result[3]).intValue());
+			dto.setLikeCount(((Integer) (result[3] == null ? 0 : result[3])));
 			grDtos.add(dto);
 		}
 
@@ -251,7 +250,7 @@ public class ArtistService {
 			dto.setId(((Number) result[0]).intValue());
 			dto.setName((String) result[1]);
 			dto.setImage(((String) result[2]));
-			dto.setLikeCount(((Number) result[3]).intValue());
+			dto.setLikeCount(((Integer) (result[3] == null ? 0 : result[3])));
 			arDtos.add(dto);
 		}
 
@@ -281,7 +280,7 @@ public class ArtistService {
 						dto.setId(((Number) gmm[0]).intValue());
 						dto.setName((String) gmm[1]);
 						dto.setImage(((String) gmm[2]));
-						dto.setLikeCount(((Number) gmm[3]).intValue());
+						dto.setLikeCount(((Integer) (gmm[3] == null ? 0 : gmm[3])));
 						combinedList.add(dto);
 					}
 				});
