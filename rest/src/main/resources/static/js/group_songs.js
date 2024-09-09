@@ -418,6 +418,78 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(error => console.error('Error fetching playlists:', error));
     }
 
+    // 플레이리스트 요소 생성 함수
+    function createPlaylistElement(list) {
+        const listElement = document.createElement('div');
+        listElement.classList.add('playlist-item', 'd-flex', 'align-items-center', 'mb-2');
+        listElement.innerHTML = `
+            <div class="playlist-button-container">
+                <button class="playlist-btn btn btn-outline-success w-100" data-id="${list.plistId}">
+                    <div class="d-flex align-items-center">
+                        <div class="playlist-image">
+                            <img src="${list.albumImage ? `/images/albumcover/${list.albumImage}` : '/images/icon/default.png'}" alt="Album cover" class="rounded">
+                        </div>
+                        <div class="playlist-name">${list.plistName}</div>
+                    </div>
+                </button>
+            </div>
+        `;
+        return listElement;
+    }
+
+    // 선택한 플레이리스트에 곡을 추가하는 함수
+    function addSongToPlaylists() {
+        const selectedPlaylists = document.querySelectorAll('#playLists .playlist-btn.selected');
+        const selectedPlaylistIds = Array.from(selectedPlaylists).map(btn => btn.dataset.id);
+        const songIdsJson = document.getElementById('selectedSongIds').value;
+        const songIds = JSON.parse(songIdsJson);
+        
+        if (selectedPlaylistIds.length === 0) {
+            alert('플레이리스트를 선택하세요.');
+            return;
+        }
+        
+        if (songIds.length === 0) {
+            alert('곡을 선택하세요.');
+            return;
+        }
+    
+        const alreadyAdded = {};
+        const promises = [];
+        
+        selectedPlaylistIds.forEach(plistId => {
+            alreadyAdded[plistId] = false;
+            songIds.forEach(songId => {
+                console.log(`플레이리스트 ${plistId}에 곡 ${songId} 확인 중`);
+                const checkPromise = axios.post(`/checkSongInPlayList`, {
+                    plistId: parseInt(plistId),
+                    songId: parseInt(songId)
+                }).then(response => {
+                    console.log(`플레이리스트 ${plistId} 응답:`, response.data);
+                    if (response.data === false) {
+                        alreadyAdded[plistId] = true;
+                    }
+                }).catch(error => console.error('플레이리스트에서 곡 확인 중 오류가 발생했습니다:', error));
+                
+                promises.push(checkPromise);
+            });
+        });
+        
+        Promise.all(promises).then(() => {
+            const addedPlaylists = selectedPlaylistIds.filter(plistId => alreadyAdded[plistId]);
+            if (addedPlaylists.length > 0) {
+                if (confirm('선택한 플레이리스트에 이미 추가된 곡입니다. 그래도 추가하시겠습니까?')) {
+                    addSongsToSelectedPlaylists(selectedPlaylistIds, songIds);
+                } else {
+                    const selectPlayListModal = bootstrap.Modal.getInstance(document.getElementById('selectPlayList'));
+                    selectPlayListModal.hide();
+                }
+            } else {
+                addSongsToSelectedPlaylists(selectedPlaylistIds, songIds);
+            }
+        });
+    }
+
     // 알림 메시지 표시 함수
     function showAlert(message, duration) {
         const existingAlert = document.querySelector('.custom-alert');
@@ -554,4 +626,5 @@ document.addEventListener('DOMContentLoaded', () => {
             parent.songFrame.location.reload();
         }
     }
+    
 });
