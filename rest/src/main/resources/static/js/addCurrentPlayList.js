@@ -167,6 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			btnListenAlbum.addEventListener('click', listenAlbum);
 			function listenAlbum(event) {
 				// console.log(id); // 정상작동: 1
+				const albumId = event.target.getAttribute('data-id');
 				const url1 = `/api/album?albumId=${albumId}`;
 				axios.
 					get(url1).

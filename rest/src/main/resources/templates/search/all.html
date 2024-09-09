@@ -259,10 +259,10 @@ a:hover {
                                     <a th:href="@{/album/detail(albumId=${a.albumId})}" style="margin: 0;" th:text="${a.albumName}"></a>
                                     <div>
                                     <th:block th:if="${a.artistType eq 'artist'}">
-                                        <small style="margin: 0;"><a th:href="@{/artist/songs(artistId=${a.artistId})}" th:text="${a.artistName}"></a></small>
+                                        <small style="margin: 0; color: gray; font-size: 0.8rem;"><a th:href="@{/artist/songs(artistId=${a.artistId})}" th:text="${a.artistName}"></a></small>
                                     </th:block>
                                     <th:block th:if="${a.artistType eq 'group'}">
-                                        <small style="margin: 0;"><a th:href="@{/group/songs(groupId=${a.artistId})}" th:text="${a.artistName}"></a></small>
+                                        <small style="margin: 0; color: gray; font-size: 0.8rem;"><a th:href="@{/group/songs(groupId=${a.artistId})}" th:text="${a.artistName}"></a></small>
                                     </th:block>
                                     </div>
                                 </div>
