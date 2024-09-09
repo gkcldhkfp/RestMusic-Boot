@@ -22,7 +22,7 @@ public class PurUser {
 	
 
 	@EmbeddedId
-	private PurUserId id;
+	private PurUserId purUserId;
 
 	@OneToOne(fetch = FetchType.LAZY)
 	@ToString.Exclude

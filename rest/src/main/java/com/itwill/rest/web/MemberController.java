@@ -129,23 +129,11 @@ public class MemberController {
 
 		if (userId != null) {
 			model.addAttribute("userId", userId);
-			return "/member/finduserresult"; // 결과 페이지로 이동
+			return "member/finduserresult"; // 결과 페이지로 이동
 		} else {
 			model.addAttribute("result", "f");
-			return "/member/finduserid"; // 다시 아이디 찾기 페이지로 이동
+			return "member/finduserid"; // 다시 아이디 찾기 페이지로 이동
 		}
-	}
-
-	@GetMapping("/finduserpassword")
-	public String findUserPassword() {
-		log.info("GET findUserPassword()");
-		return "member/finduserpassword"; // 실제 뷰의 경로와 일치해야 함
-	}
-
-	@GetMapping("/setuserpassword")
-	public String setUserPassword() {
-		log.info("GET setuserpassword()");
-		return "member/setuserpassword"; // 비밀번호 변경 페이지의 뷰 이름
 	}
 
 	@PostMapping("/setuserpassword")
@@ -156,7 +144,7 @@ public class MemberController {
 		// 비밀번호와 비밀번호 확인 일치 여부 확인
 		if (!password.equals(confirmPassword)) {
 			model.addAttribute("errorMessage", "비밀번호가 일치하지 않습니다.");
-			return "/member/setuserpassword"; // 실패 시 다시 변경 페이지로
+			return "member/setuserpassword"; // 실패 시 다시 변경 페이지로
 		}
 
 		String rawPassword = encoder.encode(password);
@@ -168,7 +156,7 @@ public class MemberController {
 			return "redirect:/member/signin"; // 성공 시 로그인 페이지로 리다이렉트
 		} else {
 			model.addAttribute("errorMessage", "비밀번호 변경에 실패했습니다.");
-			return "/member/setuserpassword"; // 실패 시 다시 변경 페이지로
+			return "member/setuserpassword"; // 실패 시 다시 변경 페이지로
 		}
 	}
 
@@ -188,6 +176,12 @@ public class MemberController {
 	@GetMapping("/finduserpassword")
 	public void findUserPassword(Model model, Authentication authentication) {
 		log.info("GET findUserPassword()");
+		Integer loginUserId = null;
+		if (authentication != null && authentication.isAuthenticated()) {
+			User user = (User) authentication.getPrincipal();
+			loginUserId = user.getId();
+		}
+		model.addAttribute("loginUserId", loginUserId);
 	}
 
 	// 비밀번호 변경 페이지
