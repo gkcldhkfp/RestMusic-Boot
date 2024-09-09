@@ -100,17 +100,14 @@
         <th:block th:replace="~{layout/fragments :: footer}"></th:block>
     </footer>
 
-    <script>
+    <script th:inline="javascript">
         const refresh = /*[[${refresh}]]*/ '';
         // 리다이렉트 시 재생 페이지를 새로고침하기 위한 코드
     </script>
 
     <!-- 자바스크립트 및 추가 파일 -->
     <script th:src="@{/js/findUserId.js}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-            crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script th:src="@{/js/addCurrentPlayList.js}"></script>
 </body>
 </html>
