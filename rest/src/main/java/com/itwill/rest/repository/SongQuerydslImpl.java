@@ -57,7 +57,7 @@ public class SongQuerydslImpl extends QuerydslRepositorySupport implements SongQ
 
 	    // 모든 정보를 한 번의 쿼리로 가져옵니다
 	    List<Tuple> tuples = queryFactory
-	            .select(
+	            .selectDistinct(
 	                song.songId,
 	                song.title,
 	                song.lyrics,
@@ -107,34 +107,42 @@ public class SongQuerydslImpl extends QuerydslRepositorySupport implements SongQ
 	        String singers = roleToArtistsMap.getOrDefault(10, Collections.emptyList())
 	                .stream()
 	                .map(entry -> entry.getKey())
+	                .distinct() // 중복된 아티스트 이름 제거
 	                .collect(Collectors.joining(", "));
 	        String singerIds = roleToArtistsMap.getOrDefault(10, Collections.emptyList())
 	                .stream()
 	                .map(entry -> entry.getValue())
+	                .distinct() // 중복된 아티스트 ID 제거
 	                .collect(Collectors.joining(", "));
 	        String writers = roleToArtistsMap.getOrDefault(30, Collections.emptyList())
 	                .stream()
 	                .map(entry -> entry.getKey())
+	                .distinct() // 중복된 아티스트 이름 제거
 	                .collect(Collectors.joining(", "));
 	        String writerIds = roleToArtistsMap.getOrDefault(30, Collections.emptyList())
 	                .stream()
 	                .map(entry -> entry.getValue())
+	                .distinct() // 중복된 아티스트 ID 제거
 	                .collect(Collectors.joining(", "));
 	        String composers = roleToArtistsMap.getOrDefault(20, Collections.emptyList())
 	                .stream()
 	                .map(entry -> entry.getKey())
+	                .distinct() // 중복된 아티스트 이름 제거
 	                .collect(Collectors.joining(", "));
 	        String composerIds = roleToArtistsMap.getOrDefault(20, Collections.emptyList())
 	                .stream()
 	                .map(entry -> entry.getValue())
+	                .distinct() // 중복된 아티스트 ID 제거
 	                .collect(Collectors.joining(", "));
 	        String arrangers = roleToArtistsMap.getOrDefault(40, Collections.emptyList())
 	                .stream()
 	                .map(entry -> entry.getKey())
+	                .distinct() // 중복된 아티스트 이름 제거
 	                .collect(Collectors.joining(", "));
 	        String arrangerIds = roleToArtistsMap.getOrDefault(40, Collections.emptyList())
 	                .stream()
 	                .map(entry -> entry.getValue())
+	                .distinct() // 중복된 아티스트 ID 제거
 	                .collect(Collectors.joining(", "));
 	        String genreList = String.join(", ", genres);
 
@@ -162,6 +170,7 @@ public class SongQuerydslImpl extends QuerydslRepositorySupport implements SongQ
 
 	    return null;
 	}
+
 	
 	
 
