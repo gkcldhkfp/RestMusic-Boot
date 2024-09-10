@@ -314,38 +314,44 @@ public class MemberController {
 		return "member/deactivateUser";
 	}
 
-	// 사용자 계정 비활성화
-	@PostMapping("/deactivateUser")
-	@ResponseBody
-	public ResponseEntity<?> deactivateAccount(@RequestBody UserDeactivateDto dto, Authentication authentication,
-			HttpServletResponse response) {
-		if (authentication == null || !authentication.isAuthenticated()) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인 필요");
-		}
-		log.info("deactivateAccount(dto={})", dto);
+    // 사용자 계정 비활성화
+    @PostMapping("/deactivateUser")
+    @ResponseBody
+    public ResponseEntity<?> deactivateAccount(@RequestBody UserDeactivateDto dto, Authentication authentication,
+                    HttpServletResponse response, HttpServletRequest request) {
+            if (authentication == null || !authentication.isAuthenticated()) {
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인 필요");
+            }
+            log.info("deactivateAccount(dto={})", dto);
 
-		User user = (User) authentication.getPrincipal();
-		Integer id = user.getId();
-		String password = dto.getPassword();
+            User user = (User) authentication.getPrincipal();
+            Integer id = user.getId();
+            String password = dto.getPassword();
 
-		boolean result = userServ.deactivateAccount(id, password);
-		log.info("deactivateComplete={}", result);
+            boolean result = userServ.deactivateAccount(id, password);
+            log.info("deactivateComplete={}", result);
 
-		if (result) {
-			// 세션 무효화
-			SecurityContextHolder.clearContext();
+            if (result) {
+                    // 세션 무효화
+                    SecurityContextHolder.clearContext();
+                    
+            // 세션 무효화
+            HttpSession session = request.getSession(false);
+            if (session != null) {
+                session.invalidate();
+            }
 
-			// 쿠키 삭제
-			Cookie cookie = new Cookie("user", null);
-			cookie.setMaxAge(0);
-			cookie.setPath("/");
-			response.addCookie(cookie);
+                    // 쿠키 삭제
+                    Cookie cookie = new Cookie("user", null);
+                    cookie.setMaxAge(0);
+                    cookie.setPath("/");
+                    response.addCookie(cookie);
 
-			return ResponseEntity.ok().body("계정이 탈퇴되었습니다.");
-		} else {
-			return ResponseEntity.badRequest().body("비밀번호가 일치하지 않습니다.");
-		}
-	}
+                    return ResponseEntity.ok().body("계정이 탈퇴되었습니다.");
+            } else {
+                    return ResponseEntity.badRequest().body("비밀번호가 일치하지 않습니다.");
+            }
+    }
 
 	// 이메일 인증 번호 발송
 	@GetMapping("/sendEmailAuth")

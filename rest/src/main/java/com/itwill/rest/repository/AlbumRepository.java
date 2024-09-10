@@ -486,7 +486,7 @@ public interface AlbumRepository extends JpaRepository<Album, Integer> {
 	 */
 
 	@Query(value = """
-			            SELECT
+			            SELECT DISTINCT
 			    'album' AS type,
 			    a.album_id AS id,
 			    a.album_name AS name,
@@ -502,7 +502,7 @@ public interface AlbumRepository extends JpaRepository<Album, Integer> {
 
 			UNION ALL
 
-			SELECT
+			SELECT DISTINCT
 			    'song' AS type,
 			    s.song_id AS id,
 			    s.title AS name,
@@ -518,7 +518,7 @@ public interface AlbumRepository extends JpaRepository<Album, Integer> {
 
 			UNION ALL
 
-			SELECT
+			SELECT DISTINCT
 			    'group' AS type,
 			    g.group_id AS id,
 			    g.group_name AS name,
@@ -534,7 +534,7 @@ public interface AlbumRepository extends JpaRepository<Album, Integer> {
 
 			UNION ALL
 
-			SELECT
+			SELECT DISTINCT
 			    'artist' AS type,
 			    a.artist_id AS id,
 			    a.artist_name AS name,
@@ -550,9 +550,11 @@ public interface AlbumRepository extends JpaRepository<Album, Integer> {
 
 			ORDER BY
 			    LENGTH(name),
-			    like_count DESC;
+			    like_count DESC
+			    """
+			+ "LIMIT 5"
 
 
-			            """, nativeQuery = true)
+			            , nativeQuery = true)
 	List<Object[]> findChoSeongBySearchTerm(@Param("searchTerm") String searchTerm);
 }

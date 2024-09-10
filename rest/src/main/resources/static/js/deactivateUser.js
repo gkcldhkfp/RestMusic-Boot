@@ -33,11 +33,11 @@ document.addEventListener('DOMContentLoaded', () => {
             password: password
         })
         .then(response => {
-            alert(response.data.message); // 응답 데이터의 message 필드로 가정
-            location.href = '/'; // 메인 페이지로 리다이렉트
+            alert(response.data); // 응답 데이터의 message 필드로 가정
+            location.href = '/home'; // 메인 페이지로 리다이렉트
         })
         .catch(error => {
-            alert(error.response.data.message || '알 수 없는 오류가 발생했습니다.'); // 오류 메시지 표시
+            alert(error.response.data || '알 수 없는 오류가 발생했습니다.'); // 오류 메시지 표시
         });
     });
 });

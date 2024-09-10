@@ -305,7 +305,7 @@ public class UserService implements UserDetailsService {
     @Transactional
     public boolean deactivateAccount(Integer id, String password) {
         User user = userRepo.findById(id).orElse(null);
-        if (user == null || !userRepo.checkPassword(id, password)) {
+        if (user == null || !checkPassword(id, password)) {
             return false;
         }
 
