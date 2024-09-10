@@ -18,6 +18,8 @@
             }
             return
         }
+        songId = event.target.closest('button').getAttribute('data-songId');
+        
         const uri = `../getPlayList/${authUser}`;
         axios
             .get(uri)

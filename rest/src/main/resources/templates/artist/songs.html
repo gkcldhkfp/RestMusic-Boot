@@ -91,17 +91,17 @@
                                             <th:block th:if="${index < #lists.size(s.groupNames)}">
                                                 <a th:href="@{/group/songs(groupId=${s.groupIds[index]})}"
                                                    th:text="${s.groupNames[index]}"
-                                                   style="color: gray; text-decoration: none;"
-                                                   onmouseover="this.style.color='#007bff';"
-                                                   onmouseout="this.style.color='gray';"></a>
+                                                   style="color: black; text-decoration: none;"
+                                                   onmouseover="this.style.color='blue';"
+                                                   onmouseout="this.style.color='black';"></a>
                                             </th:block>
                                             <!-- 아티스트 이름 출력 -->
                                             <th:block th:if="${index >= #lists.size(s.groupNames)}">
                                                 <a th:href="@{/artist/songs(artistId=${s.artistIds[index - #lists.size(s.groupNames)]})}"
                                                    th:text="${s.artistNames[index - #lists.size(s.groupNames)]}"
-                                                   style="color: gray; text-decoration: none;"
-                                                   onmouseover="this.style.color='#007bff';"
-                                                   onmouseout="this.style.color='gray';"></a>
+                                                   style="color: black; text-decoration: none;"
+                                                   onmouseover="this.style.color='blue';"
+                                                   onmouseout="this.style.color='black';"></a>
                                             </th:block>
                                             <!-- 항목 사이에 반점 추가 -->
                                             <th:block th:if="${index < totalNames - 1}">

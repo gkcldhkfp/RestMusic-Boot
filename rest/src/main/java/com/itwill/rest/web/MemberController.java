@@ -141,6 +141,7 @@ public class MemberController {
 			@RequestParam("password") String password,
 			@RequestParam("confirmPassword") String confirmPassword,
 			Model model) {
+		log.info("POST setUserPassword()");
 		// 비밀번호와 비밀번호 확인 일치 여부 확인
 		if (!password.equals(confirmPassword)) {
 			model.addAttribute("errorMessage", "비밀번호가 일치하지 않습니다.");
@@ -321,12 +322,14 @@ public class MemberController {
 		if (authentication == null || !authentication.isAuthenticated()) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인 필요");
 		}
+		log.info("deactivateAccount(dto={})", dto);
 
 		User user = (User) authentication.getPrincipal();
 		Integer id = user.getId();
 		String password = dto.getPassword();
 
 		boolean result = userServ.deactivateAccount(id, password);
+		log.info("deactivateComplete={}", result);
 
 		if (result) {
 			// 세션 무효화
