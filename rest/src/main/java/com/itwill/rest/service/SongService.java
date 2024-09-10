@@ -274,7 +274,7 @@ public class SongService {
                 dto.setGroupName((String) result[6]);
                 dto.setArtistId((String) result[7]);
                 dto.setGroupId((String) result[8]);
-                dto.setLikeCount(((Number) result[9]).intValue());
+                dto.setLikeCount(((Integer) (result[9] == null ? 0 : result[9])));
                 dtos.add(dto);
             }
     		
@@ -294,7 +294,7 @@ public class SongService {
                 dto.setGroupName((String) result[7]);
                 dto.setArtistId((String) result[8]);
                 dto.setGroupId((String) result[9]);
-                dto.setLikeCount(((Number) result[10]).intValue());
+                dto.setLikeCount(((Integer) (result[10] == null ? 0 : result[10])));
                 dtos.add(dto);
             }
     		
@@ -315,7 +315,7 @@ public class SongService {
             dto.setGroupName((String) result[6]);
             dto.setArtistId((String) result[7]);
             dto.setGroupId((String) result[8]);
-            dto.setLikeCount(((Number) result[9]).intValue());
+            dto.setLikeCount(((Integer) (result[9] == null ? 0 : result[9])));
             dtos.add(dto);
         }
     	
@@ -340,7 +340,7 @@ public class SongService {
             dto.setGroupName((String) result[6]);
             dto.setArtistId((String) result[7]);
             dto.setGroupId((String) result[8]);
-            dto.setLikeCount(((Number) result[9]).intValue());
+            dto.setLikeCount(((Integer) (result[9] == null ? 0 : result[9])));
             dtos.add(dto);
         }
     	
