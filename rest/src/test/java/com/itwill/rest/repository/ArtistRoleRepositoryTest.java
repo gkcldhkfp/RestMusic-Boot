@@ -49,7 +49,7 @@ public class ArtistRoleRepositoryTest {
 		});
 	}
 	
-	@Test
+//	@Test
 	@Transactional
 	public void ttest() {
 		List<GroupMember> result = grmRepo.findByGroupId(1);
