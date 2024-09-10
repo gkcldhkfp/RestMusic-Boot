@@ -183,7 +183,7 @@ public class ArtistService {
 			dto.setId(((Number) result[0]).intValue());
 			dto.setName((String) result[1]);
 			dto.setImage(((String) result[2]));
-			dto.setLikeCount(((Integer) (result[3] == null ? 0 : result[3])));
+			dto.setLikeCount(((Number) (result[3] == null ? 0 : result[3])).intValue());
 			dtos.add(dto);
 		}
 
@@ -203,7 +203,7 @@ public class ArtistService {
 			dto.setId(((Number) result[0]).intValue());
 			dto.setName((String) result[1]);
 			dto.setImage(((String) result[2]));
-			dto.setLikeCount(((Integer) (result[3] == null ? 0 : result[3])));
+			dto.setLikeCount(((Number) (result[3] == null ? 0 : result[3])).intValue());
 			dtos.add(dto);
 		}
 
@@ -240,7 +240,7 @@ public class ArtistService {
 			dto.setId(((Number) result[0]).intValue());
 			dto.setName((String) result[1]);
 			dto.setImage(((String) result[2]));
-			dto.setLikeCount(((Integer) (result[3] == null ? 0 : result[3])));
+			dto.setLikeCount(((Number) (result[3] == null ? 0 : result[3])).intValue());
 			grDtos.add(dto);
 		}
 
@@ -250,7 +250,7 @@ public class ArtistService {
 			dto.setId(((Number) result[0]).intValue());
 			dto.setName((String) result[1]);
 			dto.setImage(((String) result[2]));
-			dto.setLikeCount(((Integer) (result[3] == null ? 0 : result[3])));
+			dto.setLikeCount(((Number) (result[3] == null ? 0 : result[3])).intValue());
 			arDtos.add(dto);
 		}
 
@@ -280,7 +280,7 @@ public class ArtistService {
 						dto.setId(((Number) gmm[0]).intValue());
 						dto.setName((String) gmm[1]);
 						dto.setImage(((String) gmm[2]));
-						dto.setLikeCount(((Integer) (gmm[3] == null ? 0 : gmm[3])));
+						dto.setLikeCount(((Number) (gmm[3] == null ? 0 : gmm[3])).intValue());
 						combinedList.add(dto);
 					}
 				});
