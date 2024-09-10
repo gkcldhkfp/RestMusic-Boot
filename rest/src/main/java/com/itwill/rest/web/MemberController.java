@@ -141,6 +141,7 @@ public class MemberController {
 			@RequestParam("password") String password,
 			@RequestParam("confirmPassword") String confirmPassword,
 			Model model) {
+		log.info("POST setUserPassword()");
 		// 비밀번호와 비밀번호 확인 일치 여부 확인
 		if (!password.equals(confirmPassword)) {
 			model.addAttribute("errorMessage", "비밀번호가 일치하지 않습니다.");
